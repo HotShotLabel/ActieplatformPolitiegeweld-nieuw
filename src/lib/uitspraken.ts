@@ -29,6 +29,29 @@ export const CATEGORIE_LABEL: Record<UitspraakCategorie, string> = {
   overig: "Overig",
 };
 
+/* De richting van de zaak: wie staat er terecht of moet zich verantwoorden? */
+export type UitspraakRichting = "politie-verdachte" | "burger-verdachte" | "overig";
+
+export const RICHTING_LABEL: Record<UitspraakRichting, string> = {
+  "politie-verdachte": "Politie als verdachte",
+  "burger-verdachte": "Burger als verdachte",
+  overig: "Overig",
+};
+
+export function richtingVan(uitspraak: Uitspraak): UitspraakRichting {
+  switch (uitspraak.categorie) {
+    case "agent-vervolgd":
+    case "beklag-12sv":
+    case "civiel":
+      return "politie-verdachte";
+    case "geweld-tegen-politie":
+    case "strafzaak-burger":
+      return "burger-verdachte";
+    default:
+      return "overig";
+  }
+}
+
 export function rechtspraakUrl(ecli: string): string {
   return `https://uitspraken.rechtspraak.nl/details?id=${encodeURIComponent(ecli)}`;
 }

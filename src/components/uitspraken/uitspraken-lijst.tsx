@@ -5,11 +5,15 @@ import { cn } from "@/lib/utils";
 import {
   CATEGORIE_LABEL,
   rechtspraakUrl,
+  RICHTING_LABEL,
+  richtingVan,
   UITSPRAKEN,
   type UitspraakCategorie,
+  type UitspraakRichting,
 } from "@/lib/uitspraken";
 
 const CATEGORIEEN = Object.keys(CATEGORIE_LABEL) as UitspraakCategorie[];
+const RICHTINGEN: UitspraakRichting[] = ["politie-verdachte", "burger-verdachte"];
 
 const positieveUitkomsten = ["Politie aansprakelijk", "Geen straf opgelegd"];
 
@@ -29,10 +33,16 @@ export function UitsprakenLijst() {
   const [categorie, setCategorie] = useState<UitspraakCategorie | "alles">(
     "alles"
   );
+  const [richting, setRichting] = useState<UitspraakRichting | "alles">(
+    "alles"
+  );
 
   const resultaten = useMemo(() => {
     const term = zoek.trim().toLowerCase();
     return UITSPRAKEN.filter((uitspraak) => {
+      if (richting !== "alles" && richtingVan(uitspraak) !== richting) {
+        return false;
+      }
       if (categorie !== "alles" && uitspraak.categorie !== categorie) {
         return false;
       }
@@ -50,11 +60,11 @@ export function UitsprakenLijst() {
         .toLowerCase();
       return hooiberg.includes(term);
     }).sort((a, b) => b.datum.localeCompare(a.datum));
-  }, [zoek, categorie]);
+  }, [zoek, categorie, richting]);
 
   return (
     <div>
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4">
         <div className="w-full md:max-w-sm">
           <label htmlFor="zoek" className="sr-only">
             Zoek in uitspraken
@@ -68,7 +78,46 @@ export function UitsprakenLijst() {
             onChange={(event) => setZoek(event.target.value)}
           />
         </div>
-        <div className="flex flex-wrap gap-2">
+
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+            Richting
+          </span>
+          <button
+            type="button"
+            onClick={() => setRichting("alles")}
+            aria-pressed={richting === "alles"}
+            className={cn(
+              "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+              richting === "alles"
+                ? "border-accent bg-accent-soft text-foreground"
+                : "border-line-strong text-muted hover:border-muted-2 hover:text-foreground"
+            )}
+          >
+            Alles
+          </button>
+          {RICHTINGEN.map((optie) => (
+            <button
+              key={optie}
+              type="button"
+              onClick={() => setRichting(optie)}
+              aria-pressed={richting === optie}
+              className={cn(
+                "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+                richting === optie
+                  ? "border-accent bg-accent-soft text-foreground"
+                  : "border-line-strong text-muted hover:border-muted-2 hover:text-foreground"
+              )}
+            >
+              {RICHTING_LABEL[optie]}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+            Soort zaak
+          </span>
           <button
             type="button"
             onClick={() => setCategorie("alles")}
@@ -104,6 +153,9 @@ export function UitsprakenLijst() {
       <p className="mt-5 text-sm text-muted-2">
         {resultaten.length}{" "}
         {resultaten.length === 1 ? "uitspraak" : "uitspraken"}
+        {richting !== "alles"
+          ? ` met ${RICHTING_LABEL[richting].toLowerCase()}`
+          : ""}
         {categorie !== "alles" ? ` in ${CATEGORIE_LABEL[categorie]}` : ""}
         {zoek.trim() ? ` voor “${zoek.trim()}”` : ""}
       </p>
@@ -153,7 +205,8 @@ export function UitsprakenLijst() {
               </div>
               <p className="mt-2 font-mono text-xs tracking-wide text-muted-2">
                 {uitspraak.instantie} · {formatDatum(uitspraak.datum)} ·{" "}
-                {uitspraak.zaaknummer}
+                {uitspraak.zaaknummer} ·{" "}
+                {RICHTING_LABEL[richtingVan(uitspraak)].toLowerCase()}
                 {uitspraak.samenvattingBron === "inhoudsindicatie"
                   ? " · officiële inhoudsindicatie"
                   : ""}

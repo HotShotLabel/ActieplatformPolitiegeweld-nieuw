@@ -16,10 +16,10 @@ export default function UitsprakenPage() {
           Rechterlijke uitspraken
         </h1>
         <p className="mt-6 max-w-[66ch] text-lg leading-relaxed text-muted">
-          Wat de rechter beslist in zaken over politieoptreden: strafzaken
-          tegen agenten, beklag bij het gerechtshof (artikel 12 Sv) en civiele
-          zaken over aansprakelijkheid. Elke samenvatting is gemaakt op basis
-          van de officiële uitspraak zelf.
+          Wat de rechter beslist in zaken over politieoptreden, in beide
+          richtingen: politie als verdachte (agenten vervolgd, beklag bij het
+          gerechtshof, civiele zaken) en burger als verdachte (geweld tegen
+          politie). Filter op richting en soort zaak, of zoek op trefwoord.
         </p>
         <p className="mt-4 max-w-[66ch] text-sm leading-relaxed text-muted-2">
           Alle uitspraken komen uit de Open Data van rechtspraak.nl; via de
