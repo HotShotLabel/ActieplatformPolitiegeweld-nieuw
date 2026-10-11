@@ -48,6 +48,15 @@ Wetboek van Strafvordering (art. 12-12l), Wet open overheid (art. 4.1 en
 4.4), politie.nl/Uitvoeringsregeling klachtbehandeling en de Nationale
 ombudsman. Zie `src/lib/modelbrieven.ts`.
 
+Fase 4b klaar: /uitspraken met een doorzoekbare selectie van 15 echte
+uitspraken over politieoptreden (strafzaken tegen agenten, beklag artikel
+12 Sv, civiele aansprakelijkheidszaken). Alle gegevens (ECLI, instantie,
+datum, zaaknummer) zijn gehaald uit de officiële Open Data van
+rechtspraak.nl; de samenvattingen zijn daarop gebaseerd. De lijst staat in
+`src/lib/uitspraken.ts` en groeit. Nieuwe uitspraak toevoegen: tekst
+ophalen via `https://data.rechtspraak.nl/uitspraken/content?id=<ECLI>`,
+samenvatting maken, item toevoegen.
+
 Let op: de meldingen staan in een eigen Firestore-database met id `default`
 (naast `(default)`), omdat de standaarddatabase op dit gratis project om
 billing vraagt. De web-config staat in `src/lib/firebase.ts`; dat is geen
