@@ -1,4 +1,4 @@
-import { NIEUWS_ARCHIEF, type NieuwsBericht } from "@/lib/nieuws-archief";
+import { NIEUWS_ARCHIEF, type NieuwsSoort } from "@/lib/nieuws-archief";
 
 export const maxDuration = 60;
 
@@ -25,6 +25,18 @@ export interface Bericht {
   url: string;
   datum: string;
   live: boolean;
+  soort: NieuwsSoort;
+}
+
+/* Live berichten grofweg indelen op onderwerp. */
+function soortVoorLive(titel: string): NieuwsSoort {
+  if (/overleed|overleden|doodgeschoten|dodelijk|dood/i.test(titel)) {
+    return "overleden";
+  }
+  if (/(politie|agent)[^.]{0,60}(vervolgd|veroordeeld)|vervolging/i.test(titel)) {
+    return "agent-vervolgd";
+  }
+  return "overig";
 }
 
 function ontstrip(tekst: string) {
@@ -62,7 +74,14 @@ function parseFeed(xml: string, bron: string): Bericht[] {
         datum = parsed.toISOString().slice(0, 10);
       }
     }
-    berichten.push({ titel, bron, url, datum, live: true });
+    berichten.push({
+      titel,
+      bron,
+      url,
+      datum,
+      live: true,
+      soort: soortVoorLive(titel),
+    });
   }
   return berichten;
 }

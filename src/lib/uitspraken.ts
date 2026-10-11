@@ -63,6 +63,17 @@ export function rechtspraakUrl(ecli: string): string {
 */
 const CURATED: Uitspraak[] = [
   {
+    ecli: "ECLI:NL:GHARL:2025:6354",
+    titel: "Agent in hoger beroep veroordeeld voor vuistslag bij aanhouding",
+    instantie: "Gerechtshof Arnhem-Leeuwarden (Blauwe Kamer)",
+    datum: "2025-10-09",
+    zaaknummer: "21-003684-24",
+    categorie: "agent-vervolgd",
+    uitkomst: "Veroordeling (taakstraf)",
+    samenvatting:
+      "Het hof achtte bewezen dat een politieagent tijdens een aanhouding een man met kracht met zijn gebalde vuist tegen zijn gezicht sloeg. De agent verklaarde dat het een verkeerd uitgevoerde afleidingstechniek (atemi) was, maar dat vond het hof niet aannemelijk: getuigen zagen een bewuste vuistslag. Dit handelen was volgens het hof evident niet conform de geweldsinstructie en de Politiewet, en kan het vertrouwen van burgers in de politie aantasten. Straf: taakstraf van 60 uur, waarvan 30 uur voorwaardelijk met een proeftijd van twee jaar.",
+  },
+  {
     ecli: "ECLI:NL:GHAMS:2023:984",
     titel: "Beklag over wapenstokgebruik bij een vechtpartij afgewezen",
     instantie: "Gerechtshof Amsterdam",

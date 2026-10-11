@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
+import { SOORT_LABEL, type NieuwsSoort } from "@/lib/nieuws-archief";
 
 interface Bericht {
   titel: string;
@@ -9,6 +10,7 @@ interface Bericht {
   url: string;
   datum: string;
   live: boolean;
+  soort: NieuwsSoort;
 }
 
 const datumFormatter = new Intl.DateTimeFormat("nl-NL", {
@@ -28,6 +30,7 @@ export function NieuwsLijst() {
   const [berichten, setBerichten] = useState<Bericht[] | null>(null);
   const [mislukt, setMislukt] = useState(false);
   const [zoek, setZoek] = useState("");
+  const [soort, setSoort] = useState<NieuwsSoort | "alles">("alles");
 
   useEffect(() => {
     let actief = true;
@@ -47,11 +50,12 @@ export function NieuwsLijst() {
   const resultaten = useMemo(() => {
     if (!berichten) return null;
     const term = zoek.trim().toLowerCase();
-    if (!term) return berichten;
-    return berichten.filter((bericht) =>
-      `${bericht.titel} ${bericht.bron}`.toLowerCase().includes(term)
-    );
-  }, [berichten, zoek]);
+    return berichten.filter((bericht) => {
+      if (soort !== "alles" && bericht.soort !== soort) return false;
+      if (!term) return true;
+      return `${bericht.titel} ${bericht.bron}`.toLowerCase().includes(term);
+    });
+  }, [berichten, zoek, soort]);
 
   return (
     <div>
@@ -67,6 +71,27 @@ export function NieuwsLijst() {
           value={zoek}
           onChange={(event) => setZoek(event.target.value)}
         />
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        {(["alles", "overleden", "agent-vervolgd", "burger-vervolgd"] as const).map(
+          (optie) => (
+            <button
+              key={optie}
+              type="button"
+              onClick={() => setSoort(optie)}
+              aria-pressed={soort === optie}
+              className={cn(
+                "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+                soort === optie
+                  ? "border-accent bg-accent-soft text-foreground"
+                  : "border-line-strong text-muted hover:border-muted-2 hover:text-foreground"
+              )}
+            >
+              {optie === "alles" ? "Alles" : SOORT_LABEL[optie]}
+            </button>
+          )
+        )}
       </div>
 
       {mislukt ? (
@@ -128,6 +153,11 @@ export function NieuwsLijst() {
                     <span className="font-mono text-xs text-muted-2">
                       {formatDatum(bericht.datum)}
                     </span>
+                    {bericht.soort !== "overig" ? (
+                      <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-2">
+                        {SOORT_LABEL[bericht.soort]}
+                      </span>
+                    ) : null}
                     {bericht.live ? (
                       <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.1em] text-accent">
                         <span

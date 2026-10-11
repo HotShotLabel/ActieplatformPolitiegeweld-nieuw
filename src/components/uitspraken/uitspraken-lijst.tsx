@@ -15,7 +15,11 @@ import {
 const CATEGORIEEN = Object.keys(CATEGORIE_LABEL) as UitspraakCategorie[];
 const RICHTINGEN: UitspraakRichting[] = ["politie-verdachte", "burger-verdachte"];
 
-const positieveUitkomsten = ["Politie aansprakelijk", "Geen straf opgelegd"];
+const positieveUitkomsten = [
+  "Politie aansprakelijk",
+  "Geen straf opgelegd",
+  "Veroordeling (taakstraf)",
+];
 
 const datumFormatter = new Intl.DateTimeFormat("nl-NL", {
   day: "numeric",
