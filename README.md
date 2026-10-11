@@ -40,6 +40,14 @@ API-route zit in `src/app/api/chat/route.ts`, met een fallback-keten van
 modellen (eerst `gemini-flash-latest`, dan lite-modellen) en een zachte
 limiet van 30 vragen per uur per bezoeker.
 
+Fase 4a klaar: /juridisch met vijf routes (klacht politie, Nationale
+ombudsman, artikel 12 Sv, Woo, schadevergoeding) en een generator die
+modelbrieven in de browser opstelt (kopiëren of downloaden, niets wordt
+opgeslagen). De route-uitleg is geverifieerd tegen primaire bronnen:
+Wetboek van Strafvordering (art. 12-12l), Wet open overheid (art. 4.1 en
+4.4), politie.nl/Uitvoeringsregeling klachtbehandeling en de Nationale
+ombudsman. Zie `src/lib/modelbrieven.ts`.
+
 Let op: de meldingen staan in een eigen Firestore-database met id `default`
 (naast `(default)`), omdat de standaarddatabase op dit gratis project om
 billing vraagt. De web-config staat in `src/lib/firebase.ts`; dat is geen
