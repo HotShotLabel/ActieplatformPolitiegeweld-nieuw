@@ -5,20 +5,11 @@ import { useEffect, useRef, useState } from "react";
 import { Map as MlMap, Marker, Popup, setWorkerUrl } from "maplibre-gl";
 import {
   createElement as lucideElement,
-  Flower2 as Flower2Knoop,
-  Gavel as GavelKnoop,
-  Landmark as LandmarkKnoop,
-  Shield as ShieldKnoop,
-  TriangleAlert as DriehoekKnoop,
+  Gavel,
+  Landmark,
+  TriangleAlert,
   type IconNode,
 } from "lucide";
-import {
-  Flower2 as Flower2Icoon,
-  Gavel as GavelIcoon,
-  Landmark as LandmarkIcoon,
-  Shield as ShieldIcoon,
-  TriangleAlert as DriehoekIcoon,
-} from "lucide-react";
 import { luisterNaarKaartpunten, type KaartPunt } from "@/lib/kaartpunten";
 import { SOORT_LABEL } from "@/lib/meldingen";
 import { CAD_ZAKEN, OPENBARE_ZAKEN } from "@/lib/openbare-zaken";
@@ -42,8 +33,68 @@ interface Voorzieningen {
   rechtbank: Voorziening[];
 }
 
+/*
+  Iconen.
+  - Politieauto: het gevulde politieauto-icoon uit Phosphor Icons (MIT),
+    goed leesbaar op klein formaat.
+  - Graf: een eenvoudige grafsteen (zelf getekend, bewust ingetogen en
+    neutraal, geen religieuze symbolen).
+  - De rest komt uit Lucide (MIT).
+*/
+interface Icoon {
+  viewBox: string;
+  sw: number;
+  binnen: (kleur: string) => string;
+}
+
+const POLITIE_AUTO_D =
+  "M240,104H228.64L201.25,56.06A16,16,0,0,0,187.36,48H68.64a16,16,0,0,0-13.89,8.06L27.36,104H16a8,8,0,0,0,0,16h8v80a16,16,0,0,0,16,16H64a16,16,0,0,0,16-16V184h96v16a16,16,0,0,0,16,16h24a16,16,0,0,0,16-16V120h8a8,8,0,0,0,0-16ZM68.64,64H187.36l22.85,40H45.79ZM64,200H40V184H64Zm128,0V184h24v16Zm24-32H40V120H216ZM56,144a8,8,0,0,1,8-8H80a8,8,0,0,1,0,16H64A8,8,0,0,1,56,144Zm112,0a8,8,0,0,1,8-8h16a8,8,0,0,1,0,16H176A8,8,0,0,1,168,144ZM96,24a8,8,0,0,1,8-8h48a8,8,0,0,1,0,16H104A8,8,0,0,1,96,24Z";
+
+const GRAF_STEEN_D = "M88 216V124a40 40 0 0 1 80 0v92";
+const GRAF_GROND_D = "M56 216h144";
+const GRAF_LIJN_D = "M108 152h44";
+
+function lucideIcoon(knoop: IconNode, sw: number): Icoon {
+  return {
+    viewBox: "0 0 24 24",
+    sw,
+    binnen: () => lucideElement(knoop).innerHTML,
+  };
+}
+
+const ICOON_HAMER = lucideIcoon(Gavel, 2.2);
+const ICOON_ZUILEN = lucideIcoon(Landmark, 2.2);
+const ICOON_DRIEHOEK = lucideIcoon(TriangleAlert, 2.4);
+
+const ICOON_POLITIEAUTO: Icoon = {
+  viewBox: "0 0 256 256",
+  sw: 0,
+  binnen: (kleur) => `<path fill="${kleur}" stroke="none" d="${POLITIE_AUTO_D}"/>`,
+};
+
+const ICOON_GRAF: Icoon = {
+  viewBox: "0 0 256 256",
+  sw: 20,
+  binnen: () =>
+    `<path d="${GRAF_STEEN_D}"/><path d="${GRAF_GROND_D}"/><path d="${GRAF_LIJN_D}"/>`,
+};
+
+function tekenIcoon(
+  icoon: Icoon,
+  kleur: string,
+  maat: number,
+  plek?: { x: number; y: number }
+) {
+  const positie = plek ? ` x="${plek.x}" y="${plek.y}"` : "";
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg"${positie} width="${maat}" height="${maat}" ` +
+    `viewBox="${icoon.viewBox}" fill="none" stroke="${kleur}" stroke-width="${icoon.sw}" ` +
+    `stroke-linecap="round" stroke-linejoin="round">${icoon.binnen(kleur)}</svg>`
+  );
+}
+
 function maakBadgeElement(
-  knoop: IconNode,
+  icoon: Icoon,
   badgeKleur: string,
   randKleur: string,
   icoonKleur: string,
@@ -62,41 +113,35 @@ function maakBadgeElement(
     "box-shadow:0 2px 8px rgba(0,0,0,.5)",
     "cursor:pointer",
   ].join(";");
-  const svg = lucideElement(knoop);
-  const maat = Math.round(grootte * 0.58);
-  svg.setAttribute("width", String(maat));
-  svg.setAttribute("height", String(maat));
-  svg.style.color = icoonKleur;
-  badge.appendChild(svg);
+  badge.innerHTML = tekenIcoon(icoon, icoonKleur, Math.round(grootte * 0.6));
   return badge;
 }
 
-function maakIcoonMarkup(
-  knoop: IconNode,
+function badgeSvgMarkup(
+  icoon: Icoon,
   badgeKleur: string,
   randKleur: string,
   icoonKleur: string
 ) {
-  const svg = lucideElement(knoop);
+  const maat = 28;
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">` +
     `<circle cx="24" cy="24" r="20" fill="${badgeKleur}" stroke="${randKleur}" stroke-width="3"/>` +
-    `<g transform="translate(12,12)" fill="none" stroke="${icoonKleur}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:${icoonKleur}">` +
-    svg.innerHTML +
-    `</g></svg>`
+    tekenIcoon(icoon, icoonKleur, maat, { x: (48 - maat) / 2, y: (48 - maat) / 2 }) +
+    `</svg>`
   );
 }
 
 async function voegIcoonAfbeeldingToe(
   map: MlMap,
   id: string,
-  knoop: IconNode,
+  icoon: Icoon,
   badgeKleur: string,
   randKleur: string,
   icoonKleur: string
 ) {
   if (map.hasImage(id)) return;
-  const markup = maakIcoonMarkup(knoop, badgeKleur, randKleur, icoonKleur);
+  const markup = badgeSvgMarkup(icoon, badgeKleur, randKleur, icoonKleur);
   const blob = new Blob([markup], { type: "image/svg+xml" });
   const url = URL.createObjectURL(blob);
   try {
@@ -110,6 +155,29 @@ async function voegIcoonAfbeeldingToe(
   } finally {
     URL.revokeObjectURL(url);
   }
+}
+
+function IcoonChipBadge({
+  icoon,
+  badgeKleur,
+  randKleur,
+  icoonKleur,
+}: {
+  icoon: Icoon;
+  badgeKleur: string;
+  randKleur: string;
+  icoonKleur: string;
+}) {
+  return (
+    <span
+      aria-hidden
+      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2"
+      style={{ background: badgeKleur, borderColor: randKleur }}
+      dangerouslySetInnerHTML={{
+        __html: tekenIcoon(icoon, icoonKleur, 12),
+      }}
+    />
+  );
 }
 
 export function MeldingenKaart() {
@@ -186,8 +254,22 @@ export function MeldingenKaart() {
       voorzieningenBezig = true;
       (async () => {
         try {
-          await voegIcoonAfbeeldingToe(map, "icoon-politie", ShieldKnoop, "#e8eef5", "#7d97b3", "#2f4b66");
-          await voegIcoonAfbeeldingToe(map, "icoon-rechtbank", LandmarkKnoop, "#f7f1e4", "#c9a86a", "#8a6d35");
+          await voegIcoonAfbeeldingToe(
+            map,
+            "icoon-politie",
+            ICOON_POLITIEAUTO,
+            "#e8eef5",
+            "#7d97b3",
+            "#2f4b66"
+          );
+          await voegIcoonAfbeeldingToe(
+            map,
+            "icoon-rechtbank",
+            ICOON_ZUILEN,
+            "#f7f1e4",
+            "#c9a86a",
+            "#8a6d35"
+          );
           if (mapRef.current !== map) return;
           if (!map.getSource("politie")) {
             map.addSource("politie", {
@@ -292,7 +374,9 @@ export function MeldingenKaart() {
 
     // Laag: rechtspraak (openbare uitspraken, per plaats van het incident).
     markersRechtspraak.current = OPENBARE_ZAKEN.map((zaak) =>
-      new Marker({ element: maakBadgeElement(GavelKnoop, "#f4f5f6", "#07090c", "#07090c") })
+      new Marker({
+        element: maakBadgeElement(ICOON_HAMER, "#f4f5f6", "#07090c", "#07090c"),
+      })
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
@@ -309,7 +393,7 @@ export function MeldingenKaart() {
     // (openbare database Controle Alt Delete; bewust zonder namen).
     markersOverleden.current = CAD_ZAKEN.map((zaak) =>
       new Marker({
-        element: maakBadgeElement(Flower2Knoop, "#f4f5f6", "#e5484d", "#e5484d", 28),
+        element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28),
       })
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
@@ -332,7 +416,7 @@ export function MeldingenKaart() {
         markersMeldingen.current.forEach((marker) => marker.remove());
         markersMeldingen.current = nieuwePunten.map((punt) => {
           const marker = new Marker({
-            element: maakBadgeElement(DriehoekKnoop, "#d23a3f", "#07090c", "#ffffff", 28),
+            element: maakBadgeElement(ICOON_DRIEHOEK, "#d23a3f", "#07090c", "#ffffff", 28),
           })
             .setLngLat([punt.lng, punt.lat])
             .setPopup(
@@ -432,24 +516,6 @@ export function MeldingenKaart() {
         : "border-line-strong text-muted-2 hover:text-muted"
     );
 
-  const icoonBadge = (
-    icoon: React.ComponentType<{ size?: number; strokeWidth?: number; color?: string }>,
-    badgeKleur: string,
-    randKleur: string,
-    icoonKleur: string
-  ) => {
-    const Icoon = icoon;
-    return (
-      <span
-        aria-hidden
-        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2"
-        style={{ background: badgeKleur, borderColor: randKleur }}
-      >
-        <Icoon size={11} strokeWidth={2.5} color={icoonKleur} />
-      </span>
-    );
-  };
-
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
@@ -464,23 +530,23 @@ export function MeldingenKaart() {
               : "border-line-strong text-muted-2 hover:text-muted"
           )}
         >
-          {icoonBadge(DriehoekIcoon, "#d23a3f", "#07090c", "#ffffff")}
+          <IcoonChipBadge icoon={ICOON_DRIEHOEK} badgeKleur="#d23a3f" randKleur="#07090c" icoonKleur="#ffffff" />
           Meldingen ({punten === null && !mislukt ? "…" : aantalMeldingen})
         </button>
         <button type="button" onClick={() => setToonRechtspraak((w) => !w)} aria-pressed={toonRechtspraak} className={chip(toonRechtspraak)}>
-          {icoonBadge(GavelIcoon, "#f4f5f6", "#07090c", "#07090c")}
+          <IcoonChipBadge icoon={ICOON_HAMER} badgeKleur="#f4f5f6" randKleur="#07090c" icoonKleur="#07090c" />
           Rechtspraak ({OPENBARE_ZAKEN.length})
         </button>
         <button type="button" onClick={() => setToonOverleden((w) => !w)} aria-pressed={toonOverleden} className={chip(toonOverleden)}>
-          {icoonBadge(Flower2Icoon, "#f4f5f6", "#e5484d", "#e5484d")}
+          <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#e5484d" icoonKleur="#c93a3f" />
           Overleden ({CAD_ZAKEN.length})
         </button>
         <button type="button" onClick={() => setToonPolitie((w) => !w)} aria-pressed={toonPolitie} className={chip(toonPolitie)}>
-          {icoonBadge(ShieldIcoon, "#e8eef5", "#7d97b3", "#2f4b66")}
+          <IcoonChipBadge icoon={ICOON_POLITIEAUTO} badgeKleur="#e8eef5" randKleur="#7d97b3" icoonKleur="#2f4b66" />
           Politiebureaus ({aantallen ? aantallen.politie : "…"})
         </button>
         <button type="button" onClick={() => setToonRechtbank((w) => !w)} aria-pressed={toonRechtbank} className={chip(toonRechtbank)}>
-          {icoonBadge(LandmarkIcoon, "#f7f1e4", "#c9a86a", "#8a6d35")}
+          <IcoonChipBadge icoon={ICOON_ZUILEN} badgeKleur="#f7f1e4" randKleur="#c9a86a" icoonKleur="#8a6d35" />
           Rechtbanken ({aantallen ? aantallen.rechtbank : "…"})
         </button>
         <span className="mx-1 hidden h-5 w-px bg-line-strong sm:block" aria-hidden />
@@ -538,8 +604,8 @@ export function MeldingenKaart() {
       </div>
 
       <p className="mt-3 text-xs leading-relaxed text-muted-2">
-        Elk punt heeft een eigen icoon: schild = politiebureau, zuilen =
-        rechtbank, hamer = rechterlijke uitspraak, bloem = overleden na
+        Elk punt heeft een eigen icoon: politieauto = politiebureau, zuilen =
+        rechtbank, hamer = rechterlijke uitspraak, grafsteen = overleden na
         politieoptreden, waarschuwingsdriehoek = melding van geweld. Kaart:
         OpenFreeMap (OpenStreetMap-gegevens), zonder API-sleutel. Openbare
         zaken op stadsniveau; meldingen afgerond op ongeveer een kilometer.
