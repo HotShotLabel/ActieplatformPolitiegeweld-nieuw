@@ -144,7 +144,7 @@ export function MeldingenKaart() {
 
     let foutTeller = 0;
     let stijlgewisseld = false;
-    let voorzieningenBezig: Promise<void> | null = null;
+    let voorzieningenBezig = false;
 
     const map = new MlMap({
       container: containerRef.current,
@@ -177,82 +177,84 @@ export function MeldingenKaart() {
       zet("rechtbank-iconen", toonStand.current.rechtbank);
     }
 
-    function voegVoorzieningenToe(): Promise<void> {
-      if (!voorzieningenBezig) {
-        voorzieningenBezig = (async () => {
-          try {
-            const data = voorzieningen.current;
-            if (!data) return;
-            await voegIcoonAfbeeldingToe(map, "icoon-politie", ShieldKnoop, "#e8eef5", "#7d97b3", "#2f4b66");
-            await voegIcoonAfbeeldingToe(map, "icoon-rechtbank", LandmarkKnoop, "#f7f1e4", "#c9a86a", "#8a6d35");
-            if (mapRef.current !== map) return;
-            if (!map.getSource("politie")) {
-              map.addSource("politie", {
-                type: "geojson",
-                data: {
-                  type: "FeatureCollection",
-                  features: data.politie.map((item) => ({
-                    type: "Feature" as const,
-                    geometry: { type: "Point" as const, coordinates: [item.lng, item.lat] },
-                    properties: { naam: item.naam },
-                  })),
-                },
-              });
-              map.addLayer({
-                id: "politie-iconen",
-                type: "symbol",
-                source: "politie",
-                layout: {
-                  "icon-image": "icoon-politie",
-                  "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.24, 10, 0.3, 14, 0.5],
-                  "icon-allow-overlap": true,
-                  "icon-ignore-placement": true,
-                },
-              });
-            }
-            if (!map.getSource("rechtbank")) {
-              map.addSource("rechtbank", {
-                type: "geojson",
-                data: {
-                  type: "FeatureCollection",
-                  features: data.rechtbank.map((item) => ({
-                    type: "Feature" as const,
-                    geometry: { type: "Point" as const, coordinates: [item.lng, item.lat] },
-                    properties: { naam: item.naam },
-                  })),
-                },
-              });
-              map.addLayer({
-                id: "rechtbank-iconen",
-                type: "symbol",
-                source: "rechtbank",
-                layout: {
-                  "icon-image": "icoon-rechtbank",
-                  "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.26, 10, 0.34, 14, 0.55],
-                  "icon-allow-overlap": true,
-                  "icon-ignore-placement": true,
-                },
-              });
-            }
-            pasZichtbaarheidToe();
-          } finally {
-            voorzieningenBezig = null;
+    function voegVoorzieningenToe() {
+      const data = voorzieningen.current;
+      if (!data || voorzieningenBezig) return;
+      if (!map.isStyleLoaded()) return; // style.load/idle proberen het opnieuw
+      if (map.getSource("politie") && map.getSource("rechtbank")) return;
+
+      voorzieningenBezig = true;
+      (async () => {
+        try {
+          await voegIcoonAfbeeldingToe(map, "icoon-politie", ShieldKnoop, "#e8eef5", "#7d97b3", "#2f4b66");
+          await voegIcoonAfbeeldingToe(map, "icoon-rechtbank", LandmarkKnoop, "#f7f1e4", "#c9a86a", "#8a6d35");
+          if (mapRef.current !== map) return;
+          if (!map.getSource("politie")) {
+            map.addSource("politie", {
+              type: "geojson",
+              data: {
+                type: "FeatureCollection",
+                features: data.politie.map((item) => ({
+                  type: "Feature" as const,
+                  geometry: { type: "Point" as const, coordinates: [item.lng, item.lat] },
+                  properties: { naam: item.naam },
+                })),
+              },
+            });
+            map.addLayer({
+              id: "politie-iconen",
+              type: "symbol",
+              source: "politie",
+              layout: {
+                "icon-image": "icoon-politie",
+                "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.24, 10, 0.3, 14, 0.5],
+                "icon-allow-overlap": true,
+                "icon-ignore-placement": true,
+              },
+            });
           }
-        })();
-      }
-      return voorzieningenBezig;
+          if (!map.getSource("rechtbank")) {
+            map.addSource("rechtbank", {
+              type: "geojson",
+              data: {
+                type: "FeatureCollection",
+                features: data.rechtbank.map((item) => ({
+                  type: "Feature" as const,
+                  geometry: { type: "Point" as const, coordinates: [item.lng, item.lat] },
+                  properties: { naam: item.naam },
+                })),
+              },
+            });
+            map.addLayer({
+              id: "rechtbank-iconen",
+              type: "symbol",
+              source: "rechtbank",
+              layout: {
+                "icon-image": "icoon-rechtbank",
+                "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.26, 10, 0.34, 14, 0.55],
+                "icon-allow-overlap": true,
+                "icon-ignore-placement": true,
+              },
+            });
+          }
+          pasZichtbaarheidToe();
+        } catch (fout) {
+          console.error("Voorzieningenlaag faalde, opnieuw proberen:", fout);
+        } finally {
+          voorzieningenBezig = false;
+        }
+      })();
     }
 
-    map.on("style.load", () => {
-      void voegVoorzieningenToe();
-    });
+    map.on("style.load", voegVoorzieningenToe);
+    map.on("idle", voegVoorzieningenToe);
 
     fetch("/voorzieningen.json")
       .then((antwoord) => antwoord.json())
       .then((data: Voorzieningen) => {
         voorzieningen.current = data;
         setAantallen({ politie: data.politie.length, rechtbank: data.rechtbank.length });
-        void voegVoorzieningenToe();
+        voegVoorzieningenToe();
       })
       .catch(() => {
         // geen voorzieningenlaag; kaart blijft werken
