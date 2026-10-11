@@ -1,47 +1,22 @@
 rules_version = '2';
 
 // Actieplatform Politiegeweld
-// meldingen: volledige melding, alleen schrijven, nooit publiek lezen.
-// kaartpunten: afgerond punt (ca. 1 km), publiek leesbaar, alleen toevoegen.
+// Sinds de server-side schrijfroute (api/melden met de Admin SDK) schrijft
+// de client niets meer rechtstreeks naar de database:
+// - meldingen: volledig afgesloten (lezen en schrijven alleen via de server).
+// - kaartpunten: publiek leesbaar voor de kaart, schrijven alleen via de
+//   server.
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function geldigeMelding() {
-      let d = request.resource.data;
-      return d.keys().hasOnly(['soort', 'datum', 'plaats', 'beschrijving', 'opKaart', 'contactEmail', 'createdAt'])
-        && d.keys().hasAll(['soort', 'datum', 'plaats', 'beschrijving', 'opKaart', 'contactEmail', 'createdAt'])
-        && d.soort is string
-        && d.soort in ['aanhouding', 'demonstratie', 'cel', 'profileren', 'anders']
-        && d.datum is string && d.datum.size() <= 10
-        && d.plaats is string && d.plaats.size() <= 120
-        && d.beschrijving is string && d.beschrijving.size() >= 10 && d.beschrijving.size() <= 4000
-        && d.opKaart is bool
-        && d.contactEmail is string && d.contactEmail.size() <= 254
-        && d.createdAt == request.time;
-    }
-
     match /meldingen/{document} {
-      allow create: if geldigeMelding();
-      allow read, update, delete: if false;
-    }
-
-    function geldigPunt() {
-      let d = request.resource.data;
-      return d.keys().hasOnly(['lat', 'lng', 'soort', 'maand', 'createdAt'])
-        && d.keys().hasAll(['lat', 'lng', 'soort', 'maand', 'createdAt'])
-        && d.lat is number && d.lat >= 50.0 && d.lat <= 54.0
-        && d.lng is number && d.lng >= 3.0 && d.lng <= 7.5
-        && d.soort is string
-        && d.soort in ['aanhouding', 'demonstratie', 'cel', 'profileren', 'anders']
-        && d.maand is string && d.maand.size() == 7
-        && d.createdAt == request.time;
+      allow read, write: if false;
     }
 
     match /kaartpunten/{document} {
-      allow create: if geldigPunt();
       allow read: if true;
-      allow update, delete: if false;
+      allow write: if false;
     }
   }
 }

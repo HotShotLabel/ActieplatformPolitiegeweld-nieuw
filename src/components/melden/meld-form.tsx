@@ -89,12 +89,15 @@ export function MeldForm() {
         contactEmail: contactWijze === "email" ? email : "",
         lat: positie?.lat,
         lng: positie?.lng,
+        website: honeypot,
       });
       setStatus("gelukt");
-    } catch {
+    } catch (foutje) {
       setStatus("fout");
       setFoutmelding(
-        "Er ging iets mis bij het versturen. Probeer het nog een keer, of mail ons op label@hot-shot.com."
+        foutje instanceof Error && foutje.message
+          ? foutje.message
+          : "Er ging iets mis bij het versturen. Probeer het nog een keer, of mail ons op label@hot-shot.com."
       );
     }
   }

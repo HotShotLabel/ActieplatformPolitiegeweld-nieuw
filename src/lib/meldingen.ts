@@ -1,11 +1,3 @@
-import {
-  collection,
-  doc,
-  serverTimestamp,
-  writeBatch,
-} from "firebase/firestore";
-import { getDb } from "@/lib/firebase";
-
 export const SOORTEN = [
   { waarde: "aanhouding", label: "Tijdens een aanhouding" },
   { waarde: "demonstratie", label: "Tijdens een demonstratie" },
@@ -29,39 +21,29 @@ export interface MeldingInput {
   contactEmail: string;
   lat?: number;
   lng?: number;
-}
-
-export function rondAfOpKilometer(coordinaat: number): number {
-  return Math.round(coordinaat * 100) / 100;
+  website?: string;
 }
 
 export async function verstuurMelding(input: MeldingInput): Promise<string> {
-  const db = getDb();
-  const batch = writeBatch(db);
-
-  const meldingRef = doc(collection(db, "meldingen"));
-  batch.set(meldingRef, {
-    soort: input.soort,
-    datum: input.datum,
-    plaats: input.plaats.trim(),
-    beschrijving: input.beschrijving.trim(),
-    opKaart: input.opKaart,
-    contactEmail: input.contactEmail.trim(),
-    createdAt: serverTimestamp(),
+  const antwoord = await fetch("/api/melden", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
   });
 
-  if (input.opKaart && input.lat !== undefined && input.lng !== undefined) {
-    const puntRef = doc(collection(db, "kaartpunten"));
-    const maand = (input.datum || new Date().toISOString().slice(0, 10)).slice(0, 7);
-    batch.set(puntRef, {
-      lat: rondAfOpKilometer(input.lat),
-      lng: rondAfOpKilometer(input.lng),
-      soort: input.soort,
-      maand,
-      createdAt: serverTimestamp(),
-    });
+  let data: { ok?: boolean; id?: string; fout?: string } = {};
+  try {
+    data = await antwoord.json();
+  } catch {
+    // geen json
   }
 
-  await batch.commit();
-  return meldingRef.id;
+  if (!antwoord.ok || !data.ok) {
+    throw new Error(
+      data.fout ??
+        "Er ging iets mis bij het versturen. Probeer het nog een keer."
+    );
+  }
+
+  return data.id ?? "";
 }
