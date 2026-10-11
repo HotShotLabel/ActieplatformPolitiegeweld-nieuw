@@ -18,8 +18,11 @@ export default function NieuwsPage() {
         <p className="mt-6 max-w-[66ch] text-lg leading-relaxed text-muted">
           Berichten uit de Nederlandse media en van officiële instanties over
           politiegeweld en politieoptreden. Nieuwe berichten komen automatisch
-          binnen via de eigen feeds van NOS, NU.nl, AD en De Telegraaf; daar
-          filteren we op onderwerpen die hiermee te maken hebben.
+          binnen via de eigen feeds van onder meer NOS, NU.nl, AD, De
+          Telegraaf en de regionale omroepen (RTV Noord, RTV Drenthe, Omrop
+          Fryslân, RTV Oost, Omroep Gelderland, RTV Utrecht, Omroep West,
+          Rijnmond, Omroep Brabant, Omroep Zeeland, L1 en Blik op Nieuws);
+          daar filteren we op onderwerpen die hiermee te maken hebben.
         </p>
         <p className="mt-4 max-w-[66ch] text-sm leading-relaxed text-muted-2">
           Elke titel linkt naar het originele bericht; wij publiceren zelf geen

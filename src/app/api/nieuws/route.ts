@@ -5,7 +5,7 @@ export const maxDuration = 60;
 const UA =
   "ActieplatformPolitiegeweld/1.0 (+https://actieplatform-politiegeweld-nieuw.vercel.app)";
 
-/* Live feeds van Nederlandse nieuwsmedia (eigen RSS-feeds). */
+/* Live feeds van Nederlandse nieuwsmedia: landelijk én regionaal. */
 const FEEDS = [
   { bron: "NOS", url: "https://feeds.nos.nl/nosnieuwsalgemeen" },
   { bron: "NOS", url: "https://feeds.nos.nl/nosnieuwsbinnenland" },
@@ -13,6 +13,18 @@ const FEEDS = [
   { bron: "NU.nl", url: "https://www.nu.nl/rss/Binnenland" },
   { bron: "AD", url: "https://www.ad.nl/rss.xml" },
   { bron: "De Telegraaf", url: "https://www.telegraaf.nl/rss" },
+  { bron: "RTV Noord", url: "https://www.rtvnoord.nl/rss" },
+  { bron: "RTV Drenthe", url: "https://www.rtvdrenthe.nl/rss/index.xml" },
+  { bron: "Omrop Fryslân", url: "https://www.omropfryslan.nl/rss/nieuws" },
+  { bron: "RTV Oost", url: "https://www.rtvoost.nl/rss" },
+  { bron: "Omroep Gelderland", url: "https://www.gld.nl/rss" },
+  { bron: "RTV Utrecht", url: "https://www.rtvutrecht.nl/rss/nieuws.xml" },
+  { bron: "Omroep West", url: "https://www.omroepwest.nl/rss/nieuws" },
+  { bron: "Rijnmond", url: "https://www.rijnmond.nl/rss/nieuws" },
+  { bron: "Omroep Brabant", url: "https://www.omroepbrabant.nl/rss" },
+  { bron: "Omroep Zeeland", url: "https://www.omroepzeeland.nl/rss/nieuws" },
+  { bron: "L1", url: "https://www.l1.nl/rss/nieuws" },
+  { bron: "Blik op Nieuws", url: "https://www.blikopnieuws.nl/feeds/1841/rss.xml" },
 ];
 
 /* Alleen berichten die echt over politiegeweld of politieoptreden gaan. */
@@ -92,6 +104,7 @@ export async function GET() {
       try {
         const antwoord = await fetch(feed.url, {
           headers: { "User-Agent": UA, Accept: "application/rss+xml, application/xml, text/xml" },
+          signal: AbortSignal.timeout(15_000),
           next: { revalidate: 1800 },
         });
         if (!antwoord.ok) return [];
