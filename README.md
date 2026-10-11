@@ -81,7 +81,10 @@ Op de kaart heeft elke laag een eigen icoon in een badge (zichtbaar op
 donker én licht): schild = politiebureau, zuilen = rechtbank, hamer =
 rechterlijke uitspraak, bloem = overleden na politieoptreden,
 waarschuwingsdriehoek = melding. De politie- en rechtbanklaag komen uit
-`public/voorzieningen.json` (OpenStreetMap via `scripts/voorzieningen-oogst.py`).
+`public/voorzieningen.json`: politiebureaus uit OpenStreetMap, rechtbanken uit
+de officiële locatielijst van rechtspraak.nl (gegeocodeerd via PDOK,
+aangevuld met Hoge Raad en Raad van State). Oogsten:
+`python3 scripts/voorzieningen-oogst.py`.
 
 De kaart draait op MapLibre GL met de gratis stijlen van OpenFreeMap
 (geen API-sleutel, geen account). De worker wordt zelf gehost in

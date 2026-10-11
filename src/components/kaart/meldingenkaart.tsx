@@ -275,7 +275,7 @@ export function MeldingenKaart() {
       voorzienPopup
         .setLngLat(event.lngLat)
         .setHTML(
-          `<strong>${String(feature.properties?.naam ?? "Rechtbank")}</strong><br><span style="opacity:.7">Rechtbank · bron: OpenStreetMap</span>`
+          `<strong>${String(feature.properties?.naam ?? "Rechtbank")}</strong><br><span style="opacity:.7">Rechtbank · bron: rechtspraak.nl</span>`
         )
         .addTo(map);
     });
@@ -536,6 +536,9 @@ export function MeldingenKaart() {
         politieoptreden, waarschuwingsdriehoek = melding van geweld. Kaart:
         OpenFreeMap (OpenStreetMap-gegevens), zonder API-sleutel. Openbare
         zaken op stadsniveau; meldingen afgerond op ongeveer een kilometer.
+        Politiebureaus: OpenStreetMap. Rechtbanken: de officiële locatielijst
+        van rechtspraak.nl (alle locaties), aangevuld met Hoge Raad en Raad
+        van State.
       </p>
 
       {tellingen.size > 0 ? (
