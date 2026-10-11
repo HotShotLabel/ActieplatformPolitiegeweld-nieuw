@@ -198,8 +198,8 @@ export function LiveUitzender() {
       blobRef.current = blob;
       const extensie = opnameTypeRef.current === "video/mp4" ? "mp4" : "webm";
       try {
-        // Tijdelijke uploadlink van onze server; het bestand gaat
-        // rechtstreeks naar de opslag (Cloudflare R2).
+        // Tijdelijke uploadlink van onze server; het bestand gaat als
+        // ondertekend formulier rechtstreeks naar de opslag (Cloudflare R2).
         const start = await fetch("/api/live/upload", {
           method: "POST",
           headers: { "content-type": "application/json" },
@@ -229,18 +229,37 @@ export function LiveUitzender() {
           xhr.send(blob);
         });
 
-        const registratie = await fetch("/api/live/registreer", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            sleutel: String(startData.sleutel),
-            titel: titel || "Live-uitzending",
-            duurSec: duurRef.current,
-            grootteMb: Math.round((blob.size / (1024 * 1024)) * 10) / 10,
-          }),
-        });
-        const antwoord = await registratie.json();
-        if (!registratie.ok) throw new Error(antwoord.fout ?? "registreren mislukte");
+        // Registreren, met herkansingen zolang het bestand nog landt.
+        type RegistratieAntwoord = {
+          ok?: boolean;
+          id?: string;
+          youtubeToken?: string;
+          fout?: string;
+        };
+        let antwoord: RegistratieAntwoord = {};
+        for (let poging = 0; poging < 6; poging += 1) {
+          const registratie = await fetch("/api/live/registreer", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              sleutel: String(startData.sleutel),
+              titel: titel || "Live-uitzending",
+              duurSec: duurRef.current,
+              grootteMb: Math.round((blob.size / (1024 * 1024)) * 10) / 10,
+            }),
+          });
+          antwoord = await registratie.json();
+          if (registratie.ok) break;
+          if (registratie.status !== 409) {
+            throw new Error(antwoord.fout ?? "registreren mislukte");
+          }
+          await new Promise((wacht) => setTimeout(wacht, 2000));
+        }
+        if (!antwoord.ok) {
+          throw new Error(
+            antwoord.fout ?? "De opname kwam niet aan bij de opslag."
+          );
+        }
         opnameIdRef.current = String(antwoord.id ?? "");
         zetFase("online");
 
