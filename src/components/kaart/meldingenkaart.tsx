@@ -210,6 +210,10 @@ export function MeldingenKaart() {
   });
   const [punten, setPunten] = useState<KaartPunt[] | null>(null);
   const [nieuwsGepind, setNieuwsGepind] = useState<number | null>(null);
+  const [laatsteNieuws, setLaatsteNieuws] = useState<
+    { titel: string; bron: string; url: string; datum: string; live: boolean }[]
+  >([]);
+  const [bijgewerktOp, setBijgewerktOp] = useState("");
   const [aantallen, setAantallen] = useState<{ politie: number; rechtbank: number } | null>(null);
   const [mislukt, setMislukt] = useState(false);
   const [kaartfout, setKaartfout] = useState(false);
@@ -478,7 +482,12 @@ export function MeldingenKaart() {
             "#07090c"
           );
           element.classList.add("marker-in");
-          if (bericht.live) element.classList.add("marker-live");
+          const recent =
+            bericht.datum !== "" &&
+            Date.now() - new Date(`${bericht.datum}T12:00:00Z`).getTime() <
+              45 * 86_400_000;
+          if (recent) element.classList.add("marker-brand");
+          if (bericht.live) element.classList.add("marker-brand-live");
           let platform = "";
           try {
             platform = new URL(bericht.url).hostname.replace("www.", "");
@@ -511,6 +520,21 @@ export function MeldingenKaart() {
         if (toegevoegd > 0) {
           setNieuwsGepind(markersNieuws.current.length);
         }
+        setLaatsteNieuws(
+          data.berichten.slice(0, 6).map(({ titel, bron, url, datum, live }) => ({
+            titel,
+            bron,
+            url,
+            datum,
+            live,
+          }))
+        );
+        setBijgewerktOp(
+          new Date().toLocaleTimeString("nl-NL", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        );
       } catch {
         // stil: de kaart blijft werken zonder nieuwlaag
       }
@@ -705,6 +729,68 @@ export function MeldingenKaart() {
           </div>
         ) : null}
       </div>
+
+      <div className="mt-5 rounded-xl border border-line bg-surface p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="flex items-center gap-2 text-sm font-medium">
+            <span
+              aria-hidden
+              className="animate-pulse-dot h-2 w-2 rounded-full bg-accent"
+            />
+            Laatste binnen
+          </p>
+          <p className="font-mono text-xs text-muted-2">
+            {bijgewerktOp ? `bijgewerkt om ${bijgewerktOp}` : "laden…"}
+          </p>
+        </div>
+        <ul className="mt-4 space-y-3">
+          {laatsteNieuws.map((bericht, index) => (
+            <li
+              key={bericht.url}
+              className="feed-in flex flex-wrap items-baseline gap-x-3 gap-y-1"
+              style={{ animationDelay: `${index * 60}ms` }}
+            >
+              <span className="font-mono text-xs text-muted-2">
+                {bericht.datum
+                  ? bericht.datum.split("-").reverse().join("-")
+                  : ""}
+              </span>
+              <a
+                href={bericht.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-foreground underline-offset-4 hover:text-accent hover:underline"
+              >
+                {bericht.titel}
+              </a>
+              <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-2">
+                {bericht.bron}
+              </span>
+              {bericht.live ? (
+                <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.1em] text-accent">
+                  <span
+                    aria-hidden
+                    className="animate-pulse-dot h-1.5 w-1.5 rounded-full bg-accent"
+                  />
+                  nieuw
+                </span>
+              ) : null}
+            </li>
+          ))}
+          {laatsteNieuws.length === 0 ? (
+            <li className="text-sm text-muted-2">Berichten laden…</li>
+          ) : null}
+        </ul>
+      </div>
+
+      <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-2">
+        <span>nieuws {nieuwsGepind ?? "…"}</span>
+        <span>rechtszaken {OPENBARE_ZAKEN.length}</span>
+        <span>overleden {CAD_ZAKEN.length}</span>
+        <span>politiebureaus {aantallen ? aantallen.politie : "…"}</span>
+        <span>rechtbanken {aantallen ? aantallen.rechtbank : "…"}</span>
+        <span>meldingen {punten === null ? "…" : aantalMeldingen}</span>
+      </p>
 
       <p className="mt-3 text-xs leading-relaxed text-muted-2">
         Elk punt heeft een eigen icoon: politieauto = politiebureau, zuilen =

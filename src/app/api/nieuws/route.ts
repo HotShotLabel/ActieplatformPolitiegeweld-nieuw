@@ -48,18 +48,25 @@ export interface Bericht {
 
 const PLAATSNAMEN = Object.keys(NL_PLAATSEN).sort((a, b) => b.length - a.length);
 
-/* Koppel een live bericht aan een plaats als die in de tabel staat. */
+function escapeRegex(tekst: string) {
+  return tekst.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/* Koppel een live bericht aan een plaats als die in de tabel staat.
+   Korte namen alleen op woordgrens (anders matcht "Berg" in elk woord);
+   langere namen mogen ook als deel van een afleiding (Rotterdammer). */
 function plaatsVoorTitel(titel: string): { plaats: string; lat: number; lng: number } | null {
   for (const naam of PLAATSNAMEN) {
-    if (titel.includes(naam)) {
+    let gevonden = false;
+    if (naam.length >= 8) {
+      gevonden = titel.includes(naam);
+    } else {
+      gevonden = new RegExp(`(^|\\W)${escapeRegex(naam)}(\\W|$)`).test(titel);
+    }
+    if (gevonden) {
       const coord = NL_PLAATSEN[naam];
       return { plaats: naam, lat: coord[0], lng: coord[1] };
     }
-  }
-  const treffer = titel.match(/\b(?:in|te) ([A-Z][A-Za-zé'’-]{2,20})/);
-  if (treffer && NL_PLAATSEN[treffer[1]]) {
-    const coord = NL_PLAATSEN[treffer[1]];
-    return { plaats: treffer[1], lat: coord[0], lng: coord[1] };
   }
   return null;
 }
