@@ -4,6 +4,8 @@ const PLATFORM_LINKS = [
   { href: "/melden", label: "Melden" },
   { href: "/kaart", label: "Meldingenkaart" },
   { href: "/uitspraken", label: "Uitspraken" },
+  { href: "/overleden", label: "Overleden na politieoptreden" },
+  { href: "/cijfers", label: "Politiegeweld in cijfers" },
   { href: "/juridisch", label: "Juridische hulp" },
 ];
 

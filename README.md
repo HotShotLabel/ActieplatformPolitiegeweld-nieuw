@@ -48,28 +48,34 @@ Wetboek van Strafvordering (art. 12-12l), Wet open overheid (art. 4.1 en
 4.4), politie.nl/Uitvoeringsregeling klachtbehandeling en de Nationale
 ombudsman. Zie `src/lib/modelbrieven.ts`.
 
-Fase 4b klaar: /uitspraken met een doorzoekbare databank van uitspraken
+Fase 4b klaar: /uitspraken met een doorzoekbare databank van 175 uitspraken
 over politiebetrokkenheid, in beide richtingen: politie als verdachte
 (agent vervolgd, beklag artikel 12 Sv, civiele zaken) en politie als
 slachtoffer (geweld tegen politie). De curated kern (15 uitspraken met
-eigen samenvatting) staat in `src/lib/uitspraken.ts`; de bulk (ca. 160
+eigen samenvatting) staat in `src/lib/uitspraken.ts`; de bulk (160
 uitspraken met de officiële inhoudsindicatie) wordt gegenereerd door
-`scripts/uitspraken-oogst.py` in `src/lib/uitspraken-bulk.ts`. Dat script
-gebruikt de publieke zoek-API van uitspraken.rechtspraak.nl (POST
-`/api/zoek`) plus de Open Data voor de volledige tekst, en deelt daarna
-automatisch in categorieën in op basis van de inhoudsindicatie. Draaien:
-`python3 scripts/uitspraken-oogst.py` (duurt een paar minuten, is
-vriendelijk voor de servers).
+`scripts/uitspraken-oogst.py` in `src/lib/uitspraken-bulk.ts`.
+
+Fase 5 klaar: twee cijferpagina's. /overleden (overleden na politieoptreden:
+Rijksrecherche-onderzoeken per jaar 2016-2025, cijfers van Bureau Beke en
+Controle Alt Delete, achtergronden, de zaak Mitch Henriquez) en /cijfers
+(politiegeweld in cijfers: geweldsincidenten per jaar, geweldsmiddelen
+2025, gerichte schoten; 3D-staafdiagrammen). Alle cijfers uit officiële
+rapportages, met bron per grafiek. De data staat in `src/lib/cijfers.ts`,
+de grafiekcomponent in `src/components/cijfers/balken-3d.tsx`.
 
 Let op: de meldingen staan in een eigen Firestore-database met id `default`
 (naast `(default)`), omdat de standaarddatabase op dit gratis project om
 billing vraagt. De web-config staat in `src/lib/firebase.ts`; dat is geen
-geheim. De beveiliging zit in `firestore.rules`:
+geheim. Meldingen gaan via de server (Admin SDK, `FIREBASE_SERVICE_ACCOUNT`
+als Vercel-env): `src/app/api/melden/route.ts` valideert, begrenst (10 per
+uur per bezoeker) en schrijft; de database-regels staan alles dicht op
+`kaartpunten` lezen na. Beheer van meldingen: /beheer (wachtwoord =
+`ADMIN_TOKEN` uit de env; verwijderen wist ook het gekoppelde kaartpunt).
 
-- `meldingen`: alleen schrijven (met strenge validatie), nooit publiek lezen.
-- `kaartpunten`: publiek leesbaar, alleen toevoegen, alleen afgeronde punten.
-
-Nog te harden: misbruikbescherming op het formulier (bijv. Firebase App Check).
+De uitspraken-bulk verversen: `python3 scripts/uitspraken-oogst.py`
+(gebruikt de publieke zoek-API van uitspraken.rechtspraak.nl en de Open
+Data; duurt een paar minuten).
 
 ## Uitrollen
 

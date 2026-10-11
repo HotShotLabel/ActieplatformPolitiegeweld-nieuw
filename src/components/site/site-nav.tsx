@@ -14,6 +14,8 @@ import { btnPrimary } from "@/lib/ui";
 const LINKS = [
   { href: "/kaart", label: "Kaart" },
   { href: "/uitspraken", label: "Uitspraken" },
+  { href: "/overleden", label: "Overleden" },
+  { href: "/cijfers", label: "Cijfers" },
   { href: "/juridisch", label: "Juridisch" },
   { href: "/chat", label: "Chat" },
   { href: "/meedoen", label: "Meedoen" },
