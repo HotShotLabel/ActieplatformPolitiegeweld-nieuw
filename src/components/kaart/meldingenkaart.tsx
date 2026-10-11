@@ -844,9 +844,9 @@ export function MeldingenKaart() {
         nieuwsbericht (live nieuws pulseert; alleen berichten waarvan de
         plaats bekend is staan op de kaart). Alleen het huidige jaar (2026)
         gloeit. Nieuwe berichten verschijnen
-        automatisch op de kaart. Kaart: OpenFreeMap
-        (OpenStreetMap-gegevens), zonder API-sleutel. Openbare zaken op
-        stadsniveau; meldingen afgerond op ongeveer een kilometer.
+        automatisch op de kaart. Kaartmateriaal: OpenStreetMap-bijdragers.
+        Openbare zaken op stadsniveau; meldingen afgerond op ongeveer een
+        kilometer.
         Politiebureaus: OpenStreetMap. Rechtbanken: de officiële locatielijst
         van rechtspraak.nl (alle locaties), aangevuld met Hoge Raad en Raad
         van State.

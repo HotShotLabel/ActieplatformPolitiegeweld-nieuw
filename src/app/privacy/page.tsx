@@ -16,7 +16,7 @@ const blokken = [
   {
     titel: "Wie kan erbij",
     tekst:
-      "Je verhaal is alleen voor ons. Meldingen staan in een afgesloten database bij Google Firebase, met servers in de Europese Unie. Alleen het platform kan erbij.",
+      "Je verhaal is alleen voor ons. Meldingen staan in een afgesloten database bij een Europese dienstverlener, met servers in de Europese Unie. Alleen het platform kan erbij.",
   },
   {
     titel: "Wat er op de kaart komt",
