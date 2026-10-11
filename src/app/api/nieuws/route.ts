@@ -51,6 +51,10 @@ export interface Bericht {
 
 const PLAATSNAMEN = Object.keys(NL_PLAATSEN).sort((a, b) => b.length - a.length);
 
+/* Namen die bijna altijd verkeerd vallen: het dorp "Nederland" in een
+   landelijk artikel, het dorp "Een" op het lidwoord. */
+const PLAATS_BLOKLIJST = new Set(["Nederland", "Een"]);
+
 function escapeRegex(tekst: string) {
   return tekst.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -60,6 +64,7 @@ function escapeRegex(tekst: string) {
    langere namen mogen ook als deel van een afleiding (Rotterdammer). */
 function plaatsVoorTitel(titel: string): { plaats: string; lat: number; lng: number } | null {
   for (const naam of PLAATSNAMEN) {
+    if (PLAATS_BLOKLIJST.has(naam)) continue;
     let gevonden = false;
     if (naam.length >= 8) {
       gevonden = titel.includes(naam);
@@ -72,6 +77,13 @@ function plaatsVoorTitel(titel: string): { plaats: string; lat: number; lng: num
     }
   }
   return null;
+}
+
+/* Plaats uit de openingszin van een feed-beschrijving. Alleen het begin,
+   zodat menu's en zijbalken geen valse plaatsen opleveren. */
+function plaatsVoorLead(tekst: string): { plaats: string; lat: number; lng: number } | null {
+  if (!tekst) return null;
+  return plaatsVoorTitel(tekst.slice(0, 200));
 }
 
 /* Live berichten grofweg indelen op onderwerp. */
@@ -127,7 +139,7 @@ function parseFeed(xml: string, bron: string): Bericht[] {
       datum,
       live: true,
       soort: soortVoorLive(titel),
-      ...(plaatsVoorTitel(titel) ?? {}),
+      ...(plaatsVoorTitel(titel) ?? plaatsVoorLead(oms) ?? {}),
     });
   }
   return berichten;

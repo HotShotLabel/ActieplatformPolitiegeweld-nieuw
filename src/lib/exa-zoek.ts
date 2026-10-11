@@ -30,6 +30,13 @@ const ZOEKTERMEN = [
   "politie achtervolging dodelijk ongeval",
   "politie aansprakelijk geweld",
   "artikel 12 Sv politie",
+  "gewond geraakt door politieoptreden",
+  "politie schiet gewonde omstander",
+  "mishandeling door politie aangifte",
+  "politiehond bijt slachtoffer",
+  "taser politie slachtoffer letsel",
+  "buitenproportioneel politiegeweld zaak",
+  "schadevergoeding politiegeweld rechter",
 ];
 
 const PER_RONDE = 4;
