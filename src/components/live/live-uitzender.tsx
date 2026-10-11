@@ -14,6 +14,7 @@ import {
 import { upload } from "@vercel/blob/client";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
+import { uploadNaarYouTube } from "@/lib/youtube-client";
 import {
   HartjesLaag,
   LiveChat,
@@ -24,6 +25,15 @@ import {
 
 const MAX_SECONDEN = 60 * 60; // harde grens: 60 minuten
 const WAARSCHUWING_SECONDEN = 55 * 60;
+
+function titelVoorYouTube(basis: string): string {
+  const datum = new Date().toLocaleDateString("nl-NL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return `${(basis || "Live-uitzending").slice(0, 80)} - ${datum}`;
+}
 
 type Fase =
   | "klaar"
@@ -45,6 +55,10 @@ export function LiveUitzender() {
   const [heeftBeeld, setHeeftBeeld] = useState(true);
   const [berichten, setBerichten] = useState<LiveBericht[]>([]);
   const [harten, setHarten] = useState<LiveHart[]>([]);
+  const [youtubeStand, setYoutubeStand] = useState<
+    "" | "bezig" | "klaar" | "mislukt"
+  >("");
+  const [youtubeVideoId, setYoutubeVideoId] = useState("");
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -56,6 +70,7 @@ export function LiveUitzender() {
   const animateRef = useRef<number>(0);
   const timerRef = useRef<number>(0);
   const blobRef = useRef<Blob | null>(null);
+  const opnameIdRef = useRef("");
   const opnameTypeRef = useRef("video/webm");
   const duurRef = useRef(0);
   const startTijdRef = useRef(0);
@@ -213,7 +228,34 @@ export function LiveUitzender() {
         });
         const antwoord = await registratie.json();
         if (!registratie.ok) throw new Error(antwoord.fout ?? "registreren mislukte");
+        opnameIdRef.current = String(antwoord.id ?? "");
         zetFase("online");
+
+        // Nog een stap: privé naar YouTube op het eigen kanaal.
+        if (antwoord.youtubeToken && blob.size > 0) {
+          setYoutubeStand("bezig");
+          try {
+            const videoId = await uploadNaarYouTube(
+              blob,
+              String(antwoord.youtubeToken),
+              titelVoorYouTube(titel)
+            );
+            if (!videoId) throw new Error("geen video-id");
+            await fetch("/api/live/youtube-klaar", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({
+                id: opnameIdRef.current,
+                youtubeId: videoId,
+              }),
+            });
+            setYoutubeVideoId(videoId);
+            setYoutubeStand("klaar");
+          } catch (fout) {
+            console.error("youtube-upload:", fout);
+            setYoutubeStand("mislukt");
+          }
+        }
       } catch (fout) {
         setMelding(
           (fout as Error).message ||
@@ -224,6 +266,40 @@ export function LiveUitzender() {
     },
     [titel, zetFase]
   );
+
+  const naarYouTube = useCallback(async () => {
+    const blob = blobRef.current;
+    const id = opnameIdRef.current;
+    if (!blob || !id) return;
+    setYoutubeStand("bezig");
+    try {
+      const antwoord = await fetch("/api/live/youtube-token", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      const data = await antwoord.json();
+      if (!antwoord.ok || !data.token) {
+        throw new Error(data.fout ?? "geen YouTube-toegang");
+      }
+      const videoId = await uploadNaarYouTube(
+        blob,
+        String(data.token),
+        titelVoorYouTube(titel)
+      );
+      if (!videoId) throw new Error("geen video-id");
+      await fetch("/api/live/youtube-klaar", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id, youtubeId: videoId }),
+      });
+      setYoutubeVideoId(videoId);
+      setYoutubeStand("klaar");
+    } catch (fout) {
+      console.error("youtube-opnieuw:", fout);
+      setYoutubeStand("mislukt");
+    }
+  }, [titel]);
 
   const stop = useCallback(() => {
     if (faseRef.current !== "live") return;
@@ -265,6 +341,8 @@ export function LiveUitzender() {
     setKijkers(0);
     setBerichten([]);
     setHarten([]);
+    setYoutubeStand("");
+    setYoutubeVideoId("");
     chunksRef.current = [];
     zetFase("bezig");
 
@@ -632,6 +710,42 @@ export function LiveUitzender() {
             <p className="mt-4 rounded-lg border border-line bg-white/[0.03] px-4 py-3 text-sm text-muted">
               {melding}
             </p>
+          )}
+
+          {youtubeStand === "bezig" && (
+            <p className="mt-4 rounded-lg border border-line bg-white/[0.03] px-4 py-3 text-sm text-muted">
+              Bezig met een privé-kopie naar YouTube op je eigen kanaal...
+            </p>
+          )}
+          {youtubeStand === "klaar" && (
+            <p className="mt-4 rounded-lg border border-line bg-white/[0.03] px-4 py-3 text-sm text-muted">
+              Privé op YouTube gezet op je kanaal. Alleen jij ziet hem daar.{" "}
+              {youtubeVideoId && (
+                <a
+                  className="underline"
+                  href={`https://studio.youtube.com/video/${youtubeVideoId}/edit`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Open in YouTube Studio
+                </a>
+              )}
+            </p>
+          )}
+          {youtubeStand === "mislukt" && (
+            <div className="mt-4 rounded-lg border border-line bg-white/[0.03] px-4 py-3 text-sm text-muted">
+              <p>
+                De privé-upload naar YouTube lukte niet. De opname staat wel
+                op de site.
+              </p>
+              <button
+                type="button"
+                onClick={naarYouTube}
+                className={cn(btnGhost, "mt-3 h-9 px-4 text-xs")}
+              >
+                Opnieuw naar YouTube
+              </button>
+            </div>
           )}
           <div className="mt-6 flex flex-wrap gap-3">
             <a href="/live" className={btnPrimary}>

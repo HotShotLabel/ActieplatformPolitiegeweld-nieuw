@@ -16,6 +16,7 @@ export interface Uitzending {
   duurSec: number;
   toegevoegdOp: string;
   verlooptOp: string;
+  youtubeUrl: string;
   dagenOver: number;
 }
 
@@ -64,6 +65,7 @@ export async function GET() {
         duurSec: Number(data.duurSec ?? 0),
         toegevoegdOp: String(data.toegevoegdOp ?? ""),
         verlooptOp: String(data.verlooptOp ?? ""),
+        youtubeUrl: String(data.youtubeUrl ?? ""),
         dagenOver: Number.isNaN(verloopt)
           ? BEWAAR_DAGEN
           : Math.max(0, Math.ceil((verloopt - nu) / 86_400_000)),

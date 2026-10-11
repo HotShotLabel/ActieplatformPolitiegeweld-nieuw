@@ -2,6 +2,7 @@
    daarna verwijdert /api/live hem automatisch. */
 
 import { getAdminDb } from "@/lib/firebase-admin";
+import { haalYouTubeToken, youtubeIngesteld } from "@/lib/youtube";
 
 export const maxDuration = 30;
 
@@ -84,7 +85,12 @@ export async function POST(request: Request) {
       verlooptOp: verloopt.toISOString(),
       logo: true,
     });
-    return Response.json({ ok: true, id: document.id });
+
+    // Mag de opname ook naar YouTube? Dan krijgt de uitzender hier het
+    // toegangsbewijs meteen mee (eenmalig, hoort bij deze registratie).
+    const youtubeToken = youtubeIngesteld() ? await haalYouTubeToken() : null;
+
+    return Response.json({ ok: true, id: document.id, youtubeToken });
   } catch (fout) {
     console.error("live-registreer:", fout);
     return Response.json(

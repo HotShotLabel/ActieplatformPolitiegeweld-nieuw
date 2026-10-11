@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
 import { SOORT_LABEL } from "@/lib/meldingen";
+import { uploadNaarYouTube } from "@/lib/youtube-client";
 
 interface BeheerMelding {
   id: string;
@@ -14,6 +15,16 @@ interface BeheerMelding {
   opKaart: boolean;
   contactEmail: string;
   createdAt: string;
+}
+
+interface BeheerUitzending {
+  id: string;
+  titel: string;
+  url: string;
+  grootteMb: number;
+  duurSec: number;
+  dagenOver: number;
+  youtubeUrl: string;
 }
 
 const datumFormatter = new Intl.DateTimeFormat("nl-NL", {
@@ -46,6 +57,9 @@ export function BeheerLijst() {
   } | null>(null);
   const [stopBezig, setStopBezig] = useState(false);
   const [liveMelding, setLiveMelding] = useState("");
+  const [uitzendingen, setUitzendingen] = useState<BeheerUitzending[]>([]);
+  const [opnameBezig, setOpnameBezig] = useState("");
+  const [uitzendingMelding, setUitzendingMelding] = useState("");
 
   const laadLive = useCallback(async () => {
     try {
@@ -57,6 +71,9 @@ export function BeheerLijst() {
         titel: String(data?.live?.titel ?? ""),
         kijkers: Number(data?.live?.kijkers ?? 0),
       });
+      setUitzendingen(
+        Array.isArray(data?.uitzendingen) ? data.uitzendingen : []
+      );
     } catch {
       // stil blijven; het is een hulpmiddel
     }
@@ -91,6 +108,78 @@ export function BeheerLijst() {
       setLiveMelding("Stoppen mislukte. Probeer het opnieuw.");
     } finally {
       setStopBezig(false);
+    }
+  }
+
+  async function verwijderUitzending(id: string) {
+    if (
+      !window.confirm(
+        "Deze uitzending voorgoed verwijderen? Het bestand en de registratie verdwijnen."
+      )
+    ) {
+      return;
+    }
+    setOpnameBezig(id);
+    setUitzendingMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/uitzending", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      const data = await antwoord.json().catch(() => ({}));
+      if (antwoord.ok) {
+        setUitzendingMelding("De uitzending is verwijderd.");
+        await laadLive();
+      } else {
+        setUitzendingMelding(data.fout ?? "Verwijderen mislukte.");
+      }
+    } catch {
+      setUitzendingMelding("Verwijderen mislukte. Probeer het opnieuw.");
+    } finally {
+      setOpnameBezig("");
+    }
+  }
+
+  async function naarYouTubeBeheer(uitzending: BeheerUitzending) {
+    setOpnameBezig(uitzending.id);
+    setUitzendingMelding("");
+    try {
+      const tokenAntwoord = await fetch("/api/live/youtube-token", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id: uitzending.id }),
+      });
+      const tokenData = await tokenAntwoord.json();
+      if (!tokenAntwoord.ok || !tokenData.token) {
+        throw new Error(tokenData.fout ?? "Geen YouTube-toegang.");
+      }
+      const bestand = await fetch(uitzending.url);
+      if (!bestand.ok) throw new Error("Het bestand kon niet worden geladen.");
+      const blob = await bestand.blob();
+      const videoId = await uploadNaarYouTube(
+        blob,
+        String(tokenData.token),
+        `${uitzending.titel} - ${new Date().toLocaleDateString("nl-NL")}`
+      );
+      if (!videoId) throw new Error("Geen video-id van YouTube.");
+      const klaar = await fetch("/api/live/youtube-klaar", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id: uitzending.id, youtubeId: videoId }),
+      });
+      if (!klaar.ok) throw new Error("Opslaan van de YouTube-status mislukte.");
+      setUitzendingMelding("Privé op YouTube gezet.");
+      await laadLive();
+    } catch (fout) {
+      setUitzendingMelding(
+        (fout as Error).message || "De YouTube-upload mislukte."
+      );
+    } finally {
+      setOpnameBezig("");
     }
   }
 
@@ -262,6 +351,98 @@ export function BeheerLijst() {
             </button>
           ) : null}
         </div>
+      </section>
+
+      {/* Uitzendingen: verwijderen of alsnog naar YouTube */}
+      <section
+        aria-label="Uitzendingen"
+        className="mb-8 rounded-xl border border-line bg-surface p-6"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="font-display text-lg font-semibold tracking-tight">
+            Uitzendingen
+          </p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
+            {uitzendingen.length} online
+          </p>
+        </div>
+        {uitzendingen.length === 0 ? (
+          <p className="mt-3 text-sm text-muted">
+            Er staan nu geen opnames online.
+          </p>
+        ) : (
+          <ul className="mt-4 space-y-3">
+            {uitzendingen.map((uitzending) => {
+              const youtubeId = uitzending.youtubeUrl
+                ? uitzending.youtubeUrl.split("/").pop() ?? ""
+                : "";
+              return (
+                <li
+                  key={uitzending.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line px-4 py-3"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">
+                      {uitzending.titel}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-2">
+                      nog {uitzending.dagenOver}{" "}
+                      {uitzending.dagenOver === 1 ? "dag" : "dagen"} ·{" "}
+                      {uitzending.grootteMb.toLocaleString("nl-NL")} MB ·{" "}
+                      {uitzending.youtubeUrl
+                        ? "privé op YouTube"
+                        : "nog niet op YouTube"}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {youtubeId ? (
+                      <a
+                        href={`https://studio.youtube.com/video/${youtubeId}/edit`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={cn(btnGhost, "h-9 px-4 text-xs")}
+                      >
+                        YouTube Studio
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => naarYouTubeBeheer(uitzending)}
+                        disabled={opnameBezig === uitzending.id}
+                        className={cn(
+                          btnGhost,
+                          "h-9 px-4 text-xs",
+                          opnameBezig === uitzending.id && "opacity-60"
+                        )}
+                      >
+                        {opnameBezig === uitzending.id
+                          ? "Bezig…"
+                          : "Naar YouTube"}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => verwijderUitzending(uitzending.id)}
+                      disabled={opnameBezig === uitzending.id}
+                      className={cn(
+                        btnGhost,
+                        "h-9 px-4 text-xs text-accent hover:text-accent",
+                        opnameBezig === uitzending.id && "opacity-60"
+                      )}
+                    >
+                      Verwijder
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        {uitzendingMelding ? (
+          <p aria-live="polite" className="mt-3 text-sm">
+            {uitzendingMelding}
+          </p>
+        ) : null}
       </section>
 
       <div className="flex flex-wrap items-center justify-between gap-4">
