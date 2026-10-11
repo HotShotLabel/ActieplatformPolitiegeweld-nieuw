@@ -347,10 +347,15 @@ export function MeldingenKaart() {
 
     mapRef.current = map;
 
+    // Debug-haak: hiermee kan de kaart op afstand worden gecontroleerd
+    // (lagen, iconen, gerenderde punten) zonder de gebruikerservaring te raken.
+    (window as unknown as { __kaart?: MlMap }).__kaart = map;
+
     return () => {
       stop();
       map.remove();
       mapRef.current = null;
+      (window as unknown as { __kaart?: MlMap }).__kaart = undefined;
       markersMeldingen.current = [];
       markersRechtspraak.current = [];
       markersOverleden.current = [];
