@@ -18,11 +18,10 @@ export default function LivePage() {
           Uitzendingen
         </h1>
         <p className="mt-6 max-w-[64ch] text-lg leading-relaxed text-muted">
-          We gaan live als er iets te vertellen valt: over zaken die we
-          volgen, over wat politieoptreden met mensen doet, en met wie daar
-          iets over wil zeggen. <span className="text-foreground">Elke
-          uitzending blijft 30 dagen online</span> en is vrij te downloaden,
-          met het logo van het platform erin.
+          Er is iets gebeurd en iemand gaat live vanaf het moment zelf.
+          Kijkers zien het meteen, en elke uitzending komt daarna{" "}
+          <span className="text-foreground">met logo online en blijft 30
+          dagen staan</span>, vrij te downloaden.
         </p>
 
         <div className="mt-12">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
 import { SOORT_LABEL } from "@/lib/meldingen";
@@ -39,6 +39,60 @@ export function BeheerLijst() {
   );
   const [foutmelding, setFoutmelding] = useState("");
   const [verwijderBezig, setVerwijderBezig] = useState("");
+  const [liveStand, setLiveStand] = useState<{
+    live: boolean;
+    titel: string;
+    kijkers: number;
+  } | null>(null);
+  const [stopBezig, setStopBezig] = useState(false);
+  const [liveMelding, setLiveMelding] = useState("");
+
+  const laadLive = useCallback(async () => {
+    try {
+      const antwoord = await fetch("/api/live", { cache: "no-store" });
+      if (!antwoord.ok) return;
+      const data = await antwoord.json();
+      setLiveStand({
+        live: Boolean(data?.live?.live),
+        titel: String(data?.live?.titel ?? ""),
+        kijkers: Number(data?.live?.kijkers ?? 0),
+      });
+    } catch {
+      // stil blijven; het is een hulpmiddel
+    }
+  }, []);
+
+  useEffect(() => {
+    if (status !== "klaar") return;
+    laadLive();
+    const timer = window.setInterval(laadLive, 15 * 1000);
+    return () => window.clearInterval(timer);
+  }, [status, laadLive]);
+
+  async function stopUitzending() {
+    if (!window.confirm("De live-uitzending meteen stoppen voor iedereen?")) {
+      return;
+    }
+    setStopBezig(true);
+    setLiveMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/live-stop", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await antwoord.json().catch(() => ({}));
+      if (antwoord.ok) {
+        setLiveMelding("De uitzending is gestopt.");
+        await laadLive();
+      } else {
+        setLiveMelding(data.fout ?? "Stoppen mislukte.");
+      }
+    } catch {
+      setLiveMelding("Stoppen mislukte. Probeer het opnieuw.");
+    } finally {
+      setStopBezig(false);
+    }
+  }
 
   async function laadMeldingen(gebruikToken: string) {
     setStatus("laden");
@@ -165,6 +219,51 @@ export function BeheerLijst() {
 
   return (
     <div>
+      {/* Live-uitzending: status en noodstop */}
+      <section
+        aria-label="Live-uitzending"
+        className={cn(
+          "mb-8 rounded-xl border p-6",
+          liveStand?.live
+            ? "border-accent/50 bg-accent-soft"
+            : "border-line bg-surface"
+        )}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="font-display text-lg font-semibold tracking-tight">
+              {liveStand?.live ? "Er is nu een uitzending live" : "Geen live-uitzending"}
+            </p>
+            <p className="mt-1 text-sm text-muted">
+              {liveStand?.live
+                ? `${liveStand.titel || "Live-uitzending"} · ${liveStand.kijkers} ${
+                    liveStand.kijkers === 1 ? "kijker" : "kijkers"
+                  }`
+                : "Zodra iemand vanaf /live/start uitzendt, verschijnt dat hier."}
+            </p>
+            {liveMelding ? (
+              <p aria-live="polite" className="mt-2 text-sm">
+                {liveMelding}
+              </p>
+            ) : null}
+          </div>
+          {liveStand?.live ? (
+            <button
+              type="button"
+              onClick={stopUitzending}
+              disabled={stopBezig}
+              className={cn(
+                btnPrimary,
+                "bg-foreground text-background hover:bg-foreground/90",
+                stopBezig && "opacity-60"
+              )}
+            >
+              {stopBezig ? "Stoppen…" : "Stop de uitzending"}
+            </button>
+          ) : null}
+        </div>
+      </section>
+
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="text-sm text-muted">
           {meldingen.length}{" "}

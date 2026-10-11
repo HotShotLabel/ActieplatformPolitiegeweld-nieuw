@@ -4,6 +4,7 @@
    actueel; de opruiming gebeurt bij elk bezoek. */
 
 import { getAdminDb } from "@/lib/firebase-admin";
+import { liveStand } from "@/lib/livekit";
 
 export const maxDuration = 60;
 
@@ -81,27 +82,25 @@ export async function GET() {
       await batch.commit().catch(() => {});
     }
 
-    // Staat er een live-uitzending gepland of aan? Dan tonen we hem.
-    let liveEmbed = "";
-    try {
-      const instelling = await db.doc("instellingen/live").get();
-      liveEmbed = String(instelling.data()?.embedUrl ?? "");
-    } catch {
-      liveEmbed = "";
-    }
+    // Is er nu iemand live? Dat vragen we aan LiveKit zelf.
+    const live = await liveStand();
 
     return Response.json(
-      { uitzendingen: actief, liveEmbed, bewaardagen: BEWAAR_DAGEN },
+      { uitzendingen: actief, live, bewaardagen: BEWAAR_DAGEN },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+          "Cache-Control": "public, s-maxage=15, stale-while-revalidate=30",
         },
       }
     );
   } catch (fout) {
     console.error("live-route:", fout);
     return Response.json(
-      { uitzendingen: [], liveEmbed: "", bewaardagen: BEWAAR_DAGEN },
+      {
+        uitzendingen: [],
+        live: { live: false, titel: "", kijkers: 0, gestartOp: "" },
+        bewaardagen: BEWAAR_DAGEN,
+      },
       { status: 502 }
     );
   }

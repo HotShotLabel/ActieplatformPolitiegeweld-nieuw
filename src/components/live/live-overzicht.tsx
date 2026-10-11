@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
+import { LiveKijker } from "@/components/live/live-kijker";
 
 interface Uitzending {
   id: string;
@@ -15,9 +17,16 @@ interface Uitzending {
   dagenOver: number;
 }
 
+interface LiveStand {
+  live: boolean;
+  titel: string;
+  kijkers: number;
+  gestartOp: string;
+}
+
 interface LiveData {
   uitzendingen: Uitzending[];
-  liveEmbed: string;
+  live: LiveStand;
   bewaardagen: number;
 }
 
@@ -57,26 +66,23 @@ export function LiveOverzicht() {
 
   useEffect(() => {
     laad();
-    const timer = window.setInterval(laad, 5 * 60 * 1000);
+    const timer = window.setInterval(laad, 20 * 1000);
     return () => window.clearInterval(timer);
   }, [laad]);
 
   const uitzendingen = data?.uitzendingen ?? [];
+  const isLive = Boolean(data?.live?.live);
 
   return (
     <div className="space-y-14">
-      {/* Live-uitzending of de wachtstand */}
+      {/* Live of de wachtstand */}
       <section aria-label="Live-uitzending">
-        {data?.liveEmbed ? (
-          <div className="overflow-hidden rounded-2xl border border-line bg-black">
-            <iframe
-              src={data.liveEmbed}
-              title="Live-uitzending van het Actieplatform Politiegeweld"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
-              className="aspect-video w-full"
-            />
-          </div>
+        {isLive && data ? (
+          <LiveKijker
+            key={data.live.gestartOp || "live"}
+            titel={data.live.titel}
+            onEinde={laad}
+          />
         ) : (
           <div className="rounded-2xl border border-line bg-white/[0.02] p-8 md:p-10">
             <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
@@ -87,16 +93,22 @@ export function LiveOverzicht() {
               Momenteel niet live
             </p>
             <p className="mt-4 max-w-[58ch] text-lg leading-relaxed text-muted">
-              We gaan regelmatig live: uitzendingen over zaken, rechtszittingen
-              die we volgen en gesprekken met betrokkenen. Zodra er een
-              uitzending begint, verschijnt hij hier.
+              Gebeurt er iets? Ga direct live vanaf je telefoon. Je camera
+              gaat aan, kijkers zien je meteen, en de opname komt hier
+              daarna automatisch online te staan.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href="mailto:label@hot-shot.com?subject=Op%20de%20hoogte%20blijven%20van%20uitzendingen" className={btnPrimary}>
+              <Link
+                href="/live/start"
+                className={cn(btnPrimary, "h-12 bg-accent px-7 text-base hover:bg-[#d0431f]")}
+              >
+                Ga nu live
+              </Link>
+              <a
+                href="mailto:label@hot-shot.com?subject=Op%20de%20hoogte%20blijven%20van%20uitzendingen"
+                className={btnGhost}
+              >
                 Houd me op de hoogte
-              </a>
-              <a href="mailto:label@hot-shot.com?subject=Ik%20wil%20zelf%20live%20vertellen" className={btnGhost}>
-                Ik wil zelf mijn verhaal doen
               </a>
             </div>
           </div>
@@ -205,6 +217,15 @@ export function LiveOverzicht() {
         <ul className="mt-6 grid gap-5 text-sm leading-relaxed text-muted md:grid-cols-3">
           <li>
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
+              Direct vanaf de telefoon
+            </p>
+            <p className="mt-2">
+              Iedereen kan op elk moment live gaan, zonder account. Eén knop
+              op /live/start en je bent in de lucht.
+            </p>
+          </li>
+          <li>
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
               30 dagen, niet langer
             </p>
             <p className="mt-2">
@@ -219,16 +240,8 @@ export function LiveOverzicht() {
             </p>
             <p className="mt-2">
               De video draagt het logo van het platform, zodat duidelijk is
-              waar hij vandaan komt als hij gedeeld wordt.
-            </p>
-          </li>
-          <li>
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
-              Vrij te downloaden
-            </p>
-            <p className="mt-2">
-              Iedereen mag de opname downloaden, delen en gebruiken. Wil je
-              iets rechtzetten of verwijderd hebben? Mail ons.
+              waar hij vandaan komt als hij gedeeld wordt. Vrij te
+              downloaden.
             </p>
           </li>
         </ul>
