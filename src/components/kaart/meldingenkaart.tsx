@@ -2,30 +2,47 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import L from "leaflet";
+import {
+  Map as MlMap,
+  Marker,
+  Popup,
+  setWorkerUrl,
+} from "maplibre-gl";
+
+// Zelf gehoste worker; anders faalt de worker-load onder Turbopack.
+setWorkerUrl("/maplibre-gl-worker.mjs");
 import { luisterNaarKaartpunten, type KaartPunt } from "@/lib/kaartpunten";
 import { SOORT_LABEL } from "@/lib/meldingen";
 import { CAD_ZAKEN, OPENBARE_ZAKEN } from "@/lib/openbare-zaken";
 import { cn } from "@/lib/utils";
 import { btnPrimary } from "@/lib/ui";
 
-const TILE_CARTO =
-  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
-const TILE_OSM = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-const ATTR_CARTO =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
-const ATTR_OSM =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+const STIJL_DONKER = "https://tiles.openfreemap.org/styles/dark";
+const STIJL_LICHT = "https://tiles.openfreemap.org/styles/bright";
+
+function maakStip(achtergrond: string, rand: string, grootte: number) {
+  const el = document.createElement("div");
+  el.style.width = `${grootte}px`;
+  el.style.height = `${grootte}px`;
+  el.style.borderRadius = "9999px";
+  el.style.background = achtergrond;
+  el.style.border = rand;
+  el.style.boxShadow = "0 1px 6px rgba(0, 0, 0, 0.45)";
+  el.style.cursor = "pointer";
+  return el;
+}
 
 export function MeldingenKaart() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const laagMeldingenRef = useRef<L.LayerGroup | null>(null);
-  const laagRechtspraakRef = useRef<L.LayerGroup | null>(null);
-  const laagOverledenRef = useRef<L.LayerGroup | null>(null);
+  const mapRef = useRef<MlMap | null>(null);
+  const markersMeldingen = useRef<Marker[]>([]);
+  const markersRechtspraak = useRef<Marker[]>([]);
+  const markersOverleden = useRef<Marker[]>([]);
+  const toonStand = useRef({ meldingen: true, rechtspraak: true, overleden: true });
   const [punten, setPunten] = useState<KaartPunt[] | null>(null);
   const [mislukt, setMislukt] = useState(false);
-  const [tegelfallback, setTegelfallback] = useState(false);
+  const [kaartfout, setKaartfout] = useState(false);
+  const [stijlval, setStijlval] = useState(false);
   const [toonMeldingen, setToonMeldingen] = useState(true);
   const [toonRechtspraak, setToonRechtspraak] = useState(true);
   const [toonOverleden, setToonOverleden] = useState(true);
@@ -33,95 +50,86 @@ export function MeldingenKaart() {
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
-    const map = L.map(containerRef.current, {
-      center: [52.15, 5.3],
+    let foutTeller = 0;
+    let stijlgewisseld = false;
+
+    const map = new MlMap({
+      container: containerRef.current,
+      style: STIJL_DONKER,
+      center: [5.3, 52.15],
       zoom: 7,
       minZoom: 6,
       maxZoom: 16,
-      scrollWheelZoom: true,
+      dragRotate: false,
+      touchPitch: false,
     });
 
-    // Kaarttegels: CARTO als het kan, OpenStreetMap als tegels geblokkeerd
-    // worden (sommige adblockers weren de CARTO-server).
-    let tegelFouten = 0;
-    const cartoLaag = L.tileLayer(TILE_CARTO, {
-      attribution: ATTR_CARTO,
-      subdomains: "abcd",
-      maxZoom: 19,
-    });
-    cartoLaag.on("tileerror", () => {
-      tegelFouten += 1;
-      if (tegelFouten >= 4 && map.hasLayer(cartoLaag)) {
-        map.removeLayer(cartoLaag);
-        L.tileLayer(TILE_OSM, { attribution: ATTR_OSM, maxZoom: 19 }).addTo(map);
-        setTegelfallback(true);
+    // Als de donkere stijl niet laadt: eenmalig de lichte stijl proberen.
+    // Blijft het fout gaan, dan tonen we een nette melding.
+    map.on("error", () => {
+      foutTeller += 1;
+      if (foutTeller >= 3 && !stijlgewisseld) {
+        stijlgewisseld = true;
+        map.setStyle(STIJL_LICHT);
+        setStijlval(true);
       }
+      if (foutTeller >= 15) setKaartfout(true);
     });
-    cartoLaag.addTo(map);
 
     // Laag: rechtspraak (openbare uitspraken, per plaats van het incident).
-    const laagRechtspraak = L.layerGroup().addTo(map);
-    OPENBARE_ZAKEN.forEach((zaak) => {
-      L.circleMarker([zaak.lat, zaak.lng], {
-        radius: 6.5,
-        color: "#07090c",
-        weight: 1.5,
-        fillColor: "#f4f5f6",
-        fillOpacity: 0.95,
+    markersRechtspraak.current = OPENBARE_ZAKEN.map((zaak) =>
+      new Marker({
+        element: maakStip("#f4f5f6", "1.5px solid #07090c", 13),
       })
-        .bindPopup(
-          `<strong>${zaak.titel}</strong><br>` +
-            `${zaak.jaar} · ${zaak.plaats} · rechtszaak<br>` +
-            `<em>${zaak.uitslag}</em><br>` +
-            `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">${zaak.bronLabel}</a>`
+        .setLngLat([zaak.lng, zaak.lat])
+        .setPopup(
+          new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
+            `<strong>${zaak.titel}</strong><br>` +
+              `${zaak.jaar} · ${zaak.plaats} · rechtszaak<br>` +
+              `<em>${zaak.uitslag}</em><br>` +
+              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">${zaak.bronLabel}</a>`
+          )
         )
-        .addTo(laagRechtspraak);
-    });
-    laagRechtspraakRef.current = laagRechtspraak;
+        .addTo(map)
+    );
 
     // Laag: overleden onder verantwoordelijkheid van wetshandhavers
     // (openbare database Controle Alt Delete; bewust zonder namen).
-    const laagOverleden = L.layerGroup().addTo(map);
-    CAD_ZAKEN.forEach((zaak) => {
-      L.circleMarker([zaak.lat, zaak.lng], {
-        radius: 7.5,
-        color: "#e5484d",
-        weight: 2.5,
-        fillColor: "#f4f5f6",
-        fillOpacity: 0.95,
+    markersOverleden.current = CAD_ZAKEN.map((zaak) =>
+      new Marker({
+        element: maakStip("#f4f5f6", "2.5px solid #e5484d", 15),
       })
-        .bindPopup(
-          `<strong>Overleden na politieoptreden</strong><br>` +
-            `${zaak.jaar} · ${zaak.plaats}<br>` +
-            `Politiegeweld: ${zaak.geweld} · Doodgeschoten: ${zaak.geschoten}<br>` +
-            `${zaak.status ? zaak.status + "<br>" : ""}` +
-            `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${zaak.bronLabel}</a><br>` +
-            `<span style="opacity:.7">Naam en verhaal staan in de database van Controle Alt Delete.</span>`
+        .setLngLat([zaak.lng, zaak.lat])
+        .setPopup(
+          new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
+            `<strong>Overleden na politieoptreden</strong><br>` +
+              `${zaak.jaar} · ${zaak.plaats}<br>` +
+              `Politiegeweld: ${zaak.geweld} · Doodgeschoten: ${zaak.geschoten}<br>` +
+              `${zaak.status ? zaak.status + "<br>" : ""}` +
+              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${zaak.bronLabel}</a><br>` +
+              `<span style="opacity:.7">Naam en verhaal staan in de database van Controle Alt Delete.</span>`
+          )
         )
-        .addTo(laagOverleden);
-    });
-    laagOverledenRef.current = laagOverleden;
+        .addTo(map)
+    );
 
     // Laag: meldingen van bezoekers (rood, afgerond op ongeveer 1 km).
-    const laagMeldingen = L.layerGroup().addTo(map);
-    laagMeldingenRef.current = laagMeldingen;
-
     const stop = luisterNaarKaartpunten(
       (nieuwePunten) => {
         setPunten(nieuwePunten);
-        laagMeldingen.clearLayers();
-        nieuwePunten.forEach((punt) => {
-          L.circleMarker([punt.lat, punt.lng], {
-            radius: 8,
-            color: "#e5484d",
-            weight: 1.5,
-            fillColor: "#e5484d",
-            fillOpacity: 0.5,
+        markersMeldingen.current.forEach((marker) => marker.remove());
+        markersMeldingen.current = nieuwePunten.map((punt) => {
+          const marker = new Marker({
+            element: maakStip("rgba(229, 72, 77, 0.55)", "1.5px solid #e5484d", 16),
           })
-            .bindPopup(
-              `<strong>${SOORT_LABEL[punt.soort] ?? "Melding"}</strong><br>${punt.maand} · locatie bij benadering`
-            )
-            .addTo(laagMeldingen);
+            .setLngLat([punt.lng, punt.lat])
+            .setPopup(
+              new Popup({ offset: 12, maxWidth: "280px" }).setHTML(
+                `<strong>${SOORT_LABEL[punt.soort] ?? "Melding"}</strong><br>${punt.maand} · locatie bij benadering`
+              )
+            );
+          if (toonStand.current.meldingen) marker.addTo(map);
+          return marker;
         });
       },
       () => setMislukt(true)
@@ -133,36 +141,38 @@ export function MeldingenKaart() {
       stop();
       map.remove();
       mapRef.current = null;
-      laagMeldingenRef.current = null;
-      laagRechtspraakRef.current = null;
-      laagOverledenRef.current = null;
+      markersMeldingen.current = [];
+      markersRechtspraak.current = [];
+      markersOverleden.current = [];
     };
   }, []);
 
-  function schakel(
-    map: L.Map | null,
-    laag: L.LayerGroup | null,
-    aan: boolean
-  ) {
-    if (!map || !laag) return;
-    if (aan) {
-      laag.addTo(map);
-    } else {
-      map.removeLayer(laag);
-    }
-  }
+  useEffect(() => {
+    toonStand.current.meldingen = toonMeldingen;
+    const map = mapRef.current;
+    if (!map) return;
+    markersMeldingen.current.forEach((marker) =>
+      toonMeldingen ? marker.addTo(map) : marker.remove()
+    );
+  }, [toonMeldingen]);
 
   useEffect(() => {
-    schakel(mapRef.current, laagOverledenRef.current, toonOverleden);
-  }, [toonOverleden]);
-
-  useEffect(() => {
-    schakel(mapRef.current, laagRechtspraakRef.current, toonRechtspraak);
+    toonStand.current.rechtspraak = toonRechtspraak;
+    const map = mapRef.current;
+    if (!map) return;
+    markersRechtspraak.current.forEach((marker) =>
+      toonRechtspraak ? marker.addTo(map) : marker.remove()
+    );
   }, [toonRechtspraak]);
 
   useEffect(() => {
-    schakel(mapRef.current, laagMeldingenRef.current, toonMeldingen);
-  }, [toonMeldingen]);
+    toonStand.current.overleden = toonOverleden;
+    const map = mapRef.current;
+    if (!map) return;
+    markersOverleden.current.forEach((marker) =>
+      toonOverleden ? marker.addTo(map) : marker.remove()
+    );
+  }, [toonOverleden]);
 
   const aantalMeldingen = punten?.length ?? 0;
   const aantalRechtspraak = OPENBARE_ZAKEN.length;
@@ -225,12 +235,13 @@ export function MeldingenKaart() {
           Overleden ({aantalOverleden})
         </button>
         <span className="text-xs text-muted-2">
-          Openbare zaken op stadsniveau, met bron · meldingen afgerond op
+          Kaarttegels van OpenFreeMap (OpenStreetMap-gegevens), zonder
+          API-sleutel · openbare zaken op stadsniveau, meldingen afgerond op
           ongeveer 1 km
         </span>
-        {tegelfallback ? (
+        {stijlval ? (
           <span className="text-xs text-muted-2">
-            · tegels van OpenStreetMap geladen
+            · lichte kaartstijl geladen
           </span>
         ) : null}
       </div>
@@ -265,6 +276,15 @@ export function MeldingenKaart() {
             <p className="mx-auto max-w-[440px] rounded-xl border border-line bg-background/90 p-4 text-center text-sm text-muted backdrop-blur">
               De meldingen konden niet worden geladen. Ververs de pagina om het
               opnieuw te proberen.
+            </p>
+          </div>
+        ) : null}
+
+        {kaartfout ? (
+          <div className="absolute inset-x-0 bottom-0 p-5">
+            <p className="mx-auto max-w-[440px] rounded-xl border border-line bg-background/90 p-4 text-center text-sm text-muted backdrop-blur">
+              De kaarttegels konden niet worden geladen. Ververs de pagina of
+              probeer het later nog eens.
             </p>
           </div>
         ) : null}

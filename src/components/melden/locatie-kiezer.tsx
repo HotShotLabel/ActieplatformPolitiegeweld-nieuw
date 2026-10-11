@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import L from "leaflet";
+import { Map as MlMap, Marker, setWorkerUrl } from "maplibre-gl";
 
-const TILE_URL =
-  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
-const TILE_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+// Zelf gehoste worker; anders faalt de worker-load onder Turbopack.
+setWorkerUrl("/maplibre-gl-worker.mjs");
 
 export function LocatieKiezer({
   positie,
@@ -16,8 +14,8 @@ export function LocatieKiezer({
   onKies: (lat: number, lng: number) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.CircleMarker | null>(null);
+  const mapRef = useRef<MlMap | null>(null);
+  const markerRef = useRef<Marker | null>(null);
   const onKiesRef = useRef(onKies);
 
   useEffect(() => {
@@ -27,21 +25,19 @@ export function LocatieKiezer({
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
-    const map = L.map(containerRef.current, {
-      center: [52.15, 5.3],
+    const map = new MlMap({
+      container: containerRef.current,
+      style: "https://tiles.openfreemap.org/styles/dark",
+      center: [5.3, 52.15],
       zoom: 8,
       minZoom: 7,
       maxZoom: 18,
+      dragRotate: false,
+      touchPitch: false,
     });
 
-    L.tileLayer(TILE_URL, {
-      attribution: TILE_ATTRIBUTION,
-      subdomains: "abcd",
-      maxZoom: 19,
-    }).addTo(map);
-
-    map.on("click", (event: L.LeafletMouseEvent) => {
-      onKiesRef.current(event.latlng.lat, event.latlng.lng);
+    map.on("click", (event) => {
+      onKiesRef.current(event.lngLat.lat, event.lngLat.lng);
     });
 
     mapRef.current = map;
@@ -58,17 +54,20 @@ export function LocatieKiezer({
     if (!map || !positie) return;
 
     if (markerRef.current) {
-      markerRef.current.setLatLng([positie.lat, positie.lng]);
+      markerRef.current.setLngLat([positie.lng, positie.lat]);
     } else {
-      markerRef.current = L.circleMarker([positie.lat, positie.lng], {
-        radius: 9,
-        color: "#e5484d",
-        weight: 2,
-        fillColor: "#e5484d",
-        fillOpacity: 0.5,
-      }).addTo(map);
+      const el = document.createElement("div");
+      el.style.width = "16px";
+      el.style.height = "16px";
+      el.style.borderRadius = "9999px";
+      el.style.background = "rgba(229, 72, 77, 0.5)";
+      el.style.border = "2px solid #e5484d";
+      el.style.boxShadow = "0 1px 6px rgba(0, 0, 0, 0.45)";
+      markerRef.current = new Marker({ element: el })
+        .setLngLat([positie.lng, positie.lat])
+        .addTo(map);
     }
-    map.panTo([positie.lat, positie.lng], { animate: true });
+    map.easeTo({ center: [positie.lng, positie.lat], duration: 400 });
   }, [positie]);
 
   return (

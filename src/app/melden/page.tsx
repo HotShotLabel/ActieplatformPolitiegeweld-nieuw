@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "leaflet/dist/leaflet.css";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { MeldForm } from "@/components/melden/meld-form";
 
 export const metadata: Metadata = {

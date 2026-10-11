@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import "leaflet/dist/leaflet.css";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { MeldingenKaartLoader } from "@/components/kaart/meldingenkaart-loader";
 import { btnPrimary } from "@/lib/ui";
 
