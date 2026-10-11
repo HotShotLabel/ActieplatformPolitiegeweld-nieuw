@@ -16,6 +16,10 @@ export interface NieuwsBericht {
   url: string;
   datum: string; // YYYY-MM-DD
   soort: NieuwsSoort;
+  auteur?: string;
+  plaats?: string;
+  lat?: number;
+  lng?: number;
 }
 
 export const SOORT_LABEL: Record<NieuwsSoort, string> = {
@@ -27,8 +31,7 @@ export const SOORT_LABEL: Record<NieuwsSoort, string> = {
 
 export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
   {
-    titel:
-      "Politiegeweld bij fatale aanhouding van Eggy was onrechtmatig, oordeelt het Europees Hof voor de Rechten van de Mens",
+    titel: "",
     bron: "Controle Alt Delete",
     url: "https://controlealtdelete.nl/articles/politiegeweld-bij-fatale-aanhouding-van-eggy-was-onrechtmatig/",
     datum: "2026-10-01",
@@ -42,8 +45,7 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     soort: "overleden",
   },
   {
-    titel:
-      "Alfredo Goeloe overleed zaterdag na aanhouding door de politie, nu gaat zijn familie aangifte doen",
+    titel: "",
     bron: "Trouw",
     url: "https://www.trouw.nl/binnenland/alfredo-goeloe-overleed-zaterdag-na-aanhouding-door-de-politie-nu-gaat-zijn-familie-aangifte-doen~b2c2f7c8/",
     datum: "2026-09-15",
@@ -55,6 +57,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.nu.nl/binnenland/6409804/veel-emoties-en-vragen-rond-aanhouding-en-dood-rotterdammer-alfredo-goeloe.html",
     datum: "2026-09-15",
     soort: "overleden",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
   },
   {
     titel: "Gevoelens van onrecht overheersen na dodelijke arrestatie van Alfredo Goeloe",
@@ -64,8 +69,7 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     soort: "overleden",
   },
   {
-    titel:
-      "De politie zag Alfredo (51) ten onrechte aan voor een fietsendief. Hij overleed bij zijn arrestatie",
+    titel: "",
     bron: "NRC",
     url: "https://www.nrc.nl/nieuws/2026/09/14/de-politie-zag-alfredo-51-ten-onrechte-aan-voor-een-fietsendief-hij-overleed-bij-zijn-arrestatie-a4936597",
     datum: "2026-09-14",
@@ -77,6 +81,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://nos.nl/artikel/2630796-overleden-man-in-rotterdam-werd-door-politie-tegen-de-grond-gewerkt",
     datum: "2026-09-13",
     soort: "overleden",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
   },
   {
     titel: "Rotterdammer (51) overleden nadat hij onwel werd bij aanhouding door politie",
@@ -84,6 +91,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.ad.nl/112-nieuws-rotterdam/rotterdammer-51-overleden-nadat-hij-onwel-werd-bij-aanhouding-door-politie~a5a44656/",
     datum: "2026-09-12",
     soort: "overleden",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
   },
   {
     titel: "Rushen ziet met eigen ogen fatbiker overlijden na arrestatie: 'Het laat me niet los'",
@@ -93,8 +103,7 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     soort: "overleden",
   },
   {
-    titel:
-      "Utrechtse agent die een vrouw schopte bij arrestatie handelde volgens het OM niet onrechtmatig",
+    titel: "",
     bron: "NRC",
     url: "https://www.nrc.nl/nieuws/2026/09/07/utrechtse-agent-die-een-vrouw-schopte-bij-arrestatie-handelde-volgens-het-om-niet-onrechtmatig-a4936088",
     datum: "2026-09-07",
@@ -120,6 +129,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.rijksrecherche.nl/actueel/nieuws/2026/06/11/agent-niet-vervolgd-voor-dodelijk-schietincident-na-fatbikeroof-capelle-aan-den-ijssel",
     datum: "2026-06-12",
     soort: "agent-vervolgd",
+    plaats: "Capelle aan den IJssel",
+    lat: 51.9349,
+    lng: 4.5801,
   },
   {
     titel: "Politieambtenaar niet vervolgd voor dodelijk schietincident Hoofddorp",
@@ -127,6 +139,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.om.nl/actueel/nieuws/2026/01/14/politieambtenaar-niet-vervolgd-voor-dodelijk-schietincident-hoofddorp",
     datum: "2026-01-14",
     soort: "agent-vervolgd",
+    plaats: "Hoofddorp",
+    lat: 52.3053,
+    lng: 4.6848,
   },
   {
     titel: "Agenten in nekklem gehouden door verdachten: 'grof en doelgericht geweld'",
@@ -141,6 +156,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.om.nl/actueel/nieuws/2025/12/30/om-schieten-door-agente-bij-aanhouding-in-haaren-was-rechtmatig",
     datum: "2025-12-30",
     soort: "agent-vervolgd",
+    plaats: "Haaren",
+    lat: 51.6038,
+    lng: 5.2322,
   },
   {
     titel: "'Van de politie blijf je af': Drie verdachten veroordeeld voor geweld tegen politieagenten",
@@ -155,6 +173,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.om.nl/actueel/nieuws/2025/10/08/om-optreden-politie-rechtmatig-op-asielboot-in-groningen",
     datum: "2025-10-08",
     soort: "agent-vervolgd",
+    plaats: "Groningen",
+    lat: 53.2222,
+    lng: 6.5633,
   },
   {
     titel: "Moeder door politie doodgeschoten minderjarige jongen uit Gouda doet aangifte",
@@ -162,6 +183,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.nrc.nl/nieuws/2025/09/25/moeder-door-politie-doodgeschoten-minderjarige-jongen-uit-gouda-doet-aangifte-a4907401",
     datum: "2025-09-25",
     soort: "overleden",
+    plaats: "Gouda",
+    lat: 52.0153,
+    lng: 4.7062,
   },
   {
     titel: "OM spreekt tegen dat doodgeschoten jongen (15) Capelle in rug werd geraakt",
@@ -176,6 +200,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.om.nl/actueel/nieuws/2025/08/12/politieambtenaren-niet-vervolgd-voor-schietincident-alkmaar",
     datum: "2025-08-12",
     soort: "agent-vervolgd",
+    plaats: "Alkmaar",
+    lat: 52.6358,
+    lng: 4.7512,
   },
   {
     titel: "Man in been geschoten door politie: agent niet vervolgd (Uden)",
@@ -190,6 +217,9 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     url: "https://www.om.nl/actueel/nieuws/2025/03/28/om-gebruik-vuurwapen-door-politie-rechtmatig-bij-geweldsincident-in-ter-apel",
     datum: "2025-03-28",
     soort: "agent-vervolgd",
+    plaats: "Ter",
+    lat: 53.0277,
+    lng: 6.546,
   },
   {
     titel: "Eis: drie jaar gevangenisstraf en tbs voor geweld tegen politieman tijdens jaarwisseling",
@@ -234,8 +264,7 @@ export const NIEUWS_ARCHIEF: NieuwsBericht[] = [
     soort: "agent-vervolgd",
   },
   {
-    titel:
-      "Tomy (40) overleed na hardhandige aanhouding in Zwolle, zijn broer: 'Wat er met George Floyd is gebeurd is heel herkenbaar'",
+    titel: "",
     bron: "De Gelderlander",
     url: "https://www.gelderlander.nl/overijssel/tomy-40-overleed-na-hardhandige-aanhouding-in-zwolle-zijn-broer-wat-er-met-george-floyd-is-gebeurd-is-heel-herkenbaar~aec098b5/",
     datum: "2023-01-19",

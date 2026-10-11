@@ -1,6 +1,7 @@
 import { NIEUWS_ARCHIEF, type NieuwsSoort } from "@/lib/nieuws-archief";
 import { NIEUWS_GEOOGST } from "@/lib/nieuws-geoogst";
 import { isPolitiegeweldNieuws } from "@/lib/nieuws-filter";
+import { NL_PLAATSEN } from "@/lib/nl-plaatsen";
 
 export const maxDuration = 60;
 
@@ -39,6 +40,28 @@ export interface Bericht {
   datum: string;
   live: boolean;
   soort: NieuwsSoort;
+  auteur?: string;
+  plaats?: string;
+  lat?: number;
+  lng?: number;
+}
+
+const PLAATSNAMEN = Object.keys(NL_PLAATSEN).sort((a, b) => b.length - a.length);
+
+/* Koppel een live bericht aan een plaats als die in de tabel staat. */
+function plaatsVoorTitel(titel: string): { plaats: string; lat: number; lng: number } | null {
+  for (const naam of PLAATSNAMEN) {
+    if (titel.includes(naam)) {
+      const coord = NL_PLAATSEN[naam];
+      return { plaats: naam, lat: coord[0], lng: coord[1] };
+    }
+  }
+  const treffer = titel.match(/\b(?:in|te) ([A-Z][A-Za-zé'’-]{2,20})/);
+  if (treffer && NL_PLAATSEN[treffer[1]]) {
+    const coord = NL_PLAATSEN[treffer[1]];
+    return { plaats: treffer[1], lat: coord[0], lng: coord[1] };
+  }
+  return null;
 }
 
 /* Live berichten grofweg indelen op onderwerp. */
@@ -94,6 +117,7 @@ function parseFeed(xml: string, bron: string): Bericht[] {
       datum,
       live: true,
       soort: soortVoorLive(titel),
+      ...(plaatsVoorTitel(titel) ?? {}),
     });
   }
   return berichten;

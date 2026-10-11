@@ -7,6 +7,7 @@ import {
   createElement as lucideElement,
   Gavel,
   Landmark,
+  Newspaper,
   TriangleAlert,
   type IconNode,
 } from "lucide";
@@ -65,6 +66,7 @@ function lucideIcoon(knoop: IconNode, sw: number): Icoon {
 const ICOON_HAMER = lucideIcoon(Gavel, 2.2);
 const ICOON_ZUILEN = lucideIcoon(Landmark, 2.2);
 const ICOON_DRIEHOEK = lucideIcoon(TriangleAlert, 2.4);
+const ICOON_NIEUWS = lucideIcoon(Newspaper, 2.2);
 
 const ICOON_POLITIEAUTO: Icoon = {
   viewBox: "0 0 256 256",
@@ -180,22 +182,34 @@ function IcoonChipBadge({
   );
 }
 
+function escapeHtml(tekst: string) {
+  return tekst
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 export function MeldingenKaart() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const markersMeldingen = useRef<Marker[]>([]);
   const markersRechtspraak = useRef<Marker[]>([]);
   const markersOverleden = useRef<Marker[]>([]);
+  const markersNieuws = useRef<Marker[]>([]);
+  const nieuwsUrls = useRef(new Set<string>());
   const voorzieningen = useRef<Voorzieningen | null>(null);
   const eersteStijlwissel = useRef(true);
   const toonStand = useRef({
     meldingen: true,
     rechtspraak: true,
     overleden: true,
+    nieuws: true,
     politie: true,
     rechtbank: true,
   });
   const [punten, setPunten] = useState<KaartPunt[] | null>(null);
+  const [nieuwsGepind, setNieuwsGepind] = useState<number | null>(null);
   const [aantallen, setAantallen] = useState<{ politie: number; rechtbank: number } | null>(null);
   const [mislukt, setMislukt] = useState(false);
   const [kaartfout, setKaartfout] = useState(false);
@@ -204,6 +218,7 @@ export function MeldingenKaart() {
   const [toonMeldingen, setToonMeldingen] = useState(true);
   const [toonRechtspraak, setToonRechtspraak] = useState(true);
   const [toonOverleden, setToonOverleden] = useState(true);
+  const [toonNieuws, setToonNieuws] = useState(true);
   const [toonPolitie, setToonPolitie] = useState(true);
   const [toonRechtbank, setToonRechtbank] = useState(true);
 
@@ -431,6 +446,78 @@ export function MeldingenKaart() {
       () => setMislukt(true)
     );
 
+    // Laag: nieuwsberichten met een bekende plaats. Nieuwe punten komen
+    // binnen met een animatie; live berichten pulseren. Elke vijf minuten
+    // verversen houdt de kaart levend.
+    async function laadNieuws() {
+      try {
+        const antwoord = await fetch("/api/nieuws");
+        if (!antwoord.ok) return;
+        const data = (await antwoord.json()) as {
+          berichten: {
+            titel: string;
+            bron: string;
+            url: string;
+            datum: string;
+            live: boolean;
+            auteur?: string;
+            plaats?: string;
+            lat?: number;
+            lng?: number;
+          }[];
+        };
+        let toegevoegd = 0;
+        for (const bericht of data.berichten) {
+          if (bericht.lat === undefined || bericht.lng === undefined) continue;
+          if (nieuwsUrls.current.has(bericht.url)) continue;
+          nieuwsUrls.current.add(bericht.url);
+          const element = maakBadgeElement(
+            ICOON_NIEUWS,
+            "#f4f5f6",
+            bericht.live ? "#e5484d" : "#07090c",
+            "#07090c"
+          );
+          element.classList.add("marker-in");
+          if (bericht.live) element.classList.add("marker-live");
+          let platform = "";
+          try {
+            platform = new URL(bericht.url).hostname.replace("www.", "");
+          } catch {
+            platform = "";
+          }
+          const datum = bericht.datum
+            ? bericht.datum.split("-").reverse().join("-")
+            : "";
+          const meta = [bericht.bron, bericht.auteur, datum, platform]
+            .filter(Boolean)
+            .map((deel) => escapeHtml(String(deel)))
+            .join(" · ");
+          const marker = new Marker({ element })
+            .setLngLat([bericht.lng, bericht.lat])
+            .setPopup(
+              new Popup({ offset: 12, maxWidth: "340px" }).setHTML(
+                `<strong>${escapeHtml(bericht.titel)}</strong>` +
+                  `<div class="popup-meta">${meta}</div>` +
+                  (bericht.plaats
+                    ? `<div class="popup-meta">Plaats: ${escapeHtml(bericht.plaats)}</div>`
+                    : "") +
+                  `<div class="popup-meta"><a href="${encodeURI(bericht.url)}" target="_blank" rel="noopener noreferrer">Lees het bericht</a></div>`
+              )
+            );
+          if (toonStand.current.nieuws) marker.addTo(map);
+          markersNieuws.current.push(marker);
+          toegevoegd += 1;
+        }
+        if (toegevoegd > 0) {
+          setNieuwsGepind(markersNieuws.current.length);
+        }
+      } catch {
+        // stil: de kaart blijft werken zonder nieuwlaag
+      }
+    }
+    void laadNieuws();
+    const nieuwsTimer = setInterval(() => void laadNieuws(), 300_000);
+
     mapRef.current = map;
 
     // Debug-haak: hiermee kan de kaart op afstand worden gecontroleerd
@@ -439,12 +526,15 @@ export function MeldingenKaart() {
 
     return () => {
       stop();
+      clearInterval(nieuwsTimer);
       map.remove();
       mapRef.current = null;
       (window as unknown as { __kaart?: MlMap }).__kaart = undefined;
       markersMeldingen.current = [];
       markersRechtspraak.current = [];
       markersOverleden.current = [];
+      markersNieuws.current = [];
+      nieuwsUrls.current.clear();
     };
   }, []);
 
@@ -474,6 +564,15 @@ export function MeldingenKaart() {
       toonOverleden ? marker.addTo(map) : marker.remove()
     );
   }, [toonOverleden]);
+
+  useEffect(() => {
+    toonStand.current.nieuws = toonNieuws;
+    const map = mapRef.current;
+    if (!map) return;
+    markersNieuws.current.forEach((marker) =>
+      toonNieuws ? marker.addTo(map) : marker.remove()
+    );
+  }, [toonNieuws]);
 
   useEffect(() => {
     toonStand.current.politie = toonPolitie;
@@ -541,6 +640,10 @@ export function MeldingenKaart() {
           <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#e5484d" icoonKleur="#c93a3f" />
           Overleden ({CAD_ZAKEN.length})
         </button>
+        <button type="button" onClick={() => setToonNieuws((w) => !w)} aria-pressed={toonNieuws} className={chip(toonNieuws)}>
+          <IcoonChipBadge icoon={ICOON_NIEUWS} badgeKleur="#f4f5f6" randKleur="#07090c" icoonKleur="#07090c" />
+          Nieuws ({nieuwsGepind ?? "…"})
+        </button>
         <button type="button" onClick={() => setToonPolitie((w) => !w)} aria-pressed={toonPolitie} className={chip(toonPolitie)}>
           <IcoonChipBadge icoon={ICOON_POLITIEAUTO} badgeKleur="#e8eef5" randKleur="#7d97b3" icoonKleur="#2f4b66" />
           Politiebureaus ({aantallen ? aantallen.politie : "…"})
@@ -606,9 +709,11 @@ export function MeldingenKaart() {
       <p className="mt-3 text-xs leading-relaxed text-muted-2">
         Elk punt heeft een eigen icoon: politieauto = politiebureau, zuilen =
         rechtbank, hamer = rechterlijke uitspraak, grafsteen = overleden na
-        politieoptreden, waarschuwingsdriehoek = melding van geweld. Kaart:
-        OpenFreeMap (OpenStreetMap-gegevens), zonder API-sleutel. Openbare
-        zaken op stadsniveau; meldingen afgerond op ongeveer een kilometer.
+        politieoptreden, waarschuwingsdriehoek = melding van geweld, krant =
+        nieuwsbericht (live nieuws pulseert). Nieuwe berichten verschijnen
+        automatisch op de kaart. Kaart: OpenFreeMap
+        (OpenStreetMap-gegevens), zonder API-sleutel. Openbare zaken op
+        stadsniveau; meldingen afgerond op ongeveer een kilometer.
         Politiebureaus: OpenStreetMap. Rechtbanken: de officiële locatielijst
         van rechtspraak.nl (alle locaties), aangevuld met Hoge Raad en Raad
         van State.

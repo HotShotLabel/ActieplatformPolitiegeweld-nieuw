@@ -239,13 +239,17 @@ def parse_resultaten(tekst):
         titel = re.split(r"\n", blok, 1)[0].strip()
         url_match = re.search(r"\nURL:\s*(\S+)", blok)
         datum_match = re.search(r"\nPublished:\s*(\S+)", blok)
+        auteur_match = re.search(r"\nAuthor:\s*(.+)", blok)
         if not titel or not url_match:
             continue
         url = url_match.group(1).strip()
         datum = (datum_match.group(1)[:10] if datum_match else "")
         if datum.startswith("N/A"):
             datum = ""
-        items.append({"titel": titel, "url": url, "datum": datum})
+        auteur = (auteur_match.group(1).strip() if auteur_match else "")
+        if auteur in ("N/A", "Unknown", "N/A "):
+            auteur = ""
+        items.append({"titel": titel, "url": url, "datum": datum, "auteur": auteur})
     return items
 
 
@@ -255,6 +259,77 @@ def bron_voor(url):
         if domein == bekend or domein.endswith("." + bekend):
             return naam
     return domein
+
+
+PLAATS_CACHE = WORTEL / "scripts/nieuws-plaatsen.json"
+CAD_CACHE = WORTEL / "scripts/cad-plaatsen.json"
+
+# Extra bekende plaatsnamen naast de CAD-lijst.
+EXTRA_PLAATSEN = [
+    "Amsterdam", "Rotterdam", "Den Haag", "Utrecht", "Eindhoven", "Groningen",
+    "Tilburg", "Almere", "Breda", "Nijmegen", "Apeldoorn", "Haarlem", "Arnhem",
+    "Enschede", "Amersfoort", "Zaandam", "Zaanstad", "'s-Hertogenbosch",
+    "Den Bosch", "Zwolle", "Leiden", "Leeuwarden", "Maastricht", "Dordrecht",
+    "Ede", "Alkmaar", "Delft", "Deventer", "Venlo", "Helmond", "Oss",
+    "Amstelveen", "Hilversum", "Heerlen", "Hengelo", "Purmerend", "Roosendaal",
+    "Schiedam", "Vlaardingen", "Almelo", "Gouda", "Hoorn", "Middelburg",
+    "Vlissingen", "Emmen", "Assen", "Lelystad", "Capelle aan den IJssel",
+    "Waalwijk", "Goes", "Roermond", "Sittard", "Veenendaal", "Woerden", "Zeist",
+    "Houten", "Barneveld", "Doetinchem", "Zutphen", "Harderwijk", "Kampen",
+    "Weert", "Kerkrade", "Bergen op Zoom", "Molenlanden", "Hoogeveen", "Sneek",
+]
+
+
+def bekende_plaatsen():
+    namen = set()
+    if CAD_CACHE.exists():
+        namen.update(json.loads(CAD_CACHE.read_text()).keys())
+    namen.update(EXTRA_PLAATSEN)
+    return sorted(namen, key=len, reverse=True)
+
+
+def geocodeer_plaats(naam, cache):
+    sleutel = naam.strip()
+    if sleutel in cache:
+        return cache[sleutel]
+    url = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?" + urllib.parse.urlencode(
+        {"q": sleutel, "fq": "type:woonplaats", "rows": 1}
+    )
+    cache[sleutel] = None
+    try:
+        verzoek = urllib.request.Request(url, headers={"User-Agent": UA})
+        with urllib.request.urlopen(verzoek, timeout=30) as antwoord:
+            data = json.load(antwoord)
+        docs = data.get("response", {}).get("docs", [])
+        if docs:
+            weergave = docs[0].get("weergavenaam", "")
+            if sleutel.split()[0].lower() in weergave.lower():
+                m = re.match(r"POINT\(([-0-9.]+) ([-0-9.]+)\)", docs[0].get("centroide_ll", ""))
+                if m:
+                    cache[sleutel] = [round(float(m.group(2)), 4), round(float(m.group(1)), 4)]
+        time.sleep(0.25)
+    except Exception:  # noqa: BLE001
+        pass
+    return cache[sleutel]
+
+
+def plaats_uit_titel(titel, plaatsen):
+    for naam in plaatsen:
+        if naam in titel:
+            return naam
+    for patroon in [
+        r"\bin ([A-Z][A-Za-zé'’\-]{2,20}(?: aan den [A-Z][a-z]+| aan de [A-Z][a-z]+)?)",
+        r"\bte ([A-Z][A-Za-zé'’\-]{2,20}(?: aan den [A-Z][a-z]+| aan de [A-Z][a-z]+)?)",
+    ]:
+        treffer = re.search(patroon, titel)
+        if treffer:
+            kandidaat = treffer.group(1).strip()
+            if kandidaat not in (
+                "Nederland", "België", "Duitsland", "Justitie", "Politie",
+                "Binnenland", "Buitenland",
+            ):
+                return kandidaat
+    return None
 
 
 def soort_voor(titel):
@@ -270,6 +345,8 @@ def main():
     if not sessie:
         raise SystemExit("geen MCP-sessie")
     print("sessie ok")
+    PLAATSEN = bekende_plaatsen()
+    print(f"{len(PLAATSEN)} bekende plaatsnamen")
 
     gevonden = {}
     for i, term in enumerate(ZOEKTERMEN, start=10):
@@ -295,27 +372,47 @@ def main():
         time.sleep(1.2)
 
     items = []
+    cache = {}
+    if PLAATS_CACHE.exists():
+        cache = json.loads(PLAATS_CACHE.read_text())
     for item in gevonden.values():
-        items.append({
+        entry = {
             "titel": item["titel"],
             "bron": bron_voor(item["url"]),
             "url": item["url"],
             "datum": item["datum"],
             "soort": soort_voor(item["titel"]),
-        })
+        }
+        if item.get("auteur"):
+            entry["auteur"] = item["auteur"]
+        kandidaat = plaats_uit_titel(item["titel"], PLAATSEN)
+        if kandidaat:
+            coord = geocodeer_plaats(kandidaat, cache)
+            if coord:
+                entry["plaats"] = kandidaat
+                entry["lat"] = coord[0]
+                entry["lng"] = coord[1]
+        items.append(entry)
+    PLAATS_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
     items.sort(key=lambda b: b["datum"], reverse=True)
+    met_plaats = sum(1 for b in items if "lat" in b)
+    print(f"plekken gevonden voor {met_plaats}/{len(items)} artikelen")
 
     regels = [
         'import type { NieuwsBericht } from "./nieuws-archief";',
         "",
         f"// Automatisch geoogst via Exa-zoekopdrachten op {date.today().isoformat()}.",
-        "// Alleen koppen, bron, datum en link; artikelen staan bij de bron.",
+        "// Strikte selectie: alleen politiegeweld en agenten buiten de regels,",
+        "// alleen van bekende nieuwsbronnen. Alleen koppen en links.",
         "export const NIEUWS_GEOOGST: NieuwsBericht[] = [",
     ]
     for item in items:
         regels.append("  {")
         for sleutel in ["titel", "bron", "url", "datum", "soort"]:
             regels.append(f"    {sleutel}: {json.dumps(item[sleutel], ensure_ascii=False)},")
+        for sleutel in ["auteur", "plaats", "lat", "lng"]:
+            if item.get(sleutel) is not None:
+                regels.append(f"    {sleutel}: {json.dumps(item[sleutel], ensure_ascii=False)},")
         regels.append("  },")
     regels.append("];")
     UIT.write_text("\n".join(regels) + "\n", encoding="utf-8")
