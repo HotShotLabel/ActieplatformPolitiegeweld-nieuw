@@ -50,18 +50,40 @@ export async function GET() {
 
     const perPlaats: Record<string, number> = {};
     const zaken: OverledenZaak[] = [];
-    let zonderPlaats = 0;
+    const zonderPlaatsLijst: {
+      id: string;
+      jaar: string;
+      status: string;
+      bronUrl: string;
+      bronLabel: string;
+    }[] = [];
+    const bronStandaard =
+      String(data?.common?.link ?? "") ||
+      "https://controlealtdelete.nl/dossier-politiedoden/";
 
     for (const mens of mensen) {
       const ruweStad = String(mens.city ?? "").trim();
+      const artikel = String(mens.article_link ?? "").trim();
       if (!ruweStad || ruweStad === "Plaats onbekend") {
-        zonderPlaats += 1;
+        zonderPlaatsLijst.push({
+          id: String(mens.case_nr ?? ""),
+          jaar: String(mens.year ?? ""),
+          status: String(mens.investigation_status ?? ""),
+          bronUrl: artikel || bronStandaard,
+          bronLabel: artikel ? "nieuwsbericht" : "database Controle Alt Delete",
+        });
         continue;
       }
       const stad = NAAM_FIX[ruweStad] ?? ruweStad;
       const coord = NL_PLAATSEN[stad] ?? HANDMATIG[stad];
       if (!coord) {
-        zonderPlaats += 1;
+        zonderPlaatsLijst.push({
+          id: String(mens.case_nr ?? ""),
+          jaar: String(mens.year ?? ""),
+          status: String(mens.investigation_status ?? ""),
+          bronUrl: artikel || bronStandaard,
+          bronLabel: artikel ? "nieuwsbericht" : "database Controle Alt Delete",
+        });
         continue;
       }
       const index = perPlaats[stad] ?? 0;
@@ -74,11 +96,6 @@ export async function GET() {
         lat += Math.sin(hoek) * straal;
         lng += Math.cos(hoek) * straal;
       }
-      const artikel = String(mens.article_link ?? "").trim();
-      const bronUrl =
-        artikel ||
-        String(data?.common?.link ?? "") ||
-        "https://controlealtdelete.nl/dossier-politiedoden/";
       zaken.push({
         id: String(mens.case_nr ?? ""),
         jaar: String(mens.year ?? ""),
@@ -90,13 +107,18 @@ export async function GET() {
         vervolgd: String(mens.officer_persecuted ?? "Onbekend"),
         veroordeeld: String(mens.officer_convicted ?? "Onbekend"),
         status: String(mens.investigation_status ?? ""),
-        bronUrl,
+        bronUrl: artikel || bronStandaard,
         bronLabel: artikel ? "nieuwsbericht" : "database Controle Alt Delete",
       });
     }
 
     return Response.json(
-      { zaken, totaal: mensen.length, metPlaats: zaken.length, zonderPlaats },
+      {
+        zaken,
+        totaal: mensen.length,
+        metPlaats: zaken.length,
+        zonderPlaats: zonderPlaatsLijst,
+      },
       {
         headers: {
           "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=86400",

@@ -211,6 +211,10 @@ export function MeldingenKaart() {
   const [punten, setPunten] = useState<KaartPunt[] | null>(null);
   const [nieuwsGepind, setNieuwsGepind] = useState<number | null>(null);
   const [overledenAantal, setOverledenAantal] = useState<number | null>(null);
+  const [overledenTotaal, setOverledenTotaal] = useState<number | null>(null);
+  const [overledenZonder, setOverledenZonder] = useState<
+    { id: string; jaar: string; status: string; bronUrl: string; bronLabel: string }[]
+  >([]);
   const [laatsteNieuws, setLaatsteNieuws] = useState<
     { titel: string; bron: string; url: string; datum: string; live: boolean }[]
   >([]);
@@ -454,12 +458,18 @@ export function MeldingenKaart() {
         if (Array.isArray(data.zaken) && data.zaken.length > 0) {
           data.zaken.forEach(maakOverledenMarker);
           setOverledenAantal(data.zaken.length);
+          setOverledenTotaal(Number(data.totaal) || data.zaken.length);
+          setOverledenZonder(
+            Array.isArray(data.zonderPlaats) ? data.zonderPlaats : []
+          );
           return;
         }
         throw new Error("lege lijst");
       } catch {
         CAD_ZAKEN.forEach(maakOverledenMarker);
         setOverledenAantal(CAD_ZAKEN.length);
+        setOverledenTotaal(CAD_ZAKEN.length);
+        setOverledenZonder([]);
       }
     }
     void laadOverleden();
@@ -518,11 +528,10 @@ export function MeldingenKaart() {
             "#07090c"
           );
           element.classList.add("marker-in");
-          const recent =
-            bericht.datum !== "" &&
-            Date.now() - new Date(`${bericht.datum}T12:00:00Z`).getTime() <
-              45 * 86_400_000;
-          if (recent) element.classList.add("marker-brand");
+          // Alleen berichten uit het huidige jaar gloeien (2026).
+          const ditJaar = String(new Date().getFullYear());
+          const gloeit = bericht.datum.startsWith(ditJaar);
+          if (gloeit) element.classList.add("marker-brand");
           if (bericht.live) element.classList.add("marker-brand-live");
           let platform = "";
           try {
@@ -822,7 +831,7 @@ export function MeldingenKaart() {
       <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-2">
         <span>nieuws {nieuwsGepind ?? "…"}</span>
         <span>rechtszaken {OPENBARE_ZAKEN.length}</span>
-        <span>overleden {overledenAantal ?? "…"}</span>
+        <span>overleden {overledenAantal ?? "…"} van {overledenTotaal ?? "…"}</span>
         <span>politiebureaus {aantallen ? aantallen.politie : "…"}</span>
         <span>rechtbanken {aantallen ? aantallen.rechtbank : "…"}</span>
         <span>meldingen {punten === null ? "…" : aantalMeldingen}</span>
@@ -832,7 +841,9 @@ export function MeldingenKaart() {
         Elk punt heeft een eigen icoon: politieauto = politiebureau, zuilen =
         rechtbank, hamer = rechterlijke uitspraak, grafsteen = overleden na
         politieoptreden, waarschuwingsdriehoek = melding van geweld, krant =
-        nieuwsbericht (live nieuws pulseert). Nieuwe berichten verschijnen
+        nieuwsbericht (live nieuws pulseert; alleen berichten waarvan de
+        plaats bekend is staan op de kaart). Alleen het huidige jaar (2026)
+        gloeit. Nieuwe berichten verschijnen
         automatisch op de kaart. Kaart: OpenFreeMap
         (OpenStreetMap-gegevens), zonder API-sleutel. Openbare zaken op
         stadsniveau; meldingen afgerond op ongeveer een kilometer.
@@ -840,6 +851,31 @@ export function MeldingenKaart() {
         van rechtspraak.nl (alle locaties), aangevuld met Hoge Raad en Raad
         van State.
       </p>
+
+      {overledenZonder.length > 0 ? (
+        <details className="mt-3 rounded-xl border border-line bg-surface p-4">
+          <summary className="cursor-pointer text-sm text-muted">
+            {overledenZonder.length} mensen zonder bekende plaats in de bron
+            (staan daarom niet op de kaart)
+          </summary>
+          <ul className="mt-3 grid gap-1.5 text-xs leading-relaxed text-muted-2 sm:grid-cols-2 lg:grid-cols-3">
+            {overledenZonder.map((zaak, index) => (
+              <li
+                key={zaak.id || `zonder-${index}`}
+                className="flex gap-2"
+              >
+                <span className="font-mono">{zaak.jaar || "?"}</span>
+                <span>{zaak.status || "status onbekend"}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[11px] leading-relaxed text-muted-2">
+            De bron (database Controle Alt Delete) vermeldt voor deze mensen
+            geen plaats. We zetten ze daarom niet op de kaart en verzinnen
+            geen locatie. Ze horen wel bij het volledige overzicht.
+          </p>
+        </details>
+      ) : null}
 
       {tellingen.size > 0 ? (
         <dl className="mt-3 flex flex-wrap gap-x-8 gap-y-2 text-sm text-muted">
