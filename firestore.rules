@@ -23,5 +23,14 @@ service cloud.firestore {
     match /nieuws/{document} {
       allow read, write: if false;
     }
+
+    // Uitzendingen en instellingen (alleen via de server).
+    match /uitzendingen/{document} {
+      allow read, write: if false;
+    }
+
+    match /instellingen/{document} {
+      allow read, write: if false;
+    }
   }
 }
