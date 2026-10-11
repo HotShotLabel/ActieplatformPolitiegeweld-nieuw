@@ -44,6 +44,7 @@ export function UitsprakenLijst() {
         uitspraak.zaaknummer,
         uitspraak.uitkomst,
         uitspraak.samenvatting,
+        CATEGORIE_LABEL[uitspraak.categorie],
       ]
         .join(" ")
         .toLowerCase();
