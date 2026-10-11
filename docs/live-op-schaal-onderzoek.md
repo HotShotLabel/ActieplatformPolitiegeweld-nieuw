@@ -134,3 +134,13 @@ dataverkeer, EU-locatie (West-Europa).
   (daarom onze 501); CORS nodig; alleen op het S3-domein, niet op custom domains.
 - r2.dev = ontwikkel-only en rate-limited; custom domain is het productiepad.
 - Ons patroon (prive bucket + presigned PUT/GET) is het aanbevolen patroon.
+
+## Update 12 oktober 2026: limieten en lifecycle (officiële docs)
+
+- Max object 5 TiB; max upload per verzoek 5 GiB; opslag onbeperkt; max
+  1 schrijfactie per seconde op dezelfde sleutel; r2.dev wordt afgeknepen
+  (429) dus alleen ontwikkeling; REST API 1200 verzoeken/5 min.
+- Lifecycle-regels (auto-verwijderen na N dagen) via dashboard/Wrangler/S3-API;
+  vereisen een token met 'Workers R2 Storage Write'. Verwijdering binnen ~24 uur;
+  verwijderen is gratis. Onze 30-dagen-opruiming in de app blijft de primaire;
+  een lifecycle-regel kan later als vangnet erbij.
