@@ -77,6 +77,10 @@ De uitspraken-bulk verversen: `python3 scripts/uitspraken-oogst.py`
 (gebruikt de publieke zoek-API van uitspraken.rechtspraak.nl en de Open
 Data; duurt een paar minuten).
 
+De kaartlaag 'overleden' verversen: `python3 scripts/cad-oogst.py` (haalt de
+openbare database van Controle Alt Delete op, geocodeert plaatsen via PDOK,
+schrijft `src/lib/cad-zaken.ts`; namen staan er bewust niet in).
+
 ## Uitrollen
 
 - Site: automatisch via Vercel bij elke push naar `main`.

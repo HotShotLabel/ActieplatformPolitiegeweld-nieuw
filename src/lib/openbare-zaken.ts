@@ -1,7 +1,25 @@
 /* Openbaar gedocumenteerde zaken, per plaats van het incident (op stadsniveau,
-   dus bewust geen exacte adressen). Alles komt uit openbare bronnen:
-   rechtspraak.nl (met ECLI) of de officiële pagina over bekende rechtszaken.
-   Deze laag staat naast de meldingen van bezoekers op de kaart. */
+   dus bewust geen exacte adressen). Kennisgeving: rechtspraakzaken komen uit
+   rechtspraak.nl (met ECLI); de gevallen van overledenen komen uit de
+   openbare database van Controle Alt Delete (zie cad-zaken.ts, gegenereerd
+   door scripts/cad-oogst.py, zonder namen). */
+
+import { CAD_ZAKEN } from "./cad-zaken";
+
+export interface CadZaak {
+  id: string;
+  jaar: string;
+  plaats: string;
+  lat: number;
+  lng: number;
+  geweld: string;
+  geschoten: string;
+  vervolgd: string;
+  veroordeeld: string;
+  status: string;
+  bronUrl: string;
+  bronLabel: string;
+}
 
 export interface OpenbareZaak {
   id: string;
@@ -9,27 +27,16 @@ export interface OpenbareZaak {
   plaats: string;
   lat: number;
   lng: number;
-  soort: "overleden" | "rechter";
+  soort: "rechter";
   titel: string;
   uitslag: string;
   bronLabel: string;
   bronUrl: string;
 }
 
+export { CAD_ZAKEN };
+
 export const OPENBARE_ZAKEN: OpenbareZaak[] = [
-  {
-    id: "henriquez-2015",
-    jaar: 2015,
-    plaats: "Den Haag",
-    lat: 52.0655,
-    lng: 4.3127,
-    soort: "overleden",
-    titel: "Mitch Henriquez overleed na een nekklem bij zijn aanhouding",
-    uitslag:
-      "Eén agent bleef veroordeeld (voorwaardelijk), de ander werd vrijgesproken; Hoge Raad bevestigde in 2021",
-    bronLabel: "rechtspraak.nl, bekende rechtszaken",
-    bronUrl: "https://www.rechtspraak.nl/bekende-rechtszaken/mitch-henriquez",
-  },
   {
     id: "rbams-2025-1753",
     jaar: 2024,

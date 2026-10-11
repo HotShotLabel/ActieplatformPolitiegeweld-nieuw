@@ -182,6 +182,28 @@ export default function OverledenPage() {
             .
           </p>
           <p className="mt-4 leading-relaxed text-muted">
+            De volledige database van Controle Alt Delete telt 167
+            gedocumenteerde gevallen (2011 tot en met 2026). Van 116 daarvan is
+            de plaats bekend; die staan als punt op onze{" "}
+            <Link
+              href="/kaart"
+              className="underline underline-offset-4 hover:text-foreground"
+            >
+              meldingenkaart
+            </Link>
+            , met jaar, plaats en de onderzoeksstatus. Namen en verhalen staan
+            in de{" "}
+            <a
+              href="https://overleden.controlealtdelete.nl/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4 hover:text-foreground"
+            >
+              database van Controle Alt Delete
+            </a>
+            .
+          </p>
+          <p className="mt-4 leading-relaxed text-muted">
             De volledige registratie van Controle Alt Delete, inclusief alle
             gedocumenteerde gevallen, staat in hun{" "}
             <a

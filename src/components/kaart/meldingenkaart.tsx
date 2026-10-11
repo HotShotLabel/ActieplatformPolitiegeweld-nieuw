@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import { luisterNaarKaartpunten, type KaartPunt } from "@/lib/kaartpunten";
 import { SOORT_LABEL } from "@/lib/meldingen";
-import { OPENBARE_ZAKEN } from "@/lib/openbare-zaken";
+import { CAD_ZAKEN, OPENBARE_ZAKEN } from "@/lib/openbare-zaken";
 import { cn } from "@/lib/utils";
 import { btnPrimary } from "@/lib/ui";
 
@@ -14,18 +14,21 @@ const TILE_CARTO =
 const TILE_OSM = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const ATTR_CARTO =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
-const ATTR_OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+const ATTR_OSM =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 
 export function MeldingenKaart() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const laagMeldingenRef = useRef<L.LayerGroup | null>(null);
-  const laagOpenbaarRef = useRef<L.LayerGroup | null>(null);
+  const laagRechtspraakRef = useRef<L.LayerGroup | null>(null);
+  const laagOverledenRef = useRef<L.LayerGroup | null>(null);
   const [punten, setPunten] = useState<KaartPunt[] | null>(null);
   const [mislukt, setMislukt] = useState(false);
   const [tegelfallback, setTegelfallback] = useState(false);
   const [toonMeldingen, setToonMeldingen] = useState(true);
-  const [toonOpenbaar, setToonOpenbaar] = useState(true);
+  const [toonRechtspraak, setToonRechtspraak] = useState(true);
+  const [toonOverleden, setToonOverleden] = useState(true);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -50,39 +53,56 @@ export function MeldingenKaart() {
       tegelFouten += 1;
       if (tegelFouten >= 4 && map.hasLayer(cartoLaag)) {
         map.removeLayer(cartoLaag);
-        L.tileLayer(TILE_OSM, {
-          attribution: ATTR_OSM,
-          maxZoom: 19,
-        }).addTo(map);
+        L.tileLayer(TILE_OSM, { attribution: ATTR_OSM, maxZoom: 19 }).addTo(map);
         setTegelfallback(true);
       }
     });
     cartoLaag.addTo(map);
 
-    // Laag 1: openbare zaken (rechtspraak en gedocumenteerde overlijdens).
-    const laagOpenbaar = L.layerGroup().addTo(map);
+    // Laag: rechtspraak (openbare uitspraken, per plaats van het incident).
+    const laagRechtspraak = L.layerGroup().addTo(map);
     OPENBARE_ZAKEN.forEach((zaak) => {
-      const overleden = zaak.soort === "overleden";
       L.circleMarker([zaak.lat, zaak.lng], {
-        radius: overleden ? 9 : 6.5,
-        color: overleden ? "#e5484d" : "#07090c",
-        weight: overleden ? 3 : 1.5,
+        radius: 6.5,
+        color: "#07090c",
+        weight: 1.5,
         fillColor: "#f4f5f6",
         fillOpacity: 0.95,
       })
         .bindPopup(
           `<strong>${zaak.titel}</strong><br>` +
-            `${zaak.jaar} · ${zaak.plaats} · ${
-              overleden ? "overleden na politieoptreden" : "rechtszaak"
-            }<br>` +
+            `${zaak.jaar} · ${zaak.plaats} · rechtszaak<br>` +
             `<em>${zaak.uitslag}</em><br>` +
             `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">${zaak.bronLabel}</a>`
         )
-        .addTo(laagOpenbaar);
+        .addTo(laagRechtspraak);
     });
-    laagOpenbaarRef.current = laagOpenbaar;
+    laagRechtspraakRef.current = laagRechtspraak;
 
-    // Laag 2: meldingen van bezoekers (rood, afgerond op ongeveer 1 km).
+    // Laag: overleden onder verantwoordelijkheid van wetshandhavers
+    // (openbare database Controle Alt Delete; bewust zonder namen).
+    const laagOverleden = L.layerGroup().addTo(map);
+    CAD_ZAKEN.forEach((zaak) => {
+      L.circleMarker([zaak.lat, zaak.lng], {
+        radius: 7.5,
+        color: "#e5484d",
+        weight: 2.5,
+        fillColor: "#f4f5f6",
+        fillOpacity: 0.95,
+      })
+        .bindPopup(
+          `<strong>Overleden na politieoptreden</strong><br>` +
+            `${zaak.jaar} · ${zaak.plaats}<br>` +
+            `Politiegeweld: ${zaak.geweld} · Doodgeschoten: ${zaak.geschoten}<br>` +
+            `${zaak.status ? zaak.status + "<br>" : ""}` +
+            `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${zaak.bronLabel}</a><br>` +
+            `<span style="opacity:.7">Naam en verhaal staan in de database van Controle Alt Delete.</span>`
+        )
+        .addTo(laagOverleden);
+    });
+    laagOverledenRef.current = laagOverleden;
+
+    // Laag: meldingen van bezoekers (rood, afgerond op ongeveer 1 km).
     const laagMeldingen = L.layerGroup().addTo(map);
     laagMeldingenRef.current = laagMeldingen;
 
@@ -114,34 +134,39 @@ export function MeldingenKaart() {
       map.remove();
       mapRef.current = null;
       laagMeldingenRef.current = null;
-      laagOpenbaarRef.current = null;
+      laagRechtspraakRef.current = null;
+      laagOverledenRef.current = null;
     };
   }, []);
 
-  useEffect(() => {
-    const map = mapRef.current;
-    const laag = laagOpenbaarRef.current;
+  function schakel(
+    map: L.Map | null,
+    laag: L.LayerGroup | null,
+    aan: boolean
+  ) {
     if (!map || !laag) return;
-    if (toonOpenbaar) {
+    if (aan) {
       laag.addTo(map);
     } else {
       map.removeLayer(laag);
     }
-  }, [toonOpenbaar]);
+  }
 
   useEffect(() => {
-    const map = mapRef.current;
-    const laag = laagMeldingenRef.current;
-    if (!map || !laag) return;
-    if (toonMeldingen) {
-      laag.addTo(map);
-    } else {
-      map.removeLayer(laag);
-    }
+    schakel(mapRef.current, laagOverledenRef.current, toonOverleden);
+  }, [toonOverleden]);
+
+  useEffect(() => {
+    schakel(mapRef.current, laagRechtspraakRef.current, toonRechtspraak);
+  }, [toonRechtspraak]);
+
+  useEffect(() => {
+    schakel(mapRef.current, laagMeldingenRef.current, toonMeldingen);
   }, [toonMeldingen]);
 
   const aantalMeldingen = punten?.length ?? 0;
-  const aantalOpenbaar = OPENBARE_ZAKEN.length;
+  const aantalRechtspraak = OPENBARE_ZAKEN.length;
+  const aantalOverleden = CAD_ZAKEN.length;
 
   const tellingen = new Map<string, number>();
   punten?.forEach((punt) => {
@@ -163,25 +188,41 @@ export function MeldingenKaart() {
           )}
         >
           <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-accent" />
-          Meldingen (
-          {punten === null && !mislukt ? "…" : aantalMeldingen})
+          Meldingen ({punten === null && !mislukt ? "…" : aantalMeldingen})
         </button>
         <button
           type="button"
-          onClick={() => setToonOpenbaar((waarde) => !waarde)}
-          aria-pressed={toonOpenbaar}
+          onClick={() => setToonRechtspraak((waarde) => !waarde)}
+          aria-pressed={toonRechtspraak}
           className={cn(
             "flex items-center gap-2 rounded-full border px-3.5 py-1.5 transition-colors",
-            toonOpenbaar
+            toonRechtspraak
               ? "border-line-strong bg-white/10 text-foreground"
               : "border-line-strong text-muted-2 hover:text-muted"
           )}
         >
           <span
             aria-hidden
-            className="h-2.5 w-2.5 rounded-full border border-accent bg-white"
+            className="h-2.5 w-2.5 rounded-full border border-[#07090c] bg-white"
           />
-          Openbare zaken ({aantalOpenbaar})
+          Rechtspraak ({aantalRechtspraak})
+        </button>
+        <button
+          type="button"
+          onClick={() => setToonOverleden((waarde) => !waarde)}
+          aria-pressed={toonOverleden}
+          className={cn(
+            "flex items-center gap-2 rounded-full border px-3.5 py-1.5 transition-colors",
+            toonOverleden
+              ? "border-line-strong bg-white/10 text-foreground"
+              : "border-line-strong text-muted-2 hover:text-muted"
+          )}
+        >
+          <span
+            aria-hidden
+            className="h-2.5 w-2.5 rounded-full border-2 border-accent bg-white"
+          />
+          Overleden ({aantalOverleden})
         </button>
         <span className="text-xs text-muted-2">
           Openbare zaken op stadsniveau, met bron · meldingen afgerond op
@@ -198,13 +239,13 @@ export function MeldingenKaart() {
         <div
           ref={containerRef}
           role="application"
-          aria-label="Kaart met meldingen en openbare zaken over politieoptreden"
+          aria-label="Kaart met meldingen, rechtspraak en overledenen rond politieoptreden"
           className="h-[62vh] min-h-[420px] w-full"
         />
 
         {punten !== null && punten.length === 0 && toonMeldingen ? (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center p-5">
-            <div className="pointer-events-auto max-w-[440px] rounded-xl border border-line bg-background/90 p-5 text-center backdrop-blur">
+            <div className="pointer-events-auto max-w-[460px] rounded-xl border border-line bg-background/90 p-5 text-center backdrop-blur">
               <p className="text-sm leading-relaxed text-muted">
                 Nog geen meldingen van bezoekers. De openbare zaken staan al op
                 de kaart. Jij kunt de eerste melding toevoegen.

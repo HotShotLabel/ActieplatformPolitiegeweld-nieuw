@@ -20,10 +20,12 @@ export default function KaartPage() {
               Meldingenkaart
             </h1>
             <p className="mt-5 max-w-[62ch] text-lg leading-relaxed text-muted">
-              De kaart toont twee soorten punten: openbare zaken uit rechtspraak
-              en onderzoek (met bron, op stadsniveau) en meldingen van
-              bezoekers (anoniem, afgerond op ongeveer een kilometer). Beide
-              lagen kun je apart aan- en uitzetten.
+              De kaart toont drie lagen: rechtspraak (openbare uitspraken per
+              plaats), overledenen na politieoptreden (de openbare database van
+              Controle Alt Delete) en meldingen van bezoekers. Openbare zaken
+              staan op stadsniveau met bron erbij; meldingen zijn anoniem en
+              afgerond op ongeveer een kilometer. Elke laag kun je apart aan-
+              en uitzetten.
             </p>
           </div>
           <Link href="/melden" className={btnPrimary}>
