@@ -1,39 +1,46 @@
-/* Geeft de telefoon van de uitzender toestemming om de opname rechtstreeks
-   naar de opslag te sturen (grote bestanden, zonder omweg via de server). */
+/* Geeft de telefoon van de uitzender een tijdelijke uploadlink voor de
+   opslag (Cloudflare R2). Grote bestanden gaan rechtstreeks naar de
+   opslag, niet via onze server. */
 
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { maakSleutel, maakUploadUrl, r2Ingesteld } from "@/lib/r2";
 
-export const maxDuration = 60;
+export const maxDuration = 30;
 
-export async function POST(request: Request): Promise<Response> {
-  const body = (await request.json()) as HandleUploadBody;
-  try {
-    const uitkomst = await handleUpload({
-      request,
-      body,
-      onBeforeGenerateToken: async (pathname) => {
-        if (!pathname.startsWith("uitzendingen/")) {
-          throw new Error("Onbekende bestemming.");
-        }
-        return {
-          allowedContentTypes: [
-            "video/webm",
-            "video/mp4",
-            "video/webm;codecs=vp8,opus",
-            "video/webm;codecs=vp9,opus",
-            "video/mp4;codecs=avc1",
-          ],
-          maximumSizeInBytes: 2 * 1024 * 1024 * 1024, // 2 GB
-          addRandomSuffix: true,
-          validUntil: Date.now() + 3 * 60 * 60 * 1000,
-        };
-      },
-    });
-    return Response.json(uitkomst);
-  } catch (fout) {
+const TOEGESTANE_TYPES: Record<string, string> = {
+  mp4: "video/mp4",
+  webm: "video/webm",
+};
+
+export async function POST(request: Request) {
+  if (!r2Ingesteld()) {
     return Response.json(
-      { error: (fout as Error).message },
+      { fout: "De opslag is nog niet ingesteld." },
+      { status: 503 }
+    );
+  }
+  let body: { extensie?: string } = {};
+  try {
+    body = await request.json();
+  } catch {
+    body = {};
+  }
+  const extensie = String(body.extensie ?? "").toLowerCase();
+  const contentType = TOEGESTANE_TYPES[extensie];
+  if (!contentType) {
+    return Response.json(
+      { fout: "Alleen mp4 of webm opnames." },
       { status: 400 }
+    );
+  }
+  try {
+    const sleutel = maakSleutel(extensie);
+    const uploadUrl = await maakUploadUrl(sleutel, contentType);
+    return Response.json({ uploadUrl, sleutel });
+  } catch (fout) {
+    console.error("upload-url:", fout);
+    return Response.json(
+      { fout: "Uploadlink maken mislukte. Probeer het opnieuw." },
+      { status: 502 }
     );
   }
 }

@@ -5,6 +5,7 @@
 
 import { getAdminDb } from "@/lib/firebase-admin";
 import { liveStand } from "@/lib/livekit";
+import { maakKijkUrl, r2Ingesteld, verwijderObject } from "@/lib/r2";
 
 export const maxDuration = 60;
 
@@ -56,20 +57,30 @@ export async function GET() {
 
     const nu = Date.now();
     const actief: Uitzending[] = [];
-    const verlopen: { id: string; url: string }[] = [];
+    const verlopen: { id: string; url: string; sleutel: string }[] = [];
 
     for (const doc of snapshot.docs) {
       const data = doc.data();
       const verloopt = Date.parse(String(data.verlooptOp ?? ""));
+      const sleutel = String(data.sleutel ?? "");
       const url = String(data.url ?? "");
       if (!Number.isNaN(verloopt) && verloopt < nu) {
-        verlopen.push({ id: doc.id, url });
+        verlopen.push({ id: doc.id, url, sleutel });
         continue;
+      }
+      // Nieuwe opnames: ondertekende kijklink (7 dagen geldig).
+      let kijkUrl = url;
+      if (sleutel && r2Ingesteld()) {
+        try {
+          kijkUrl = await maakKijkUrl(sleutel);
+        } catch {
+          kijkUrl = url;
+        }
       }
       actief.push({
         id: doc.id,
         titel: String(data.titel ?? "Uitzending"),
-        url,
+        url: kijkUrl,
         grootteMb: Number(data.grootteMb ?? 0),
         duurSec: Number(data.duurSec ?? 0),
         toegevoegdOp: String(data.toegevoegdOp ?? ""),
@@ -83,9 +94,15 @@ export async function GET() {
 
     // Opruimen: verlopen opnames van de opslag en uit de database.
     if (verlopen.length > 0) {
-      await verwijderBestanden(
-        verlopen.map((rij) => rij.url).filter(Boolean)
-      ).catch(() => {});
+      const oudeBlobs = verlopen.filter((rij) => !rij.sleutel && rij.url);
+      if (oudeBlobs.length > 0) {
+        await verwijderBestanden(oudeBlobs.map((rij) => rij.url)).catch(
+          () => {}
+        );
+      }
+      for (const rij of verlopen.filter((rij) => rij.sleutel)) {
+        await verwijderObject(rij.sleutel).catch(() => {});
+      }
       const batch = db.batch();
       for (const rij of verlopen) {
         batch.delete(db.collection("uitzendingen").doc(rij.id));

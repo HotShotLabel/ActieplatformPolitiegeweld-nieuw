@@ -2,6 +2,7 @@
    daarna verwijdert /api/live hem automatisch. */
 
 import { getAdminDb } from "@/lib/firebase-admin";
+import { bestaatObject, r2Ingesteld, sleutelGeldig } from "@/lib/r2";
 import { haalYouTubeToken, youtubeIngesteld } from "@/lib/youtube";
 
 export const maxDuration = 30;
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
   }
 
   let body: {
-    url?: string;
+    sleutel?: string;
     titel?: string;
     duurSec?: number;
     grootteMb?: number;
@@ -36,41 +37,23 @@ export async function POST(request: Request) {
     return Response.json({ fout: "Ongeldige aanvraag." }, { status: 400 });
   }
 
-  const url = String(body.url ?? "");
+  const sleutel = String(body.sleutel ?? "").trim();
   const titel = String(body.titel ?? "").trim().slice(0, 120) || "Live-uitzending";
 
-  let pad: URL;
-  try {
-    pad = new URL(url);
-  } catch {
-    return Response.json({ fout: "Ongeldige url." }, { status: 400 });
-  }
-  const goedeOpslag =
-    pad.hostname.endsWith(".public.blob.vercel-storage.com") &&
-    pad.pathname.startsWith("/uitzendingen/");
-  if (!goedeOpslag) {
-    return Response.json(
-      { fout: "Deze opslagplek hoort niet bij ons." },
-      { status: 400 }
-    );
+  if (!r2Ingesteld() || !sleutelGeldig(sleutel)) {
+    return Response.json({ fout: "Onbekende opslagplek." }, { status: 400 });
   }
 
   // Bestaat het bestand echt en is het video?
-  try {
-    const kop = await fetch(url, { method: "HEAD" });
-    const soort = kop.headers.get("content-type") ?? "";
-    if (!kop.ok || !soort.startsWith("video/")) {
-      return Response.json(
-        { fout: "De opname is nog niet klaar met uploaden." },
-        { status: 409 }
-      );
-    }
-  } catch {
+  const kop = await bestaatObject(sleutel);
+  if (!kop.bestaat || !kop.soort.startsWith("video/")) {
     return Response.json(
-      { fout: "De opname kon niet worden gecontroleerd." },
-      { status: 502 }
+      { fout: "De opname is nog niet klaar met uploaden." },
+      { status: 409 }
     );
   }
+  const grootteMb =
+    Number(body.grootteMb ?? 0) || Math.round((kop.grootte / (1024 * 1024)) * 10) / 10;
 
   try {
     const db = getAdminDb();
@@ -78,8 +61,8 @@ export async function POST(request: Request) {
     const verloopt = new Date(nu.getTime() + 30 * 86_400_000);
     const document = await db.collection("uitzendingen").add({
       titel,
-      url,
-      grootteMb: Number(body.grootteMb ?? 0) || 0,
+      sleutel,
+      grootteMb,
       duurSec: Number(body.duurSec ?? 0) || 0,
       toegevoegdOp: nu.toISOString(),
       verlooptOp: verloopt.toISOString(),

@@ -11,7 +11,6 @@ import {
   Room,
   RoomEvent,
 } from "livekit-client";
-import { upload } from "@vercel/blob/client";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
 import { uploadNaarYouTube } from "@/lib/youtube-client";
@@ -197,30 +196,44 @@ export function LiveUitzender() {
       zetFase("uploaden");
       setUploadPct(0);
       blobRef.current = blob;
-      const datum = new Date().toISOString().slice(0, 10);
-      const schoon = (titel || "live-uitzending")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "")
-        .slice(0, 50);
       const extensie = opnameTypeRef.current === "video/mp4" ? "mp4" : "webm";
       try {
-        const resultaat = await upload(
-          `uitzendingen/${datum}-${schoon}.${extensie}`,
-          blob,
-          {
-            access: "public",
-            handleUploadUrl: "/api/live/upload",
-            multipart: true,
-            onUploadProgress: (voortgang) =>
-              setUploadPct(Math.round(voortgang.percentage)),
-          }
-        );
+        // Tijdelijke uploadlink van onze server; het bestand gaat
+        // rechtstreeks naar de opslag (Cloudflare R2).
+        const start = await fetch("/api/live/upload", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ extensie }),
+        });
+        const startData = await start.json();
+        if (!start.ok) {
+          throw new Error(startData.fout ?? "Uploadlink mislukte.");
+        }
+        await new Promise<void>((klaar, mislukt) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("PUT", String(startData.uploadUrl));
+          xhr.setRequestHeader("content-type", opnameTypeRef.current);
+          xhr.upload.onprogress = (gebeurtenis) => {
+            if (gebeurtenis.lengthComputable) {
+              setUploadPct(
+                Math.round((gebeurtenis.loaded / gebeurtenis.total) * 100)
+              );
+            }
+          };
+          xhr.onload = () =>
+            xhr.status >= 200 && xhr.status < 300
+              ? klaar()
+              : mislukt(new Error(`Upload mislukte (${xhr.status}).`));
+          xhr.onerror = () =>
+            mislukt(new Error("Netwerkfout tijdens de upload."));
+          xhr.send(blob);
+        });
+
         const registratie = await fetch("/api/live/registreer", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            url: resultaat.url,
+            sleutel: String(startData.sleutel),
             titel: titel || "Live-uitzending",
             duurSec: duurRef.current,
             grootteMb: Math.round((blob.size / (1024 * 1024)) * 10) / 10,

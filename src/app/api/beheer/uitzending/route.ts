@@ -4,6 +4,7 @@
 import { NextRequest } from "next/server";
 import { timingSafeEqual } from "crypto";
 import { getAdminDb } from "@/lib/firebase-admin";
+import { verwijderObject } from "@/lib/r2";
 
 export const maxDuration = 60;
 
@@ -61,8 +62,13 @@ export async function POST(request: NextRequest) {
     if (!doc.exists) {
       return Response.json({ fout: "Deze uitzending bestaat niet." }, { status: 404 });
     }
+    const sleutel = String(doc.data()?.sleutel ?? "");
     const url = String(doc.data()?.url ?? "");
-    await verwijderBestand(url);
+    if (sleutel) {
+      await verwijderObject(sleutel).catch(() => {});
+    } else if (url) {
+      await verwijderBestand(url);
+    }
     await ref.delete();
     return Response.json({ ok: true });
   } catch (fout) {
