@@ -3,6 +3,22 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Map as MlMap, Marker, Popup, setWorkerUrl } from "maplibre-gl";
+import {
+  createElement as lucideElement,
+  Flower2 as Flower2Knoop,
+  Gavel as GavelKnoop,
+  Landmark as LandmarkKnoop,
+  Shield as ShieldKnoop,
+  TriangleAlert as DriehoekKnoop,
+  type IconNode,
+} from "lucide";
+import {
+  Flower2 as Flower2Icoon,
+  Gavel as GavelIcoon,
+  Landmark as LandmarkIcoon,
+  Shield as ShieldIcoon,
+  TriangleAlert as DriehoekIcoon,
+} from "lucide-react";
 import { luisterNaarKaartpunten, type KaartPunt } from "@/lib/kaartpunten";
 import { SOORT_LABEL } from "@/lib/meldingen";
 import { CAD_ZAKEN, OPENBARE_ZAKEN } from "@/lib/openbare-zaken";
@@ -26,27 +42,74 @@ interface Voorzieningen {
   rechtbank: Voorziening[];
 }
 
-function maakStip(achtergrond: string, rand: string, grootte: number) {
-  const el = document.createElement("div");
-  el.style.width = `${grootte}px`;
-  el.style.height = `${grootte}px`;
-  el.style.borderRadius = "9999px";
-  el.style.background = achtergrond;
-  el.style.border = rand;
-  el.style.boxShadow = "0 1px 6px rgba(0, 0, 0, 0.45)";
-  el.style.cursor = "pointer";
-  return el;
+function maakBadgeElement(
+  knoop: IconNode,
+  badgeKleur: string,
+  randKleur: string,
+  icoonKleur: string,
+  grootte = 26
+) {
+  const badge = document.createElement("div");
+  badge.style.cssText = [
+    `width:${grootte}px`,
+    `height:${grootte}px`,
+    "border-radius:9999px",
+    `background:${badgeKleur}`,
+    `border:2px solid ${randKleur}`,
+    "display:flex",
+    "align-items:center",
+    "justify-content:center",
+    "box-shadow:0 2px 8px rgba(0,0,0,.5)",
+    "cursor:pointer",
+  ].join(";");
+  const svg = lucideElement(knoop);
+  const maat = Math.round(grootte * 0.58);
+  svg.setAttribute("width", String(maat));
+  svg.setAttribute("height", String(maat));
+  svg.style.color = icoonKleur;
+  badge.appendChild(svg);
+  return badge;
 }
 
-function naarFeatureCollection(items: Voorziening[]) {
-  return {
-    type: "FeatureCollection" as const,
-    features: items.map((item) => ({
-      type: "Feature" as const,
-      geometry: { type: "Point" as const, coordinates: [item.lng, item.lat] },
-      properties: { naam: item.naam },
-    })),
-  };
+function maakIcoonMarkup(
+  knoop: IconNode,
+  badgeKleur: string,
+  randKleur: string,
+  icoonKleur: string
+) {
+  const svg = lucideElement(knoop);
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">` +
+    `<circle cx="24" cy="24" r="20" fill="${badgeKleur}" stroke="${randKleur}" stroke-width="3"/>` +
+    `<g transform="translate(12,12)" fill="none" stroke="${icoonKleur}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:${icoonKleur}">` +
+    svg.innerHTML +
+    `</g></svg>`
+  );
+}
+
+async function voegIcoonAfbeeldingToe(
+  map: MlMap,
+  id: string,
+  knoop: IconNode,
+  badgeKleur: string,
+  randKleur: string,
+  icoonKleur: string
+) {
+  if (map.hasImage(id)) return;
+  const markup = maakIcoonMarkup(knoop, badgeKleur, randKleur, icoonKleur);
+  const blob = new Blob([markup], { type: "image/svg+xml" });
+  const url = URL.createObjectURL(blob);
+  try {
+    const afbeelding = new Image();
+    await new Promise<void>((resolve, reject) => {
+      afbeelding.onload = () => resolve();
+      afbeelding.onerror = () => reject(new Error("icoon laden faalde"));
+      afbeelding.src = url;
+    });
+    if (!map.hasImage(id)) map.addImage(id, afbeelding);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
 export function MeldingenKaart() {
@@ -81,6 +144,7 @@ export function MeldingenKaart() {
 
     let foutTeller = 0;
     let stijlgewisseld = false;
+    let voorzieningenBezig: Promise<void> | null = null;
 
     const map = new MlMap({
       container: containerRef.current,
@@ -103,107 +167,130 @@ export function MeldingenKaart() {
       if (foutTeller >= 15) setKaartfout(true);
     });
 
-    function voegVoorzieningenToe() {
-      const data = voorzieningen.current;
-      if (!data) return;
-      if (!map.getSource("politie")) {
-        map.addSource("politie", { type: "geojson", data: naarFeatureCollection(data.politie) });
-        map.addLayer({
-          id: "politie-cirkels",
-          type: "circle",
-          source: "politie",
-          paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 6, 1.8, 10, 3.5, 14, 6],
-            "circle-color": "#8aa0b8",
-            "circle-opacity": 0.9,
-            "circle-stroke-width": 0.6,
-            "circle-stroke-color": "#07090c",
-          },
-        });
-      }
-      if (!map.getSource("rechtbank")) {
-        map.addSource("rechtbank", { type: "geojson", data: naarFeatureCollection(data.rechtbank) });
-        map.addLayer({
-          id: "rechtbank-cirkels",
-          type: "circle",
-          source: "rechtbank",
-          paint: {
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 6, 2.4, 10, 4.5, 14, 7],
-            "circle-color": "#c9a86a",
-            "circle-opacity": 0.95,
-            "circle-stroke-width": 0.8,
-            "circle-stroke-color": "#07090c",
-          },
-        });
-      }
-      pasZichtbaarheidToe();
-    }
-
     function pasZichtbaarheidToe() {
       const zet = (laag: string, aan: boolean) => {
         if (map.getLayer(laag)) {
           map.setLayoutProperty(laag, "visibility", aan ? "visible" : "none");
         }
       };
-      zet("politie-cirkels", toonStand.current.politie);
-      zet("rechtbank-cirkels", toonStand.current.rechtbank);
+      zet("politie-iconen", toonStand.current.politie);
+      zet("rechtbank-iconen", toonStand.current.rechtbank);
+    }
+
+    function voegVoorzieningenToe(): Promise<void> {
+      if (!voorzieningenBezig) {
+        voorzieningenBezig = (async () => {
+          try {
+            const data = voorzieningen.current;
+            if (!data) return;
+            await voegIcoonAfbeeldingToe(map, "icoon-politie", ShieldKnoop, "#e8eef5", "#7d97b3", "#2f4b66");
+            await voegIcoonAfbeeldingToe(map, "icoon-rechtbank", LandmarkKnoop, "#f7f1e4", "#c9a86a", "#8a6d35");
+            if (mapRef.current !== map) return;
+            if (!map.getSource("politie")) {
+              map.addSource("politie", {
+                type: "geojson",
+                data: {
+                  type: "FeatureCollection",
+                  features: data.politie.map((item) => ({
+                    type: "Feature" as const,
+                    geometry: { type: "Point" as const, coordinates: [item.lng, item.lat] },
+                    properties: { naam: item.naam },
+                  })),
+                },
+              });
+              map.addLayer({
+                id: "politie-iconen",
+                type: "symbol",
+                source: "politie",
+                layout: {
+                  "icon-image": "icoon-politie",
+                  "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.24, 10, 0.3, 14, 0.5],
+                  "icon-allow-overlap": true,
+                  "icon-ignore-placement": true,
+                },
+              });
+            }
+            if (!map.getSource("rechtbank")) {
+              map.addSource("rechtbank", {
+                type: "geojson",
+                data: {
+                  type: "FeatureCollection",
+                  features: data.rechtbank.map((item) => ({
+                    type: "Feature" as const,
+                    geometry: { type: "Point" as const, coordinates: [item.lng, item.lat] },
+                    properties: { naam: item.naam },
+                  })),
+                },
+              });
+              map.addLayer({
+                id: "rechtbank-iconen",
+                type: "symbol",
+                source: "rechtbank",
+                layout: {
+                  "icon-image": "icoon-rechtbank",
+                  "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.26, 10, 0.34, 14, 0.55],
+                  "icon-allow-overlap": true,
+                  "icon-ignore-placement": true,
+                },
+              });
+            }
+            pasZichtbaarheidToe();
+          } finally {
+            voorzieningenBezig = null;
+          }
+        })();
+      }
+      return voorzieningenBezig;
     }
 
     map.on("style.load", () => {
-      voegVoorzieningenToe();
+      void voegVoorzieningenToe();
     });
 
-    // Voorzieningen (politiebureaus, rechtbanken) uit OpenStreetMap.
     fetch("/voorzieningen.json")
       .then((antwoord) => antwoord.json())
       .then((data: Voorzieningen) => {
         voorzieningen.current = data;
         setAantallen({ politie: data.politie.length, rechtbank: data.rechtbank.length });
-        voegVoorzieningenToe();
+        void voegVoorzieningenToe();
       })
       .catch(() => {
         // geen voorzieningenlaag; kaart blijft werken
       });
 
     const voorzienPopup = new Popup({ offset: 10, maxWidth: "280px" });
-    map.on("click", "politie-cirkels", (event) => {
+    map.on("click", "politie-iconen", (event) => {
       const feature = event.features?.[0];
       if (!feature) return;
-      const naam = String(feature.properties?.naam ?? "Politielocatie");
       voorzienPopup
         .setLngLat(event.lngLat)
         .setHTML(
-          `<strong>${naam}</strong><br><span style="opacity:.7">Politiebureau · bron: OpenStreetMap</span>`
+          `<strong>${String(feature.properties?.naam ?? "Politielocatie")}</strong><br><span style="opacity:.7">Politiebureau · bron: OpenStreetMap</span>`
         )
         .addTo(map);
     });
-    map.on("click", "rechtbank-cirkels", (event) => {
+    map.on("click", "rechtbank-iconen", (event) => {
       const feature = event.features?.[0];
       if (!feature) return;
-      const naam = String(feature.properties?.naam ?? "Rechtbank");
       voorzienPopup
         .setLngLat(event.lngLat)
         .setHTML(
-          `<strong>${naam}</strong><br><span style="opacity:.7">Rechtbank · bron: OpenStreetMap</span>`
+          `<strong>${String(feature.properties?.naam ?? "Rechtbank")}</strong><br><span style="opacity:.7">Rechtbank · bron: OpenStreetMap</span>`
         )
         .addTo(map);
     });
-    map.on("mouseenter", "politie-cirkels", () => {
-      map.getCanvas().style.cursor = "pointer";
-    });
-    map.on("mouseleave", "politie-cirkels", () => {
-      map.getCanvas().style.cursor = "";
-    });
-    map.on("mouseenter", "rechtbank-cirkels", () => {
-      map.getCanvas().style.cursor = "pointer";
-    });
-    map.on("mouseleave", "rechtbank-cirkels", () => {
-      map.getCanvas().style.cursor = "";
-    });
+    for (const laag of ["politie-iconen", "rechtbank-iconen"]) {
+      map.on("mouseenter", laag, () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
+      map.on("mouseleave", laag, () => {
+        map.getCanvas().style.cursor = "";
+      });
+    }
 
     // Laag: rechtspraak (openbare uitspraken, per plaats van het incident).
     markersRechtspraak.current = OPENBARE_ZAKEN.map((zaak) =>
-      new Marker({ element: maakStip("#f4f5f6", "1.5px solid #07090c", 13) })
+      new Marker({ element: maakBadgeElement(GavelKnoop, "#f4f5f6", "#07090c", "#07090c") })
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
@@ -219,7 +306,9 @@ export function MeldingenKaart() {
     // Laag: overleden onder verantwoordelijkheid van wetshandhavers
     // (openbare database Controle Alt Delete; bewust zonder namen).
     markersOverleden.current = CAD_ZAKEN.map((zaak) =>
-      new Marker({ element: maakStip("#f4f5f6", "2.5px solid #e5484d", 15) })
+      new Marker({
+        element: maakBadgeElement(Flower2Knoop, "#f4f5f6", "#e5484d", "#e5484d", 28),
+      })
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
@@ -241,7 +330,7 @@ export function MeldingenKaart() {
         markersMeldingen.current.forEach((marker) => marker.remove());
         markersMeldingen.current = nieuwePunten.map((punt) => {
           const marker = new Marker({
-            element: maakStip("rgba(229, 72, 77, 0.55)", "1.5px solid #e5484d", 16),
+            element: maakBadgeElement(DriehoekKnoop, "#d23a3f", "#07090c", "#ffffff", 28),
           })
             .setLngLat([punt.lng, punt.lat])
             .setPopup(
@@ -298,16 +387,16 @@ export function MeldingenKaart() {
   useEffect(() => {
     toonStand.current.politie = toonPolitie;
     const map = mapRef.current;
-    if (map?.getLayer("politie-cirkels")) {
-      map.setLayoutProperty("politie-cirkels", "visibility", toonPolitie ? "visible" : "none");
+    if (map?.getLayer("politie-iconen")) {
+      map.setLayoutProperty("politie-iconen", "visibility", toonPolitie ? "visible" : "none");
     }
   }, [toonPolitie]);
 
   useEffect(() => {
     toonStand.current.rechtbank = toonRechtbank;
     const map = mapRef.current;
-    if (map?.getLayer("rechtbank-cirkels")) {
-      map.setLayoutProperty("rechtbank-cirkels", "visibility", toonRechtbank ? "visible" : "none");
+    if (map?.getLayer("rechtbank-iconen")) {
+      map.setLayoutProperty("rechtbank-iconen", "visibility", toonRechtbank ? "visible" : "none");
     }
   }, [toonRechtbank]);
 
@@ -336,6 +425,24 @@ export function MeldingenKaart() {
         : "border-line-strong text-muted-2 hover:text-muted"
     );
 
+  const icoonBadge = (
+    icoon: React.ComponentType<{ size?: number; strokeWidth?: number; color?: string }>,
+    badgeKleur: string,
+    randKleur: string,
+    icoonKleur: string
+  ) => {
+    const Icoon = icoon;
+    return (
+      <span
+        aria-hidden
+        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2"
+        style={{ background: badgeKleur, borderColor: randKleur }}
+      >
+        <Icoon size={11} strokeWidth={2.5} color={icoonKleur} />
+      </span>
+    );
+  };
+
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
@@ -350,23 +457,23 @@ export function MeldingenKaart() {
               : "border-line-strong text-muted-2 hover:text-muted"
           )}
         >
-          <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-accent" />
+          {icoonBadge(DriehoekIcoon, "#d23a3f", "#07090c", "#ffffff")}
           Meldingen ({punten === null && !mislukt ? "…" : aantalMeldingen})
         </button>
         <button type="button" onClick={() => setToonRechtspraak((w) => !w)} aria-pressed={toonRechtspraak} className={chip(toonRechtspraak)}>
-          <span aria-hidden className="h-2.5 w-2.5 rounded-full border border-[#07090c] bg-white" />
+          {icoonBadge(GavelIcoon, "#f4f5f6", "#07090c", "#07090c")}
           Rechtspraak ({OPENBARE_ZAKEN.length})
         </button>
         <button type="button" onClick={() => setToonOverleden((w) => !w)} aria-pressed={toonOverleden} className={chip(toonOverleden)}>
-          <span aria-hidden className="h-2.5 w-2.5 rounded-full border-2 border-accent bg-white" />
+          {icoonBadge(Flower2Icoon, "#f4f5f6", "#e5484d", "#e5484d")}
           Overleden ({CAD_ZAKEN.length})
         </button>
         <button type="button" onClick={() => setToonPolitie((w) => !w)} aria-pressed={toonPolitie} className={chip(toonPolitie)}>
-          <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-[#8aa0b8]" />
+          {icoonBadge(ShieldIcoon, "#e8eef5", "#7d97b3", "#2f4b66")}
           Politiebureaus ({aantallen ? aantallen.politie : "…"})
         </button>
         <button type="button" onClick={() => setToonRechtbank((w) => !w)} aria-pressed={toonRechtbank} className={chip(toonRechtbank)}>
-          <span aria-hidden className="h-2.5 w-2.5 rounded-full bg-[#c9a86a]" />
+          {icoonBadge(LandmarkIcoon, "#f7f1e4", "#c9a86a", "#8a6d35")}
           Rechtbanken ({aantallen ? aantallen.rechtbank : "…"})
         </button>
         <span className="mx-1 hidden h-5 w-px bg-line-strong sm:block" aria-hidden />
@@ -423,9 +530,11 @@ export function MeldingenKaart() {
       </div>
 
       <p className="mt-3 text-xs leading-relaxed text-muted-2">
-        Kaart: OpenFreeMap (OpenStreetMap-gegevens), zonder API-sleutel.
-        Openbare zaken op stadsniveau; meldingen afgerond op ongeveer een
-        kilometer. Politiebureaus en rechtbanken: OpenStreetMap.
+        Elk punt heeft een eigen icoon: schild = politiebureau, zuilen =
+        rechtbank, hamer = rechterlijke uitspraak, bloem = overleden na
+        politieoptreden, waarschuwingsdriehoek = melding van geweld. Kaart:
+        OpenFreeMap (OpenStreetMap-gegevens), zonder API-sleutel. Openbare
+        zaken op stadsniveau; meldingen afgerond op ongeveer een kilometer.
       </p>
 
       {tellingen.size > 0 ? (
