@@ -210,6 +210,7 @@ export function MeldingenKaart() {
   });
   const [punten, setPunten] = useState<KaartPunt[] | null>(null);
   const [nieuwsGepind, setNieuwsGepind] = useState<number | null>(null);
+  const [overledenAantal, setOverledenAantal] = useState<number | null>(null);
   const [laatsteNieuws, setLaatsteNieuws] = useState<
     { titel: string; bron: string; url: string; datum: string; live: boolean }[]
   >([]);
@@ -408,12 +409,30 @@ export function MeldingenKaart() {
         .addTo(map)
     );
 
-    // Laag: overleden onder verantwoordelijkheid van wetshandhavers
-    // (openbare database Controle Alt Delete; bewust zonder namen).
-    markersOverleden.current = CAD_ZAKEN.map((zaak) =>
-      new Marker({
-        element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28),
-      })
+    // Laag: overleden onder verantwoordelijkheid van wetshandhavers. De
+    // lijst wordt dagelijks automatisch opgehaald uit de openbare database
+    // van Controle Alt Delete; de statische kopie dient als terugval.
+    // (Bewust zonder namen; naam en verhaal staan bij de bron.)
+    interface OverledenZaak {
+      id: string;
+      jaar: string;
+      plaats: string;
+      lat: number;
+      lng: number;
+      geweld: string;
+      geschoten: string;
+      vervolgd: string;
+      veroordeeld: string;
+      status: string;
+      bronUrl: string;
+      bronLabel: string;
+    }
+    const huidigJaar = String(new Date().getFullYear());
+    function maakOverledenMarker(zaak: OverledenZaak) {
+      const element = maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28);
+      element.classList.add("marker-in");
+      if (zaak.jaar === huidigJaar) element.classList.add("marker-brand");
+      const marker = new Marker({ element })
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
@@ -424,9 +443,26 @@ export function MeldingenKaart() {
               `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${zaak.bronLabel}</a><br>` +
               `<span style="opacity:.7">Naam en verhaal staan in de database van Controle Alt Delete.</span>`
           )
-        )
-        .addTo(map)
-    );
+        );
+      if (toonStand.current.overleden) marker.addTo(map);
+      markersOverleden.current.push(marker);
+    }
+    async function laadOverleden() {
+      try {
+        const antwoord = await fetch("/api/overleden");
+        const data = await antwoord.json();
+        if (Array.isArray(data.zaken) && data.zaken.length > 0) {
+          data.zaken.forEach(maakOverledenMarker);
+          setOverledenAantal(data.zaken.length);
+          return;
+        }
+        throw new Error("lege lijst");
+      } catch {
+        CAD_ZAKEN.forEach(maakOverledenMarker);
+        setOverledenAantal(CAD_ZAKEN.length);
+      }
+    }
+    void laadOverleden();
 
     // Laag: meldingen van bezoekers (rood, afgerond op ongeveer 1 km).
     const stop = luisterNaarKaartpunten(
@@ -662,7 +698,7 @@ export function MeldingenKaart() {
         </button>
         <button type="button" onClick={() => setToonOverleden((w) => !w)} aria-pressed={toonOverleden} className={chip(toonOverleden)}>
           <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#e5484d" icoonKleur="#c93a3f" />
-          Overleden ({CAD_ZAKEN.length})
+          Overleden ({overledenAantal ?? "…"})
         </button>
         <button type="button" onClick={() => setToonNieuws((w) => !w)} aria-pressed={toonNieuws} className={chip(toonNieuws)}>
           <IcoonChipBadge icoon={ICOON_NIEUWS} badgeKleur="#f4f5f6" randKleur="#07090c" icoonKleur="#07090c" />
@@ -786,7 +822,7 @@ export function MeldingenKaart() {
       <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-2">
         <span>nieuws {nieuwsGepind ?? "…"}</span>
         <span>rechtszaken {OPENBARE_ZAKEN.length}</span>
-        <span>overleden {CAD_ZAKEN.length}</span>
+        <span>overleden {overledenAantal ?? "…"}</span>
         <span>politiebureaus {aantallen ? aantallen.politie : "…"}</span>
         <span>rechtbanken {aantallen ? aantallen.rechtbank : "…"}</span>
         <span>meldingen {punten === null ? "…" : aantalMeldingen}</span>
