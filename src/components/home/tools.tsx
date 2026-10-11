@@ -65,7 +65,8 @@ export function Tools() {
                 Meldingenkaart
               </h3>
               <p className="mt-3 leading-relaxed text-muted">
-                Zie waar incidenten zich voordoen, zonder externe trackers.
+                Zie waar incidenten zich voordoen. Alleen afgeronde locaties,
+                nooit je verhaal.
               </p>
             </div>
             <DotMap />

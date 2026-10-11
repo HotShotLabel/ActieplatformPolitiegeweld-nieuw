@@ -30,5 +30,25 @@ pnpm check      # typecheck + lint + build
 
 ## Status
 
-Fase 1: nieuwe basis en homepage. Daarna: meldformulier met opslag,
-eigen meldingenkaart, vraagbaak en juridische modelbrieven.
+Fase 1 klaar: nieuwe basis en homepage.
+Fase 2 klaar: echt meldformulier met opslag (Firebase Firestore, servers in
+de EU) en een eigen meldingenkaart (Leaflet, vrije kaarttegels).
+
+Let op: de meldingen staan in een eigen Firestore-database met id `default`
+(naast `(default)`), omdat de standaarddatabase op dit gratis project om
+billing vraagt. De web-config staat in `src/lib/firebase.ts`; dat is geen
+geheim. De beveiliging zit in `firestore.rules`:
+
+- `meldingen`: alleen schrijven (met strenge validatie), nooit publiek lezen.
+- `kaartpunten`: publiek leesbaar, alleen toevoegen, alleen afgeronde punten.
+
+Nog te harden: misbruikbescherming op het formulier (bijv. Firebase App Check).
+
+## Uitrollen
+
+- Site: automatisch via Vercel bij elke push naar `main`.
+- Firestore-regels: `firebase deploy --only firestore:rules` (staat in
+  `firebase.json`, database `default`).
+
+Daarna: fase 3 (vraagbaak met gratis AI) en fase 4 (modelbrieven en
+uitspraken-databank).
