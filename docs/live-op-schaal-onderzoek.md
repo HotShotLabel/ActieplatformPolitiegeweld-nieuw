@@ -92,3 +92,19 @@ Twee werkende routes naar 50+ gelijktijdige uitzendingen:
 
 Daarnaast altijd: externe live-links verzamelen op de site + directe
 video-insturing, want die schalen zonder enige technische grens.
+
+## Update 11 oktober 2026: opslag naar Cloudflare R2
+
+De gratis Vercel-opslag (1 GB, en bij overschrijding 30 dagen op slot) is
+vervangen door **Cloudflare R2**: 10 GB gratis opslag, onbeperkt gratis
+dataverkeer, EU-locatie (West-Europa).
+
+- Bucket: `actieplatformpolitiegeweld` (account 498e0ac4ef806491d901ab9bd07b0c89)
+- Uploads: telefoon krijgt een tijdelijke uploadlink (2 uur geldig) en stuurt
+  het bestand rechtstreeks naar R2.
+- Kijken/downloaden: ondertekende links (7 dagen geldig), bucket blijft dicht.
+- Opruimen: verlopen opnames (30 dagen) worden uit R2 en de database verwijderd.
+- Let op: voor uploads vanuit de browser moet de bucket-CORS eenmalig goed
+  staan (dashboard: R2 -> bucket -> Settings -> CORS Policy).
+- Getest 11-10-2026 op productie: uploadlink, upload, registratie, ondertekende
+  kijklink (206 video/mp4) en verwijderen (R2 + database) werken.
