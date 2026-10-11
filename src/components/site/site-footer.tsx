@@ -6,6 +6,7 @@ const PLATFORM_LINKS = [
   { href: "/uitspraken", label: "Uitspraken" },
   { href: "/overleden", label: "Overleden na politieoptreden" },
   { href: "/cijfers", label: "Politiegeweld in cijfers" },
+  { href: "/nieuws", label: "Nieuws" },
   { href: "/juridisch", label: "Juridische hulp" },
 ];
 

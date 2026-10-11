@@ -16,8 +16,8 @@ const LINKS = [
   { href: "/uitspraken", label: "Uitspraken" },
   { href: "/overleden", label: "Overleden" },
   { href: "/cijfers", label: "Cijfers" },
+  { href: "/nieuws", label: "Nieuws" },
   { href: "/juridisch", label: "Juridisch" },
-  { href: "/chat", label: "Chat" },
   { href: "/meedoen", label: "Meedoen" },
 ];
 
