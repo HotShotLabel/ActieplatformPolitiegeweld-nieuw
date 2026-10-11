@@ -32,19 +32,34 @@ export function NieuwsLijst() {
   const [zoek, setZoek] = useState("");
   const [soort, setSoort] = useState<NieuwsSoort | "alles">("alles");
   const [zichtbaar, setZichtbaar] = useState(60);
+  const [bijgewerktOp, setBijgewerktOp] = useState("");
 
   useEffect(() => {
     let actief = true;
-    fetch("/api/nieuws")
-      .then((antwoord) => antwoord.json())
-      .then((data: { berichten: Bericht[] }) => {
-        if (actief) setBerichten(data.berichten);
-      })
-      .catch(() => {
-        if (actief) setMislukt(true);
-      });
+    let eerste = true;
+    const laad = async () => {
+      try {
+        const antwoord = await fetch("/api/nieuws");
+        const data = (await antwoord.json()) as { berichten: Bericht[] };
+        if (!actief) return;
+        setBerichten(data.berichten);
+        setMislukt(false);
+        eerste = false;
+        setBijgewerktOp(
+          new Date().toLocaleTimeString("nl-NL", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        );
+      } catch {
+        if (actief && eerste) setMislukt(true);
+      }
+    };
+    void laad();
+    const timer = setInterval(() => void laad(), 300_000);
     return () => {
       actief = false;
+      clearInterval(timer);
     };
   }, []);
 
@@ -137,6 +152,7 @@ export function NieuwsLijst() {
               ? `${zichtbaar} van ${resultaten.length} berichten`
               : `${resultaten.length} ${resultaten.length === 1 ? "bericht" : "berichten"}`}
             {zoek.trim() ? ` voor “${zoek.trim()}”` : ""}
+            {bijgewerktOp ? ` · bijgewerkt om ${bijgewerktOp}` : ""}
           </p>
           <ul className="mt-4 divide-y divide-line border-t border-line">
             {resultaten.slice(0, zichtbaar).map((bericht) => (

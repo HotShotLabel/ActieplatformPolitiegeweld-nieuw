@@ -1,7 +1,10 @@
+import { createHash } from "crypto";
 import { NIEUWS_ARCHIEF, type NieuwsSoort } from "@/lib/nieuws-archief";
 import { NIEUWS_GEOOGST } from "@/lib/nieuws-geoogst";
 import { isPolitiegeweldNieuws } from "@/lib/nieuws-filter";
 import { NL_PLAATSEN } from "@/lib/nl-plaatsen";
+import { haalZoekBerichten } from "@/lib/exa-zoek";
+import { getAdminDb } from "@/lib/firebase-admin";
 
 export const maxDuration = 60;
 
@@ -131,24 +134,127 @@ function parseFeed(xml: string, bron: string): Bericht[] {
 }
 
 export async function GET() {
-  const resultaten = await Promise.all(
-    FEEDS.map(async (feed) => {
-      try {
-        const antwoord = await fetch(feed.url, {
-          headers: { "User-Agent": UA, Accept: "application/rss+xml, application/xml, text/xml" },
-          signal: AbortSignal.timeout(15_000),
-          next: { revalidate: 1800 },
-        });
-        if (!antwoord.ok) return [];
-        return parseFeed(await antwoord.text(), feed.bron);
-      } catch {
-        return [];
+  const [rssResultaten, zoekBerichten] = await Promise.all([
+    Promise.all(
+      FEEDS.map(async (feed) => {
+        try {
+          const antwoord = await fetch(feed.url, {
+            headers: {
+              "User-Agent": UA,
+              Accept: "application/rss+xml, application/xml, text/xml",
+            },
+            signal: AbortSignal.timeout(15_000),
+            next: { revalidate: 1800 },
+          });
+          if (!antwoord.ok) return [];
+          return parseFeed(await antwoord.text(), feed.bron);
+        } catch {
+          return [];
+        }
+      })
+    ),
+    haalZoekBerichten(),
+  ]);
+
+  // Doorlopende zoekvondsten opslaan zodat alles wat nieuw is bewaard blijft
+  // en de lijst zichzelf opbouwt (de database groeit vanzelf).
+  let opgeslagen: Bericht[] = [];
+  try {
+    const db = getAdminDb();
+    const verzameling = db.collection("nieuws");
+    const snapshot = await verzameling.orderBy("datum", "desc").limit(600).get();
+    opgeslagen = snapshot.docs.map((document) => {
+      const data = document.data();
+      const bericht: Bericht = {
+        titel: String(data.titel ?? ""),
+        bron: String(data.bron ?? ""),
+        url: String(data.url ?? ""),
+        datum: String(data.datum ?? ""),
+        live: false,
+        soort: (data.soort ?? "overig") as NieuwsSoort,
+      };
+      if (data.auteur) bericht.auteur = String(data.auteur);
+      if (data.plaats) bericht.plaats = String(data.plaats);
+      if (typeof data.lat === "number") bericht.lat = data.lat;
+      if (typeof data.lng === "number") bericht.lng = data.lng;
+      return bericht;
+    });
+
+    const bekend = new Set(opgeslagen.map((bericht) => bericht.url));
+    const nieuwe = zoekBerichten.filter((bericht) => !bekend.has(bericht.url));
+    if (nieuwe.length > 0) {
+      const batch = db.batch();
+      for (const bericht of nieuwe) {
+        const id = createHash("sha1").update(bericht.url).digest("hex").slice(0, 32);
+        const plaats = plaatsVoorTitel(bericht.titel);
+        batch.set(
+          verzameling.doc(id),
+          {
+            titel: bericht.titel,
+            bron: bericht.bron,
+            url: bericht.url,
+            datum: bericht.datum,
+            auteur: bericht.auteur ?? "",
+            soort: soortVoorLive(bericht.titel),
+            plaats: plaats?.plaats ?? "",
+            lat: plaats?.lat ?? null,
+            lng: plaats?.lng ?? null,
+          },
+          { merge: true }
+        );
       }
+      await batch.commit();
+      opgeslagen = [
+        ...nieuwe.map((bericht) => ({
+          titel: bericht.titel,
+          bron: bericht.bron,
+          url: bericht.url,
+          datum: bericht.datum,
+          live: false,
+          soort: soortVoorLive(bericht.titel),
+          ...(bericht.auteur ? { auteur: bericht.auteur } : {}),
+          ...(plaatsVoorTitel(bericht.titel) ?? {}),
+        })),
+        ...opgeslagen,
+      ];
+    }
+  } catch (fout) {
+    console.error("Nieuws opslaan mislukte:", fout);
+  }
+
+  const nu = Date.now();
+  const metLiveVlag = (bericht: Bericht, basis: boolean): Bericht => ({
+    ...bericht,
+    live:
+      basis ||
+      (bericht.datum !== "" &&
+        nu - new Date(`${bericht.datum}T12:00:00Z`).getTime() < 3 * 86_400_000),
+  });
+
+  const gezienLive = new Set<string>();
+  const live: Bericht[] = [];
+  const voegLiveToe = (bericht: Bericht) => {
+    if (!bericht.url || gezienLive.has(bericht.url)) return;
+    gezienLive.add(bericht.url);
+    live.push(bericht);
+  };
+
+  rssResultaten.flat().forEach((bericht) => voegLiveToe(metLiveVlag(bericht, true)));
+  opgeslagen.forEach((bericht) => voegLiveToe(metLiveVlag(bericht, false)));
+  zoekBerichten.forEach((bericht) =>
+    voegLiveToe({
+      titel: bericht.titel,
+      bron: bericht.bron,
+      url: bericht.url,
+      datum: bericht.datum,
+      live: bericht.live,
+      soort: soortVoorLive(bericht.titel),
+      auteur: bericht.auteur,
+      ...(plaatsVoorTitel(bericht.titel) ?? {}),
     })
   );
 
-  const live = resultaten.flat();
-  const liveUrls = new Set(live.map((bericht) => bericht.url));
+  const liveUrls = gezienLive;
   const archiefUrls = new Set(NIEUWS_ARCHIEF.map((bericht) => bericht.url));
 
   const archief: Bericht[] = NIEUWS_ARCHIEF.filter(
@@ -164,7 +270,10 @@ export async function GET() {
   );
 
   return Response.json(
-    { berichten: alles, liveAantal: live.length },
+    {
+      berichten: alles,
+      liveAantal: alles.filter((bericht) => bericht.live).length,
+    },
     {
       headers: {
         "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600",

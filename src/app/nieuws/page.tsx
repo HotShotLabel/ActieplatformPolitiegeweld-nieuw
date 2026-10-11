@@ -26,6 +26,9 @@ export default function NieuwsPage() {
           Drenthe, Omrop Fryslân, RTV Oost, Omroep Gelderland, RTV Utrecht,
           Omroep West, Rijnmond, Omroep Brabant, Omroep Zeeland, L1, Blik op
           Nieuws) en uit een gerichte oogst van duizenden zoekresultaten.
+          Daarnaast lopen er doorlopend zoekopdrachten over het hele web en
+          ververst de pagina zichzelf elke vijf minuten, zodat nieuwe
+          berichten automatisch binnenkomen zonder handwerk.
         </p>
         <p className="mt-4 max-w-[66ch] text-sm leading-relaxed text-muted-2">
           Elke titel linkt naar het originele bericht; wij publiceren zelf geen

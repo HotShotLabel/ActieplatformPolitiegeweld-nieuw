@@ -18,5 +18,10 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+
+    // Automatisch verzamelde nieuwsberichten (alleen via de server).
+    match /nieuws/{document} {
+      allow read, write: if false;
+    }
   }
 }
