@@ -66,8 +66,17 @@ Bandbreedte-rekensom: 1 kijker op 1 Mbps = ~0,45 GB per uur. 20 TB = ruwweg
 - **Cloudflare Realtime (SFU/TURN)**: eerste 1.000 GB/mnd gratis, dan $0.05/GB.
   Rauwe bouwstenen; eigen signaal/room-laag nodig. Meer werk, geen kant-en-klare oplossing.
   (bron: developers.cloudflare.com/realtime/sfu/pricing)
-- **Agora**: 10.000 gratis minuten/mnd; daarna $45,99/mnd voor 50.000 minuten.
+- **Agora**: 10.000 gratis standaardminuten/mnd (video HD telt 4x, dus ~2.500
+  videominuten); daarna $45,99/mnd voor 50.000 minuten.
   (bron: agora.io/en/pricing + docs.agora.io)
+- **Daily.co**: 10.000 gratis deelnemerminuten/mnd; daarna $0,004/min; tot
+  100.000 gelijktijdige sessies met kaart op het account; SDK-bouw nodig.
+  (bron: daily.co/pricing/video-sdk)
+- **Jitsi meet.jit.si (gratis publiek)**: sinds 9 oktober 2026 max 95 minuten per
+  vergadering; de eerste persoon moet inloggen (Google/GitHub/Facebook);
+  insluiten op andere sites beperkt tot 5-minuten-demo's. Niet geschikt voor ons.
+  Zelf gehoste Jitsi heeft geen limieten, maar dan beheer je zelf een server.
+  (bron: jitsi.org/blog/changes-coming + jitsi.help + jitsi.org/blog/authentication-on-meet-jit-si)
 - **Externe kanalen**: mensen met TikTok/YouTube/Instagram gaan daar live;
   wij tonen de links. Kost niets, schaalt oneindig.
 
