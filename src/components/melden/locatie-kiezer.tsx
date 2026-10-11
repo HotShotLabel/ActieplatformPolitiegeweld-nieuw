@@ -73,6 +73,7 @@ export function LocatieKiezer({
   return (
     <div
       ref={containerRef}
+      data-lenis-prevent=""
       role="application"
       aria-label="Kies de plek op de kaart"
       className="h-64 w-full overflow-hidden rounded-lg border border-line"

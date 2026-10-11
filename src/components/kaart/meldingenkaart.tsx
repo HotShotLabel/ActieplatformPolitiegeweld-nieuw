@@ -491,6 +491,7 @@ export function MeldingenKaart() {
       <div className="relative overflow-hidden rounded-xl border border-line">
         <div
           ref={containerRef}
+          data-lenis-prevent=""
           role="application"
           aria-label="Kaart met meldingen, rechtspraak, overledenen, politiebureaus en rechtbanken"
           className="h-[62vh] min-h-[420px] w-full"
