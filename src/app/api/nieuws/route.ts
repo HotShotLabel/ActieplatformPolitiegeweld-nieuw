@@ -251,9 +251,34 @@ export async function GET() {
     live.push(bericht);
   };
 
-  rssResultaten.flat().forEach((bericht) => voegLiveToe(metLiveVlag(bericht, true)));
-  opgeslagen.forEach((bericht) => voegLiveToe(metLiveVlag(bericht, false)));
-  zoekBerichten.forEach((bericht) =>
+  /* Verrijkte plaatsen uit de geoogste set doorwerken op dubbels: staat
+     hetzelfde artikel ook als live- of opgeslagen bericht zonder plaats,
+     dan krijgt die versie de plaats alsnog. */
+  const plaatsPerUrl = new Map<
+    string,
+    { plaats: string; lat: number; lng: number }
+  >();
+  for (const bericht of NIEUWS_GEOOGST) {
+    if (typeof bericht.lat === "number" && typeof bericht.lng === "number") {
+      plaatsPerUrl.set(bericht.url, {
+        plaats: bericht.plaats ?? "",
+        lat: bericht.lat,
+        lng: bericht.lng,
+      });
+    }
+  }
+  const metPlaatsBij = <T extends { url: string; lat?: number }>(bericht: T): T => {
+    if (typeof bericht.lat === "number") return bericht;
+    const extra = plaatsPerUrl.get(bericht.url);
+    return extra ? { ...bericht, ...extra } : bericht;
+  };
+
+  rssResultaten.flat().forEach((bericht) =>
+    voegLiveToe(metLiveVlag(metPlaatsBij(bericht), true))
+  );
+  opgeslagen.forEach((bericht) =>
+    voegLiveToe(metLiveVlag(metPlaatsBij(bericht), false))
+  );  zoekBerichten.forEach((bericht) =>
     voegLiveToe({
       titel: bericht.titel,
       bron: bericht.bron,
@@ -271,7 +296,7 @@ export async function GET() {
 
   const archief: Bericht[] = NIEUWS_ARCHIEF.filter(
     (bericht) => !liveUrls.has(bericht.url)
-  ).map((bericht) => ({ ...bericht, live: false }));
+  ).map((bericht) => ({ ...metPlaatsBij(bericht), live: false }));
 
   const geoogst: Bericht[] = NIEUWS_GEOOGST.filter(
     (bericht) => !liveUrls.has(bericht.url) && !archiefUrls.has(bericht.url)
