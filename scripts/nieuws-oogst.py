@@ -139,7 +139,43 @@ BRON_PER_DOMEIN = {
     "republiq.nl": "Republiq",
     "nl.newz.com": "Newz",
     "dagelijksestandaard.nl": "Dagelijkse Standaard",
+    "oost.nl": "Oost",
+    "openrotterdam.nl": "OPEN Rotterdam",
+    "nieuws.nl": "Nieuws.nl",
+    "112vdg.nl": "112 Vandaag",
+    "crime-nieuws.nl": "Crime Nieuws",
+    "hartvannederland.nl": "Hart van Nederland",
+    "nltimes.nl": "NL Times",
+    "rd.nl": "Reformatorisch Dagblad",
+    "frontpage.fok.nl": "FOK",
+    "limburger.nl": "De Limburger",
+    "duic.nl": "DUIC",
 }
+
+# Strikte relevantie: alleen politiegeweld en agenten buiten de regels.
+_P = r"(politie|politieagent|politieambtenaar|agent|agenten|verbalisant|wetshandhaver)"
+_A = r"(politieagent|politieambtenaar|agent|agenten|verbalisant)"
+PATRONEN = [
+    r"(doodgeschoten|neergeschoten) door (de |een )?(politie|agent|politieagent|politieambtenaar)|door (de |een )?(politie|agent|politieagent|politieambtenaar)[a-zèé']* (doodgeschoten|neergeschoten)|politiekogel|dodelijk schietincident met de politie|dodelijk politieoptreden|dodelijk politie-ingrijpen",
+    r"(overleed|overleden|om het leven gekomen|omgekomen|doodgeschoten|neergeschoten)[^.]{0,60}(aanhouding|arrestatie|politiecel|politie-?cel|vervoer|politieoptreden|politie-?ingrijpen|achtervolging|nekklem|taser|pepperspray|politiegeweld)",
+    r"(aanhouding|arrestatie|politiecel|politie-?cel|vervoer|politieoptreden|achtervolging|nekklem|taser|politiegeweld)[^.]{0,60}(overleed|overleden|om het leven|omgekomen|dodelijk)",
+    r"politiegeweld|geweldsexces|(buitensporig|disproportioneel|excessief) geweld[^.]{0,60}(politie|agent)|(politie|agent)[^.]{0,60}(buitensporig|disproportioneel|excessief) geweld",
+    rf"{_A}[^.]{{0,80}}(veroordeeld|vervolgd|vrijgesproken|mishandel|geslagen|geschopt|geschoten|nekklem|doodslag|dood door schuld|buiten het boekje)",
+    rf"(veroordeeld|vervolgd|vrijgesproken|beschuldigd|verdachte)[^.]{{0,60}}(politieagent|politieambtenaar|agent|agenten|verbalisant)",
+    r"rijksrecherche",
+    r"artikel 12|12-procedure|12 sv|klaagschrift",
+    r"(aansprakelijk|schadevergoeding|onrechtmatige daad|onrechtmatig)[^.]{0,80}(politie|politieoptreden|aanhouding|schietincident|achtervolging)",
+    r"(politie|politieauto|politiebus|dienstauto)[^.]{0,80}(achtervolging|reed in|rijdt in|aanrijding|crash|ongeval)[^.]{0,80}(gewond|dodelijk|overleed|overleden|omgekomen)",
+    rf"{_P}[^.]{{0,60}}(schoot|schiet|schoten|vuurwapen)[^.]{{0,60}}(man|vrouw|jongen|meisje|slachtoffer|verdachte|inwoner|persoon|omstander)",
+    rf"{_P}[^.]{{0,50}}(nekklem|klemgreep|verwurg)",
+]
+
+
+def is_politiegeweld(tekst):
+    t = tekst.lower()
+    if not re.search(r"politie|agent|verbalisant", t):
+        return False
+    return any(re.search(patroon, t) for patroon in PATRONEN)
 
 
 def mcp_sessie():
@@ -248,6 +284,8 @@ def main():
                 if any(domein in item["url"] for domein in BUITENSLUIT):
                     continue
                 if "ECLI" in item["titel"]:
+                    continue
+                if not is_politiegeweld(item["titel"]):
                     continue
                 gevonden[sleutel] = item
                 nieuw += 1

@@ -1,5 +1,6 @@
 import { NIEUWS_ARCHIEF, type NieuwsSoort } from "@/lib/nieuws-archief";
 import { NIEUWS_GEOOGST } from "@/lib/nieuws-geoogst";
+import { isPolitiegeweldNieuws } from "@/lib/nieuws-filter";
 
 export const maxDuration = 60;
 
@@ -28,9 +29,8 @@ const FEEDS = [
   { bron: "Blik op Nieuws", url: "https://www.blikopnieuws.nl/feeds/1841/rss.xml" },
 ];
 
-/* Alleen berichten die echt over politiegeweld of politieoptreden gaan. */
-const RELEVANT =
-  /politiegeweld|rijksrecherche|(politie|politieagent|agent|agenten|verbalisant)[^.]{0,80}(geweld|aanhouding|aangehouden|overleden|overleed|dood|dodelijk|mishandel|geschoten|schiet|nekklem|achtervolging|stroomstoot|taser|pepperspray|wapenstok|politiecel|cel|bureau)/i;
+/* Alleen berichten die echt over politiegeweld of grensoverschrijdend
+   politieoptreden gaan; zie lib/nieuws-filter.ts. */
 
 export interface Bericht {
   titel: string;
@@ -79,7 +79,7 @@ function parseFeed(xml: string, bron: string): Bericht[] {
     const url = ontstrip(linkMatch[1]);
     const oms = omsMatch ? ontstrip(omsMatch[1]) : "";
     if (!titel || !url.startsWith("http")) continue;
-    if (!RELEVANT.test(`${titel} ${oms}`)) continue;
+    if (!isPolitiegeweldNieuws(`${titel} ${oms}`)) continue;
     let datum = "";
     if (datumMatch) {
       const parsed = new Date(ontstrip(datumMatch[1]));
