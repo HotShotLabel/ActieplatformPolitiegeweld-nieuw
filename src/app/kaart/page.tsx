@@ -20,9 +20,10 @@ export default function KaartPage() {
               Meldingenkaart
             </h1>
             <p className="mt-5 max-w-[62ch] text-lg leading-relaxed text-muted">
-              Elk punt is een melding waarvan de melder koos hem te tonen.
-              Afgerond op ongeveer een kilometer, met alleen het soort incident
-              en de maand.
+              De kaart toont twee soorten punten: openbare zaken uit rechtspraak
+              en onderzoek (met bron, op stadsniveau) en meldingen van
+              bezoekers (anoniem, afgerond op ongeveer een kilometer). Beide
+              lagen kun je apart aan- en uitzetten.
             </p>
           </div>
           <Link href="/melden" className={btnPrimary}>
