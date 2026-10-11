@@ -38,6 +38,11 @@ export async function liveStand(): Promise<LiveStand> {
     const kamers = await roomService().listRooms([LIVE_RUIMTE]);
     const kamer = kamers[0];
     if (!kamer || (kamer.numParticipants ?? 0) === 0) return leeg;
+    // Alleen een deelnemer met zendrecht telt: is die weg, dan is het
+    // geen live-uitzending meer (achterblijvende kijkers tellen niet).
+    const mensen = await roomService().listParticipants(LIVE_RUIMTE);
+    const uitzender = mensen.find((deelnemer) => deelnemer.permission?.canPublish);
+    if (!uitzender) return leeg;
     let titel = "";
     let gestartOp = "";
     try {
@@ -50,7 +55,7 @@ export async function liveStand(): Promise<LiveStand> {
     return {
       live: true,
       titel: titel || "Live-uitzending",
-      kijkers: Math.max(0, kamer.numParticipants - 1),
+      kijkers: Math.max(0, mensen.length - 1),
       gestartOp,
     };
   } catch (fout) {
@@ -108,7 +113,7 @@ export async function maakToken(opties: {
     room: LIVE_RUIMTE,
     canPublish: opties.uitzender,
     canSubscribe: true,
-    canPublishData: false,
+    canPublishData: true,
     roomCreate: opties.uitzender,
   });
   return token.toJwt();

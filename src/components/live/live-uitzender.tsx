@@ -14,6 +14,13 @@ import {
 import { upload } from "@vercel/blob/client";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
+import {
+  HartjesLaag,
+  LiveChat,
+  maakId,
+  type LiveBericht,
+  type LiveHart,
+} from "@/components/live/live-chat";
 
 const MAX_SECONDEN = 60 * 60; // harde grens: 60 minuten
 const WAARSCHUWING_SECONDEN = 55 * 60;
@@ -36,6 +43,8 @@ export function LiveUitzender() {
   const [seconden, setSeconden] = useState(0);
   const [uploadPct, setUploadPct] = useState(0);
   const [heeftBeeld, setHeeftBeeld] = useState(true);
+  const [berichten, setBerichten] = useState<LiveBericht[]>([]);
+  const [harten, setHarten] = useState<LiveHart[]>([]);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -57,6 +66,70 @@ export function LiveUitzender() {
     faseRef.current = nieuw;
     setFase(nieuw);
   }, []);
+
+  const voegHartToe = useCallback(() => {
+    const nieuw: LiveHart = {
+      id: maakId(),
+      links: 6 + Math.round(Math.random() * 78),
+      groot: Math.random() > 0.5,
+    };
+    setHarten((huidig) => [...huidig.slice(-14), nieuw]);
+    window.setTimeout(
+      () => setHarten((huidig) => huidig.filter((hart) => hart.id !== nieuw.id)),
+      2400
+    );
+  }, []);
+
+  const verwerkData = useCallback(
+    (payload: Uint8Array) => {
+      try {
+        const data = JSON.parse(new TextDecoder().decode(payload));
+        if (data?.soort === "chat" && typeof data.tekst === "string") {
+          setBerichten((huidig) => [
+            ...huidig.slice(-79),
+            {
+              id: maakId(),
+              naam: String(data.naam ?? "Kijker").slice(0, 30),
+              tekst: data.tekst.slice(0, 200),
+            },
+          ]);
+        } else if (data?.soort === "hart") {
+          voegHartToe();
+        }
+      } catch {
+        // onbekend bericht; negeren
+      }
+    },
+    [voegHartToe]
+  );
+
+  const stuurData = useCallback((inhoud: Record<string, unknown>) => {
+    const kamer = roomRef.current;
+    if (!kamer) return;
+    kamer.localParticipant
+      .publishData(new TextEncoder().encode(JSON.stringify(inhoud)), {
+        reliable: true,
+        topic: "live-bericht",
+      })
+      .catch(() => {});
+  }, []);
+
+  const stuurChat = useCallback(
+    (tekst: string) => {
+      const berichtNaam = naam.trim() || "Uitzender";
+      setBerichten((huidig) => [
+        ...huidig.slice(-79),
+        { id: maakId(), naam: berichtNaam, tekst },
+      ]);
+      stuurData({ soort: "chat", naam: berichtNaam, tekst });
+    },
+    [naam, stuurData]
+  );
+
+  const stuurHart = useCallback(() => {
+    voegHartToe();
+    stuurData({ soort: "hart", naam: naam.trim() || "Uitzender" });
+  }, [naam, stuurData, voegHartToe]);
 
   const allesStoppen = useCallback(() => {
     window.clearInterval(timerRef.current);
@@ -160,6 +233,8 @@ export function LiveUitzender() {
         (Date.now() - startTijdRef.current) / 1000
       );
     }
+    // Kijkers meteen laten weten dat het klaar is.
+    stuurData({ soort: "einde" });
     window.clearInterval(timerRef.current);
     const recorder = recorderRef.current;
     if (recorder && recorder.state !== "inactive") {
@@ -181,13 +256,15 @@ export function LiveUitzender() {
       setMelding("Er is niets opgenomen.");
       zetFase("fout");
     }
-  }, [allesStoppen, verstuurOpname, zetFase]);
+  }, [allesStoppen, stuurData, verstuurOpname, zetFase]);
 
   const start = useCallback(async () => {
     if (faseRef.current === "bezig" || faseRef.current === "live") return;
     setMelding("");
     setSeconden(0);
     setKijkers(0);
+    setBerichten([]);
+    setHarten([]);
     chunksRef.current = [];
     zetFase("bezig");
 
@@ -304,6 +381,9 @@ export function LiveUitzender() {
       kamer.on(RoomEvent.ParticipantDisconnected, () =>
         setKijkers(kamer.remoteParticipants.size)
       );
+      kamer.on(RoomEvent.DataReceived, (payload: Uint8Array) =>
+        verwerkData(payload)
+      );
       kamer.on(RoomEvent.Disconnected, () => {
         if (faseRef.current === "live") {
           setMelding(
@@ -355,7 +435,7 @@ export function LiveUitzender() {
       );
       zetFase("fout");
     }
-  }, [allesStoppen, kiesMime, naam, stop, titel, zetFase]);
+  }, [allesStoppen, kiesMime, naam, stop, titel, verwerkData, zetFase]);
 
   const minuten = Math.floor(seconden / 60);
   const restSeconden = seconden % 60;
@@ -363,7 +443,22 @@ export function LiveUitzender() {
   return (
     <div className="space-y-6">
       <video ref={videoRef} muted playsInline className="hidden" />
-      <canvas ref={canvasRef} className="hidden" />
+      <div
+        className={cn(
+          "relative",
+          fase === "live" || fase === "stoppen" ? "block" : "hidden"
+        )}
+      >
+        <canvas
+          ref={canvasRef}
+          className="w-full rounded-2xl border border-accent/40 bg-black"
+        />
+        <HartjesLaag harten={harten} />
+        <p className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-accent px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-white">
+          <span aria-hidden className="h-2 w-2 animate-pulse rounded-full bg-white" />
+          Live
+        </p>
+      </div>
 
       {(fase === "klaar" || fase === "bezig" || fase === "fout") && (
         <div className="rounded-2xl border border-line bg-white/[0.02] p-8 md:p-10">
@@ -475,6 +570,15 @@ export function LiveUitzender() {
             vanzelf wakker. Na het stoppen wordt de opname automatisch
             geüpload.
           </p>
+          <div className="mt-6">
+            <LiveChat
+              berichten={berichten}
+              naam={naam}
+              zetNaam={setNaam}
+              onVerstuur={stuurChat}
+              onHart={stuurHart}
+            />
+          </div>
         </div>
       )}
 
