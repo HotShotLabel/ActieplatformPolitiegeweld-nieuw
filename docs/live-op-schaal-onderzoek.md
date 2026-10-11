@@ -124,3 +124,13 @@ dataverkeer, EU-locatie (West-Europa).
   dashboard ververst continu, dus klik direct na een verse observatie.
 - De Cloudflare "Ask AI"-knop (rechtsboven) vertelt waar instellingen staan;
   gebruik hem als gids, maar verifieer het antwoord.
+
+## Update 12 oktober 2026: R2-officiele feiten (docs gelezen)
+
+- Gratis per maand: 10 GB-maand (Standard), 1 mln Class A (schrijven), 10 mln
+  Class B (lezen); downloads altijd gratis; verwijderen (DeleteObject) gratis.
+- Daarboven: $0,015/GB-maand, $4,50/mln Class A, $0,36/mln Class B.
+- Presigned URL's: max 7 dagen geldig; GET/HEAD/PUT/DELETE; geen POST
+  (daarom onze 501); CORS nodig; alleen op het S3-domein, niet op custom domains.
+- r2.dev = ontwikkel-only en rate-limited; custom domain is het productiepad.
+- Ons patroon (prive bucket + presigned PUT/GET) is het aanbevolen patroon.
