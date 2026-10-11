@@ -440,10 +440,13 @@ export function LiveUitzender() {
       // 5. Opnemen
       const mime = kiesMime();
       opnameTypeRef.current = mime.startsWith("video/mp4") ? "video/mp4" : "video/webm";
+      // Bewust HD en laag: max 720p (canvas hierboven) en ~1,2 Mbps.
+      // Geen 4K, zodat opnames klein blijven (ongeveer 90 MB per 10 minuten)
+      // en binnen de gratis opslag passen.
       const recorder = new MediaRecorder(composiet, {
         mimeType: mime || undefined,
-        videoBitsPerSecond: 2_000_000,
-        audioBitsPerSecond: 96_000,
+        videoBitsPerSecond: 1_200_000,
+        audioBitsPerSecond: 64_000,
       });
       recorder.ondataavailable = (gebeurtenis) => {
         if (gebeurtenis.data.size > 0) chunksRef.current.push(gebeurtenis.data);
@@ -548,8 +551,10 @@ export function LiveUitzender() {
           </h2>
           <p className="mt-3 max-w-[58ch] text-sm leading-relaxed text-muted">
             Je camera gaat aan, kijkers zien je meteen op de live-pagina en
-            het beeld wordt opgenomen. Als je stopt, staat de opname er
-            binnen een minuut, met het logo erin, 30 dagen online.
+            het beeld wordt opgenomen. Alles in <span className="text-foreground">HD
+            (max 720p, bewust geen 4K)</span>, zodat het klein en gratis
+            blijft. Als je stopt, staat de opname er binnen een minuut, met
+            het logo erin, 30 dagen online.
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">

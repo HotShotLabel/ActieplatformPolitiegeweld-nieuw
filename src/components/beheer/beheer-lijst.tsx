@@ -345,6 +345,11 @@ export function BeheerLijst() {
     );
   }
 
+  const totaleOpslagMb = uitzendingen.reduce(
+    (som, uitzending) => som + (Number(uitzending.grootteMb) || 0),
+    0
+  );
+
   return (
     <div>
       {/* Live-uitzending: status en noodstop */}
@@ -402,7 +407,13 @@ export function BeheerLijst() {
             Uitzendingen
           </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
-            {uitzendingen.length} online
+            {uitzendingen.length} online · opslag{" "}
+            <span
+              className={cn(totaleOpslagMb > 700 && "text-accent")}
+              title="De gratis opslag is ongeveer 1000 MB. Ruim op wanneer je er dicht bij zit."
+            >
+              {Math.round(totaleOpslagMb)} MB / ±1000 MB
+            </span>
           </p>
         </div>
         {uitzendingen.length === 0 ? (

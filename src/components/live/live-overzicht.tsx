@@ -304,9 +304,10 @@ export function LiveOverzicht() {
               Om terug te kijken
             </h2>
             <p className="mt-2 max-w-[64ch] text-sm leading-relaxed text-muted">
-              Elke uitzending bewaren we {data?.bewaardagen ?? 30} dagen. Het
-              logo van het platform zit in de video; je mag hem vrij
-              downloaden en delen.
+              Elke uitzending bewaren we {data?.bewaardagen ?? 30} dagen, in
+              HD (max 720p, bewust geen 4K) om het klein en gratis te
+              houden. Het logo van het platform zit in de video; je mag hem
+              vrij downloaden en delen.
             </p>
           </div>
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
