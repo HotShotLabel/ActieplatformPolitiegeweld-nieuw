@@ -108,3 +108,19 @@ dataverkeer, EU-locatie (West-Europa).
   staan (dashboard: R2 -> bucket -> Settings -> CORS Policy).
 - Getest 11-10-2026 op productie: uploadlink, upload, registratie, ondertekende
   kijklink (206 video/mp4) en verwijderen (R2 + database) werken.
+
+## Update 12 oktober 2026: CORS staat en werkt (browser-upload bewezen)
+
+- CORS-policy op de bucket gezet via: dashboard -> R2 -> bucket
+  `actieplatformpolitiegeweld` -> Settings -> CORS Policy (JSON-editor).
+  Origins: productiesite + localhost:3210; methodes PUT/GET/HEAD.
+- Bewijs: OPTIONS-preflight geeft Access-Control-Allow-Origin terug; een
+  PUT-upload vanuit een echte browserpagina gaf status 200; op productie
+  dezelfde test geslaagd.
+- Lessen voor het dashboard: bucket-URL bevat `/default/`
+  (`/r2/default/buckets/<naam>/settings`); R2-sleutels uit de R2-sectie zijn
+  alleen S3 (niet bruikbaar op api.cloudflare.com); R2 ondersteunt geen
+  presigned POST (501) dus uploads gaan via presigned PUT + CORS; het
+  dashboard ververst continu, dus klik direct na een verse observatie.
+- De Cloudflare "Ask AI"-knop (rechtsboven) vertelt waar instellingen staan;
+  gebruik hem als gids, maar verifieer het antwoord.
