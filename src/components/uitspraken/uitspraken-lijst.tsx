@@ -42,7 +42,7 @@ export function UitsprakenLijst() {
         uitspraak.instantie,
         uitspraak.ecli,
         uitspraak.zaaknummer,
-        uitspraak.uitkomst,
+        uitspraak.uitkomst ?? "",
         uitspraak.samenvatting,
         CATEGORIE_LABEL[uitspraak.categorie],
       ]
@@ -138,20 +138,25 @@ export function UitsprakenLijst() {
                 <h2 className="max-w-[52ch] font-display text-lg font-semibold tracking-tight md:text-xl">
                   {uitspraak.titel}
                 </h2>
-                <span
-                  className={cn(
-                    "rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em]",
-                    positieveUitkomsten.includes(uitspraak.uitkomst)
-                      ? "border-accent/50 bg-accent-soft text-foreground"
-                      : "border-line-strong text-muted"
-                  )}
-                >
-                  {uitspraak.uitkomst}
-                </span>
+                {uitspraak.uitkomst ? (
+                  <span
+                    className={cn(
+                      "rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em]",
+                      positieveUitkomsten.includes(uitspraak.uitkomst)
+                        ? "border-accent/50 bg-accent-soft text-foreground"
+                        : "border-line-strong text-muted"
+                    )}
+                  >
+                    {uitspraak.uitkomst}
+                  </span>
+                ) : null}
               </div>
               <p className="mt-2 font-mono text-xs tracking-wide text-muted-2">
                 {uitspraak.instantie} · {formatDatum(uitspraak.datum)} ·{" "}
                 {uitspraak.zaaknummer}
+                {uitspraak.samenvattingBron === "inhoudsindicatie"
+                  ? " · officiële inhoudsindicatie"
+                  : ""}
               </p>
               <p className="mt-4 max-w-[70ch] text-sm leading-relaxed text-muted">
                 {uitspraak.samenvatting}

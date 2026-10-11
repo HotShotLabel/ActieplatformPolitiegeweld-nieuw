@@ -1,8 +1,12 @@
+import { UITSPRAKEN_BULK } from "./uitspraken-bulk";
+
 export type UitspraakCategorie =
   | "agent-vervolgd"
   | "beklag-12sv"
   | "strafzaak-burger"
-  | "civiel";
+  | "geweld-tegen-politie"
+  | "civiel"
+  | "overig";
 
 export interface Uitspraak {
   ecli: string;
@@ -11,15 +15,18 @@ export interface Uitspraak {
   datum: string;
   zaaknummer: string;
   categorie: UitspraakCategorie;
-  uitkomst: string;
+  uitkomst?: string;
   samenvatting: string;
+  samenvattingBron?: "platform" | "inhoudsindicatie";
 }
 
 export const CATEGORIE_LABEL: Record<UitspraakCategorie, string> = {
   "agent-vervolgd": "Agent vervolgd",
   "beklag-12sv": "Beklag artikel 12 Sv",
   "strafzaak-burger": "Strafzaak tegen burger",
+  "geweld-tegen-politie": "Geweld tegen politie",
   civiel: "Civiele zaak",
+  overig: "Overig",
 };
 
 export function rechtspraakUrl(ecli: string): string {
@@ -31,7 +38,7 @@ export function rechtspraakUrl(ecli: string): string {
   tekst van de uitspraak zelf (via de Open Data van rechtspraak.nl); lees
   altijd de volledige uitspraak via de link. Deze lijst groeit.
 */
-export const UITSPRAKEN: Uitspraak[] = [
+const CURATED: Uitspraak[] = [
   {
     ecli: "ECLI:NL:GHAMS:2023:984",
     titel: "Beklag over wapenstokgebruik bij een vechtpartij afgewezen",
@@ -198,3 +205,7 @@ export const UITSPRAKEN: Uitspraak[] = [
       "Beklag over geweld bij een aanhouding in Someren in 2009. Het hof zag aanwijzingen dat de politieambtenaar de grenzen van de proportionaliteit in meer of mindere mate had overschreden, maar vond alsnog vervolgen onvoldoende opportuun: er was al tuchtrechtelijk gereageerd en de ambtenaar werkte niet meer bij de politie. Het beklag werd afgewezen.",
   },
 ];
+
+/* Samengevoegd: curated (eigen samenvatting) + bulk (officiële
+   inhoudsindicatie), zie scripts/uitspraken-oogst.py. */
+export const UITSPRAKEN: Uitspraak[] = [...CURATED, ...UITSPRAKEN_BULK];

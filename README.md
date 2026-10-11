@@ -48,14 +48,18 @@ Wetboek van Strafvordering (art. 12-12l), Wet open overheid (art. 4.1 en
 4.4), politie.nl/Uitvoeringsregeling klachtbehandeling en de Nationale
 ombudsman. Zie `src/lib/modelbrieven.ts`.
 
-Fase 4b klaar: /uitspraken met een doorzoekbare selectie van 15 echte
-uitspraken over politieoptreden (strafzaken tegen agenten, beklag artikel
-12 Sv, civiele aansprakelijkheidszaken). Alle gegevens (ECLI, instantie,
-datum, zaaknummer) zijn gehaald uit de officiële Open Data van
-rechtspraak.nl; de samenvattingen zijn daarop gebaseerd. De lijst staat in
-`src/lib/uitspraken.ts` en groeit. Nieuwe uitspraak toevoegen: tekst
-ophalen via `https://data.rechtspraak.nl/uitspraken/content?id=<ECLI>`,
-samenvatting maken, item toevoegen.
+Fase 4b klaar: /uitspraken met een doorzoekbare databank van uitspraken
+over politiebetrokkenheid, in beide richtingen: politie als verdachte
+(agent vervolgd, beklag artikel 12 Sv, civiele zaken) en politie als
+slachtoffer (geweld tegen politie). De curated kern (15 uitspraken met
+eigen samenvatting) staat in `src/lib/uitspraken.ts`; de bulk (ca. 160
+uitspraken met de officiële inhoudsindicatie) wordt gegenereerd door
+`scripts/uitspraken-oogst.py` in `src/lib/uitspraken-bulk.ts`. Dat script
+gebruikt de publieke zoek-API van uitspraken.rechtspraak.nl (POST
+`/api/zoek`) plus de Open Data voor de volledige tekst, en deelt daarna
+automatisch in categorieën in op basis van de inhoudsindicatie. Draaien:
+`python3 scripts/uitspraken-oogst.py` (duurt een paar minuten, is
+vriendelijk voor de servers).
 
 Let op: de meldingen staan in een eigen Firestore-database met id `default`
 (naast `(default)`), omdat de standaarddatabase op dit gratis project om

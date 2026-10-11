@@ -23,8 +23,12 @@ export default function UitsprakenPage() {
         </p>
         <p className="mt-4 max-w-[66ch] text-sm leading-relaxed text-muted-2">
           Alle uitspraken komen uit de Open Data van rechtspraak.nl; via de
-          link lees je het volledige vonnis of arrest. Dit is een groeiende
-          selectie. Mis je een zaak? Mail naar{" "}
+          link lees je het volledige vonnis of arrest. De lijst groeit
+          automatisch via de zoek-API van rechtspraak.nl (gereedschap:
+          scripts/uitspraken-oogst.py in de repo); van die grote lijst is de
+          categorie automatisch bepaald op basis van de officiële samenvatting
+          en is de samenvatting de officiële inhoudsindicatie. Mis je een
+          zaak? Mail naar{" "}
           <a
             href="mailto:label@hot-shot.com"
             className="underline underline-offset-4 hover:text-muted"
