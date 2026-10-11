@@ -1,0 +1,2677 @@
+{
+ "bron": "OpenStreetMap via Overpass API, opgehaald 2026-10-11",
+ "politie": [
+  {
+   "naam": "Aanlooppunt Stein",
+   "lat": 50.9684,
+   "lng": 5.777
+  },
+  {
+   "naam": "Aanlooppunt Voerendaal",
+   "lat": 50.8788,
+   "lng": 5.9308
+  },
+  {
+   "naam": "Afdeling Vreemdelingenpolitie, Identificatie en Mensenhandel",
+   "lat": 51.2477,
+   "lng": 5.9025
+  },
+  {
+   "naam": "Almere Haven",
+   "lat": 52.3357,
+   "lng": 5.2201
+  },
+  {
+   "naam": "BT Groningen-Noord",
+   "lat": 53.2361,
+   "lng": 6.6036
+  },
+  {
+   "naam": "Barber Police",
+   "lat": 12.2871,
+   "lng": -69.075
+  },
+  {
+   "naam": "Basisteam Nieuw-Grijss",
+   "lat": 51.8784,
+   "lng": 4.5387
+  },
+  {
+   "naam": "Bloemendaal aan Zee",
+   "lat": 52.4022,
+   "lng": 4.544
+  },
+  {
+   "naam": "Brigade Koninklijke Marechaussee",
+   "lat": 53.1549,
+   "lng": 7.0603
+  },
+  {
+   "naam": "Brigade Object Beveiliging Koninklijke Marechaussee",
+   "lat": 52.0974,
+   "lng": 4.3265
+  },
+  {
+   "naam": "Buiten Walevest",
+   "lat": 51.8168,
+   "lng": 4.6619
+  },
+  {
+   "naam": "Bureau Rijbewijzen Aruba",
+   "lat": 12.513,
+   "lng": -69.9817
+  },
+  {
+   "naam": "Centrum voor Detentie en Correctie Curaçao",
+   "lat": 12.0922,
+   "lng": -68.8915
+  },
+  {
+   "naam": "Colebay Substation",
+   "lat": 18.0313,
+   "lng": -63.0805
+  },
+  {
+   "naam": "Defensie-Complex Maaldrift",
+   "lat": 52.1514,
+   "lng": 4.4281
+  },
+  {
+   "naam": "Dienst Infrastructuur (Waterpolitie)",
+   "lat": 51.4415,
+   "lng": 3.5957
+  },
+  {
+   "naam": "Districtsbureau Dordrecht",
+   "lat": 51.7932,
+   "lng": 4.6834
+  },
+  {
+   "naam": "Douane / Customs",
+   "lat": 17.6162,
+   "lng": -63.2506
+  },
+  {
+   "naam": "Euregionaal aanlooppunt Kerkrade",
+   "lat": 50.8628,
+   "lng": 6.0807
+  },
+  {
+   "naam": "Forensische Opsporing",
+   "lat": 51.9044,
+   "lng": 5.8658
+  },
+  {
+   "naam": "Gennep Autoweg",
+   "lat": 51.6751,
+   "lng": 6.0341
+  },
+  {
+   "naam": "Hoofdbureau 's-Hertogenbosch",
+   "lat": 51.6983,
+   "lng": 5.3016
+  },
+  {
+   "naam": "Hoofdbureau van Politie",
+   "lat": 52.089,
+   "lng": 4.2998
+  },
+  {
+   "naam": "Hoofdbureau van Politie",
+   "lat": 52.3684,
+   "lng": 4.878
+  },
+  {
+   "naam": "Hoofdkantoor Nationale Politie",
+   "lat": 52.0834,
+   "lng": 4.3161
+  },
+  {
+   "naam": "Jeugd en Zende Politie",
+   "lat": 12.4764,
+   "lng": -69.9776
+  },
+  {
+   "naam": "Koningin Máximakazerne",
+   "lat": 52.3231,
+   "lng": 4.7598
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.3054,
+   "lng": 4.7524
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.3097,
+   "lng": 4.7631
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 51.9494,
+   "lng": 4.4337
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 18.0275,
+   "lng": -63.0653
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 51.4577,
+   "lng": 5.3908
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.0919,
+   "lng": 4.3432
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.3317,
+   "lng": 4.7801
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.0801,
+   "lng": 4.3059
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.0914,
+   "lng": 4.2842
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.09,
+   "lng": 4.2838
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.3982,
+   "lng": 4.8353
+  },
+  {
+   "naam": "Koninklijke Marechaussee",
+   "lat": 52.5203,
+   "lng": 6.1248
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Brabant-Oost",
+   "lat": 51.457,
+   "lng": 5.3937
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Limburg",
+   "lat": 51.396,
+   "lng": 6.0845
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Limburg",
+   "lat": 50.915,
+   "lng": 5.7687
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Limburg",
+   "lat": 50.9205,
+   "lng": 5.7738
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Midden Nederland",
+   "lat": 52.2627,
+   "lng": 6.8941
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Midden-Nederland",
+   "lat": 52.2303,
+   "lng": 5.9498
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Midden-Nederland",
+   "lat": 51.9423,
+   "lng": 6.074
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Noord",
+   "lat": 53.1297,
+   "lng": 6.5855
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Noord",
+   "lat": 52.655,
+   "lng": 6.7447
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Noord",
+   "lat": 52.7932,
+   "lng": 6.214
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Noord-Holland",
+   "lat": 52.4632,
+   "lng": 4.5859
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Noord-Holland",
+   "lat": 52.3083,
+   "lng": 4.7592
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Noord-Holland",
+   "lat": 52.4632,
+   "lng": 4.5935
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Recherche",
+   "lat": 52.0958,
+   "lng": 5.148
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Utrecht",
+   "lat": 52.1217,
+   "lng": 5.2855
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Zeeland-West Brabant",
+   "lat": 51.4707,
+   "lng": 3.6809
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Zeeland-West Brabant",
+   "lat": 51.4175,
+   "lng": 4.335
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Zuid-Holland",
+   "lat": 51.951,
+   "lng": 4.4432
+  },
+  {
+   "naam": "Koninklijke Marechaussee Brigade Zuid-Holland",
+   "lat": 51.9757,
+   "lng": 4.1262
+  },
+  {
+   "naam": "Koninklijke Marechaussee District Zuid",
+   "lat": 51.7017,
+   "lng": 5.3214
+  },
+  {
+   "naam": "Koninklijke Marechaussee Landelijk Tactisch Commando",
+   "lat": 52.1198,
+   "lng": 5.2593
+  },
+  {
+   "naam": "Korps Landelijke Politiediensten",
+   "lat": 52.0553,
+   "lng": 5.2654
+  },
+  {
+   "naam": "Korps Politie Aruba - San Nicolaas",
+   "lat": 12.4357,
+   "lng": -69.9113
+  },
+  {
+   "naam": "Kuerpo Polis Korsou",
+   "lat": 12.1451,
+   "lng": -68.9261
+  },
+  {
+   "naam": "Landelijke Eenheid Driebergen",
+   "lat": 52.0605,
+   "lng": 5.2674
+  },
+  {
+   "naam": "Landelijke Eenheid Politie Waddinxveen",
+   "lat": 52.0189,
+   "lng": 4.6187
+  },
+  {
+   "naam": "Landelijke Eenheid van de Nationale Politie",
+   "lat": 52.0751,
+   "lng": 4.9087
+  },
+  {
+   "naam": "Luchtvaartpolitie",
+   "lat": 52.314,
+   "lng": 4.8077
+  },
+  {
+   "naam": "Militaire Politie Koninklijke Marechaussee",
+   "lat": 52.1947,
+   "lng": 5.9193
+  },
+  {
+   "naam": "Nehalennia Politie Trainingscentrum",
+   "lat": 51.4771,
+   "lng": 3.7159
+  },
+  {
+   "naam": "Nijverdal (Hellendoorn)",
+   "lat": 52.3615,
+   "lng": 6.5126
+  },
+  {
+   "naam": "Numansdorp",
+   "lat": 51.7301,
+   "lng": 4.4334
+  },
+  {
+   "naam": "Operationeel Begeleidings en Trainingscentrum",
+   "lat": 52.3886,
+   "lng": 5.2486
+  },
+  {
+   "naam": "Police Brievengat",
+   "lat": 12.1487,
+   "lng": -68.8893
+  },
+  {
+   "naam": "Police Station Saba",
+   "lat": 17.6264,
+   "lng": -63.2483
+  },
+  {
+   "naam": "Politebureau Lobith",
+   "lat": 51.86,
+   "lng": 6.1198
+  },
+  {
+   "naam": "Politebureau Westervoort",
+   "lat": 51.9634,
+   "lng": 5.9674
+  },
+  {
+   "naam": "Politie",
+   "lat": 52.0165,
+   "lng": 5.0507
+  },
+  {
+   "naam": "Politie",
+   "lat": 52.0666,
+   "lng": 5.0776
+  },
+  {
+   "naam": "Politie",
+   "lat": 51.5436,
+   "lng": 5.0734
+  },
+  {
+   "naam": "Politie Amsterdam",
+   "lat": 52.3464,
+   "lng": 4.8281
+  },
+  {
+   "naam": "Politie Bureau Otrabanda",
+   "lat": 12.1077,
+   "lng": -68.9386
+  },
+  {
+   "naam": "Politie Bureau Punda",
+   "lat": 12.1042,
+   "lng": -68.9342
+  },
+  {
+   "naam": "Politie Haaglanden",
+   "lat": 52.0773,
+   "lng": 4.3917
+  },
+  {
+   "naam": "Politie Noord-Holland",
+   "lat": 52.6499,
+   "lng": 4.7382
+  },
+  {
+   "naam": "Politie Ommen",
+   "lat": 52.5267,
+   "lng": 6.4244
+  },
+  {
+   "naam": "Politie Trainingscentrum",
+   "lat": 52.3011,
+   "lng": 6.7297
+  },
+  {
+   "naam": "Politie Utrecht - RAPT",
+   "lat": 52.0209,
+   "lng": 5.152
+  },
+  {
+   "naam": "Politie Vianen",
+   "lat": 51.995,
+   "lng": 5.0924
+  },
+  {
+   "naam": "Politie aanlooppunt Simpelveld",
+   "lat": 50.8354,
+   "lng": 5.9844
+  },
+  {
+   "naam": "PolitieServicePunt Roerdalen",
+   "lat": 51.1418,
+   "lng": 5.9926
+  },
+  {
+   "naam": "Politiebureau",
+   "lat": 51.5201,
+   "lng": 5.9778
+  },
+  {
+   "naam": "Politiebureau Aalsmeer - Uithoorn",
+   "lat": 52.2476,
+   "lng": 4.8034
+  },
+  {
+   "naam": "Politiebureau Alkmaar",
+   "lat": 52.6348,
+   "lng": 4.747
+  },
+  {
+   "naam": "Politiebureau Almelo",
+   "lat": 52.3584,
+   "lng": 6.6616
+  },
+  {
+   "naam": "Politiebureau Almelo Noord-West",
+   "lat": 52.3577,
+   "lng": 6.646
+  },
+  {
+   "naam": "Politiebureau Almere Baljuwstraat",
+   "lat": 52.3731,
+   "lng": 5.2232
+  },
+  {
+   "naam": "Politiebureau Almere Giraffeweg",
+   "lat": 52.3838,
+   "lng": 5.2796
+  },
+  {
+   "naam": "Politiebureau Almere Operetteweg",
+   "lat": 52.3636,
+   "lng": 5.1852
+  },
+  {
+   "naam": "Politiebureau Alphen aan den Rijn",
+   "lat": 52.1376,
+   "lng": 4.6717
+  },
+  {
+   "naam": "Politiebureau Altena",
+   "lat": 51.7704,
+   "lng": 4.9255
+  },
+  {
+   "naam": "Politiebureau Ameland",
+   "lat": 53.4443,
+   "lng": 5.7727
+  },
+  {
+   "naam": "Politiebureau Amersfoort",
+   "lat": 52.1557,
+   "lng": 5.3821
+  },
+  {
+   "naam": "Politiebureau Amstelland-Oost",
+   "lat": 52.3412,
+   "lng": 4.9656
+  },
+  {
+   "naam": "Politiebureau Amstelveen",
+   "lat": 52.3025,
+   "lng": 4.8636
+  },
+  {
+   "naam": "Politiebureau Apeldoorn Europaweg",
+   "lat": 52.196,
+   "lng": 5.945
+  },
+  {
+   "naam": "Politiebureau Arnhem 't Broek",
+   "lat": 51.9795,
+   "lng": 5.9333
+  },
+  {
+   "naam": "Politiebureau Arnhem Geitenkamp",
+   "lat": 52.0039,
+   "lng": 5.9424
+  },
+  {
+   "naam": "Politiebureau Arnhem Klarendal/Sint Marten",
+   "lat": 51.9865,
+   "lng": 5.9144
+  },
+  {
+   "naam": "Politiebureau Arnhem station Velperpoort",
+   "lat": 51.9849,
+   "lng": 5.9205
+  },
+  {
+   "naam": "Politiebureau Arnhem-Noord",
+   "lat": 51.98,
+   "lng": 5.9124
+  },
+  {
+   "naam": "Politiebureau Arnhem-Zuid",
+   "lat": 51.9538,
+   "lng": 5.9049
+  },
+  {
+   "naam": "Politiebureau Assen Balkengracht",
+   "lat": 52.9952,
+   "lng": 6.5277
+  },
+  {
+   "naam": "Politiebureau Assen Weiersstraat",
+   "lat": 52.9962,
+   "lng": 6.5566
+  },
+  {
+   "naam": "Politiebureau Asten",
+   "lat": 51.4145,
+   "lng": 5.7577
+  },
+  {
+   "naam": "Politiebureau Baarn",
+   "lat": 52.2149,
+   "lng": 5.2831
+  },
+  {
+   "naam": "Politiebureau Barneveld",
+   "lat": 52.1507,
+   "lng": 5.566
+  },
+  {
+   "naam": "Politiebureau Begijnenhof",
+   "lat": 51.4363,
+   "lng": 5.4804
+  },
+  {
+   "naam": "Politiebureau Beilen",
+   "lat": 52.86,
+   "lng": 6.5142
+  },
+  {
+   "naam": "Politiebureau Beresteinlaan",
+   "lat": 52.0403,
+   "lng": 4.2571
+  },
+  {
+   "naam": "Politiebureau Bergambacht",
+   "lat": 51.9289,
+   "lng": 4.7794
+  },
+  {
+   "naam": "Politiebureau Bergen",
+   "lat": 52.6719,
+   "lng": 4.7056
+  },
+  {
+   "naam": "Politiebureau Bergen op Zoom",
+   "lat": 51.493,
+   "lng": 4.2949
+  },
+  {
+   "naam": "Politiebureau Berkel en Rodenrijs",
+   "lat": 51.992,
+   "lng": 4.4781
+  },
+  {
+   "naam": "Politiebureau Best",
+   "lat": 51.511,
+   "lng": 5.395
+  },
+  {
+   "naam": "Politiebureau Beverwijk",
+   "lat": 52.4931,
+   "lng": 4.671
+  },
+  {
+   "naam": "Politiebureau Bleskensgraaf",
+   "lat": 51.8686,
+   "lng": 4.7846
+  },
+  {
+   "naam": "Politiebureau Bodegraven-Reeuwijk",
+   "lat": 52.0829,
+   "lng": 4.7473
+  },
+  {
+   "naam": "Politiebureau Boezembocht",
+   "lat": 51.9426,
+   "lng": 4.4969
+  },
+  {
+   "naam": "Politiebureau Bolsward",
+   "lat": 53.0735,
+   "lng": 5.5231
+  },
+  {
+   "naam": "Politiebureau Borculo",
+   "lat": 52.1117,
+   "lng": 6.5221
+  },
+  {
+   "naam": "Politiebureau Borne",
+   "lat": 52.2998,
+   "lng": 6.7572
+  },
+  {
+   "naam": "Politiebureau Bornerbroek",
+   "lat": 52.3109,
+   "lng": 6.6552
+  },
+  {
+   "naam": "Politiebureau Boven-IJ",
+   "lat": 52.395,
+   "lng": 4.9278
+  },
+  {
+   "naam": "Politiebureau Boxtel",
+   "lat": 51.6024,
+   "lng": 5.3225
+  },
+  {
+   "naam": "Politiebureau Breda Centrum",
+   "lat": 51.587,
+   "lng": 4.7851
+  },
+  {
+   "naam": "Politiebureau Breukelen",
+   "lat": 52.1712,
+   "lng": 5.0045
+  },
+  {
+   "naam": "Politiebureau Brunssum",
+   "lat": 50.9397,
+   "lng": 5.9764
+  },
+  {
+   "naam": "Politiebureau Buitenpost",
+   "lat": 53.2558,
+   "lng": 6.1442
+  },
+  {
+   "naam": "Politiebureau Burgum",
+   "lat": 53.1892,
+   "lng": 5.9877
+  },
+  {
+   "naam": "Politiebureau Capelle aan den IJssel",
+   "lat": 51.9289,
+   "lng": 4.5776
+  },
+  {
+   "naam": "Politiebureau Castricum",
+   "lat": 52.5549,
+   "lng": 4.6668
+  },
+  {
+   "naam": "Politiebureau Coevorden",
+   "lat": 52.6605,
+   "lng": 6.7348
+  },
+  {
+   "naam": "Politiebureau Cuijk",
+   "lat": 51.7321,
+   "lng": 5.8656
+  },
+  {
+   "naam": "Politiebureau Culemborg",
+   "lat": 51.9516,
+   "lng": 5.2247
+  },
+  {
+   "naam": "Politiebureau Dalfsen",
+   "lat": 52.5024,
+   "lng": 6.2566
+  },
+  {
+   "naam": "Politiebureau De Heemstraat",
+   "lat": 52.0662,
+   "lng": 4.2986
+  },
+  {
+   "naam": "Politiebureau De Meern",
+   "lat": 52.0904,
+   "lng": 5.0237
+  },
+  {
+   "naam": "Politiebureau De Veranda",
+   "lat": 51.8973,
+   "lng": 4.5201
+  },
+  {
+   "naam": "Politiebureau Delft",
+   "lat": 52.0032,
+   "lng": 4.3531
+  },
+  {
+   "naam": "Politiebureau Delfzijl",
+   "lat": 53.3328,
+   "lng": 6.9227
+  },
+  {
+   "naam": "Politiebureau Den Helder",
+   "lat": 52.9414,
+   "lng": 4.7521
+  },
+  {
+   "naam": "Politiebureau Denekamp",
+   "lat": 52.3743,
+   "lng": 7.0055
+  },
+  {
+   "naam": "Politiebureau Deventer",
+   "lat": 52.2514,
+   "lng": 6.194
+  },
+  {
+   "naam": "Politiebureau Diamantlaan",
+   "lat": 53.225,
+   "lng": 6.5264
+  },
+  {
+   "naam": "Politiebureau Dieren",
+   "lat": 52.0454,
+   "lng": 6.0979
+  },
+  {
+   "naam": "Politiebureau Diever",
+   "lat": 52.859,
+   "lng": 6.3097
+  },
+  {
+   "naam": "Politiebureau Doelwater (Hoofdbureau)",
+   "lat": 51.9235,
+   "lng": 4.4797
+  },
+  {
+   "naam": "Politiebureau Doesburg",
+   "lat": 52.0109,
+   "lng": 6.1388
+  },
+  {
+   "naam": "Politiebureau Doetinchem",
+   "lat": 51.9573,
+   "lng": 6.2917
+  },
+  {
+   "naam": "Politiebureau Dokkum",
+   "lat": 53.3169,
+   "lng": 5.9926
+  },
+  {
+   "naam": "Politiebureau Dordrecht",
+   "lat": 51.7997,
+   "lng": 4.7083
+  },
+  {
+   "naam": "Politiebureau Drachten",
+   "lat": 53.1061,
+   "lng": 6.0919
+  },
+  {
+   "naam": "Politiebureau Dronten",
+   "lat": 52.5276,
+   "lng": 5.7147
+  },
+  {
+   "naam": "Politiebureau Drunen",
+   "lat": 51.6896,
+   "lng": 5.1407
+  },
+  {
+   "naam": "Politiebureau Duiven",
+   "lat": 51.9488,
+   "lng": 6.0248
+  },
+  {
+   "naam": "Politiebureau Echt",
+   "lat": 51.1041,
+   "lng": 5.8844
+  },
+  {
+   "naam": "Politiebureau Ede",
+   "lat": 52.0414,
+   "lng": 5.6697
+  },
+  {
+   "naam": "Politiebureau Eersel",
+   "lat": 51.3608,
+   "lng": 5.3038
+  },
+  {
+   "naam": "Politiebureau Eindhoven Mathildelaan",
+   "lat": 51.4413,
+   "lng": 5.4727
+  },
+  {
+   "naam": "Politiebureau Eindhoven Noord",
+   "lat": 51.4653,
+   "lng": 5.469
+  },
+  {
+   "naam": "Politiebureau Eindhoven Zuid",
+   "lat": 51.416,
+   "lng": 5.4827
+  },
+  {
+   "naam": "Politiebureau Elst",
+   "lat": 51.9177,
+   "lng": 5.8507
+  },
+  {
+   "naam": "Politiebureau Emmeloord",
+   "lat": 52.7102,
+   "lng": 5.7462
+  },
+  {
+   "naam": "Politiebureau Emmen",
+   "lat": 52.7883,
+   "lng": 6.8895
+  },
+  {
+   "naam": "Politiebureau Enschede",
+   "lat": 52.2198,
+   "lng": 6.8909
+  },
+  {
+   "naam": "Politiebureau Epe",
+   "lat": 52.3562,
+   "lng": 5.9939
+  },
+  {
+   "naam": "Politiebureau Ermelo",
+   "lat": 52.3007,
+   "lng": 5.6179
+  },
+  {
+   "naam": "Politiebureau Etten-Leur",
+   "lat": 51.5742,
+   "lng": 4.6373
+  },
+  {
+   "naam": "Politiebureau Exloo",
+   "lat": 52.8829,
+   "lng": 6.8636
+  },
+  {
+   "naam": "Politiebureau Flierbosdreef",
+   "lat": 52.3147,
+   "lng": 4.9576
+  },
+  {
+   "naam": "Politiebureau Geldrop",
+   "lat": 51.418,
+   "lng": 5.5609
+  },
+  {
+   "naam": "Politiebureau Gennep",
+   "lat": 51.6983,
+   "lng": 5.971
+  },
+  {
+   "naam": "Politiebureau Giesbeek",
+   "lat": 51.9954,
+   "lng": 6.07
+  },
+  {
+   "naam": "Politiebureau Gilze en Rijen",
+   "lat": 51.5848,
+   "lng": 4.9252
+  },
+  {
+   "naam": "Politiebureau Goes",
+   "lat": 51.5082,
+   "lng": 3.8962
+  },
+  {
+   "naam": "Politiebureau Gooise Meren",
+   "lat": 52.2913,
+   "lng": 5.1693
+  },
+  {
+   "naam": "Politiebureau Goor",
+   "lat": 52.2328,
+   "lng": 6.5851
+  },
+  {
+   "naam": "Politiebureau Gorinchem",
+   "lat": 51.8361,
+   "lng": 4.9774
+  },
+  {
+   "naam": "Politiebureau Gorredijk",
+   "lat": 53.0071,
+   "lng": 6.0707
+  },
+  {
+   "naam": "Politiebureau Gouda",
+   "lat": 52.0157,
+   "lng": 4.6924
+  },
+  {
+   "naam": "Politiebureau Groningen Centrum",
+   "lat": 53.2155,
+   "lng": 6.5723
+  },
+  {
+   "naam": "Politiebureau Haarlem-Centrum",
+   "lat": 52.384,
+   "lng": 4.6412
+  },
+  {
+   "naam": "Politiebureau Haarlem-Oost",
+   "lat": 52.3569,
+   "lng": 4.6547
+  },
+  {
+   "naam": "Politiebureau Hardenberg",
+   "lat": 52.5728,
+   "lng": 6.6125
+  },
+  {
+   "naam": "Politiebureau Harderwijk",
+   "lat": 52.3402,
+   "lng": 5.6176
+  },
+  {
+   "naam": "Politiebureau Hardinxveld-Giessendam",
+   "lat": 51.8241,
+   "lng": 4.8345
+  },
+  {
+   "naam": "Politiebureau Harlingen",
+   "lat": 53.1701,
+   "lng": 5.427
+  },
+  {
+   "naam": "Politiebureau Hasselt",
+   "lat": 52.5919,
+   "lng": 6.0959
+  },
+  {
+   "naam": "Politiebureau Heemstede",
+   "lat": 52.3526,
+   "lng": 4.6238
+  },
+  {
+   "naam": "Politiebureau Heerenveen",
+   "lat": 52.9586,
+   "lng": 5.9302
+  },
+  {
+   "naam": "Politiebureau Heerhugowaard",
+   "lat": 52.6606,
+   "lng": 4.8349
+  },
+  {
+   "naam": "Politiebureau Heerlen",
+   "lat": 50.8901,
+   "lng": 5.9777
+  },
+  {
+   "naam": "Politiebureau Hellevoetsluis",
+   "lat": 51.8346,
+   "lng": 4.1457
+  },
+  {
+   "naam": "Politiebureau Helmond",
+   "lat": 51.4758,
+   "lng": 5.6569
+  },
+  {
+   "naam": "Politiebureau Hendrik-Ido-Ambacht",
+   "lat": 51.8448,
+   "lng": 4.6372
+  },
+  {
+   "naam": "Politiebureau Hengelo",
+   "lat": 52.265,
+   "lng": 6.7893
+  },
+  {
+   "naam": "Politiebureau Hilversum",
+   "lat": 52.2243,
+   "lng": 5.1781
+  },
+  {
+   "naam": "Politiebureau Hoefkade",
+   "lat": 52.07,
+   "lng": 4.3173
+  },
+  {
+   "naam": "Politiebureau Hoek van Holland",
+   "lat": 51.9796,
+   "lng": 4.1312
+  },
+  {
+   "naam": "Politiebureau Hoensbroek",
+   "lat": 50.9255,
+   "lng": 5.9321
+  },
+  {
+   "naam": "Politiebureau Hollands Kroon",
+   "lat": 52.8411,
+   "lng": 5.0236
+  },
+  {
+   "naam": "Politiebureau Hoofddorp",
+   "lat": 52.2971,
+   "lng": 4.6818
+  },
+  {
+   "naam": "Politiebureau Hoogeveen",
+   "lat": 52.7239,
+   "lng": 6.4685
+  },
+  {
+   "naam": "Politiebureau Hoogezand",
+   "lat": 53.151,
+   "lng": 6.7565
+  },
+  {
+   "naam": "Politiebureau Hoogvliet",
+   "lat": 51.8646,
+   "lng": 4.3532
+  },
+  {
+   "naam": "Politiebureau Hoorn",
+   "lat": 52.6563,
+   "lng": 5.0611
+  },
+  {
+   "naam": "Politiebureau Horst",
+   "lat": 51.4543,
+   "lng": 6.0524
+  },
+  {
+   "naam": "Politiebureau Houten",
+   "lat": 52.0241,
+   "lng": 5.1598
+  },
+  {
+   "naam": "Politiebureau Houtmankade",
+   "lat": 52.3891,
+   "lng": 4.8842
+  },
+  {
+   "naam": "Politiebureau Huissen",
+   "lat": 51.9366,
+   "lng": 5.9411
+  },
+  {
+   "naam": "Politiebureau Huizen",
+   "lat": 52.2993,
+   "lng": 5.2427
+  },
+  {
+   "naam": "Politiebureau Hulst",
+   "lat": 51.2758,
+   "lng": 4.0555
+  },
+  {
+   "naam": "Politiebureau IJ-tunnel",
+   "lat": 52.37,
+   "lng": 4.9092
+  },
+  {
+   "naam": "Politiebureau IJmuiden",
+   "lat": 52.4608,
+   "lng": 4.6304
+  },
+  {
+   "naam": "Politiebureau IJsselmonde",
+   "lat": 51.8882,
+   "lng": 4.5476
+  },
+  {
+   "naam": "Politiebureau J.J.P. Oudsingel",
+   "lat": 51.9486,
+   "lng": 4.5518
+  },
+  {
+   "naam": "Politiebureau Jan Hendrikstraat",
+   "lat": 52.0757,
+   "lng": 4.3071
+  },
+  {
+   "naam": "Politiebureau Kaap Hoorndreef",
+   "lat": 52.1165,
+   "lng": 5.1067
+  },
+  {
+   "naam": "Politiebureau Kampen",
+   "lat": 52.5603,
+   "lng": 5.9231
+  },
+  {
+   "naam": "Politiebureau Katwijk",
+   "lat": 52.2016,
+   "lng": 4.415
+  },
+  {
+   "naam": "Politiebureau Kerkrade",
+   "lat": 50.8678,
+   "lng": 6.0516
+  },
+  {
+   "naam": "Politiebureau Klazienaveen",
+   "lat": 52.7237,
+   "lng": 6.9902
+  },
+  {
+   "naam": "Politiebureau Koudum",
+   "lat": 52.9096,
+   "lng": 5.4504
+  },
+  {
+   "naam": "Politiebureau Krimpen aan den IJssel",
+   "lat": 51.9129,
+   "lng": 4.5895
+  },
+  {
+   "naam": "Politiebureau Krispijn",
+   "lat": 51.7999,
+   "lng": 4.6636
+  },
+  {
+   "naam": "Politiebureau Kroonstraat/Paardenveld",
+   "lat": 52.0947,
+   "lng": 5.112
+  },
+  {
+   "naam": "Politiebureau Laak",
+   "lat": 52.0607,
+   "lng": 4.3185
+  },
+  {
+   "naam": "Politiebureau Leek",
+   "lat": 53.1631,
+   "lng": 6.3808
+  },
+  {
+   "naam": "Politiebureau Leerdam",
+   "lat": 51.9006,
+   "lng": 5.0987
+  },
+  {
+   "naam": "Politiebureau Leeuwarden",
+   "lat": 53.1923,
+   "lng": 5.8282
+  },
+  {
+   "naam": "Politiebureau Leiden Midden",
+   "lat": 52.1633,
+   "lng": 4.4923
+  },
+  {
+   "naam": "Politiebureau Leiden Noord",
+   "lat": 52.1658,
+   "lng": 4.5062
+  },
+  {
+   "naam": "Politiebureau Leiden Zuid",
+   "lat": 52.1477,
+   "lng": 4.4766
+  },
+  {
+   "naam": "Politiebureau Leidschendam-Voorburg",
+   "lat": 52.0893,
+   "lng": 4.3774
+  },
+  {
+   "naam": "Politiebureau Leidschenveen-Ypenburg",
+   "lat": 52.0545,
+   "lng": 4.3888
+  },
+  {
+   "naam": "Politiebureau Lelystad",
+   "lat": 52.5008,
+   "lng": 5.4787
+  },
+  {
+   "naam": "Politiebureau Lemmer",
+   "lat": 52.8473,
+   "lng": 5.7127
+  },
+  {
+   "naam": "Politiebureau Leusden",
+   "lat": 52.1282,
+   "lng": 5.4294
+  },
+  {
+   "naam": "Politiebureau Levende Have",
+   "lat": 52.0363,
+   "lng": 4.2125
+  },
+  {
+   "naam": "Politiebureau Lichtenvoorde",
+   "lat": 51.9879,
+   "lng": 6.5629
+  },
+  {
+   "naam": "Politiebureau Lijnbaansgracht",
+   "lat": 52.3652,
+   "lng": 4.8814
+  },
+  {
+   "naam": "Politiebureau Lisse",
+   "lat": 52.2553,
+   "lng": 4.5494
+  },
+  {
+   "naam": "Politiebureau Loosduinen",
+   "lat": 52.0552,
+   "lng": 4.2339
+  },
+  {
+   "naam": "Politiebureau Maarssen",
+   "lat": 52.1337,
+   "lng": 5.0299
+  },
+  {
+   "naam": "Politiebureau Maashaven",
+   "lat": 51.902,
+   "lng": 4.4959
+  },
+  {
+   "naam": "Politiebureau Maassluis",
+   "lat": 51.9271,
+   "lng": 4.2394
+  },
+  {
+   "naam": "Politiebureau Maastricht",
+   "lat": 50.8414,
+   "lng": 5.6873
+  },
+  {
+   "naam": "Politiebureau Marco Pololaan",
+   "lat": 52.0723,
+   "lng": 5.0949
+  },
+  {
+   "naam": "Politiebureau Marconiplein",
+   "lat": 51.9126,
+   "lng": 4.4341
+  },
+  {
+   "naam": "Politiebureau Meer en Vaart",
+   "lat": 52.3626,
+   "lng": 4.8051
+  },
+  {
+   "naam": "Politiebureau Meppel",
+   "lat": 52.6994,
+   "lng": 6.1874
+  },
+  {
+   "naam": "Politiebureau Middelburg",
+   "lat": 51.4811,
+   "lng": 3.6297
+  },
+  {
+   "naam": "Politiebureau Middelharnis",
+   "lat": 51.7502,
+   "lng": 4.1592
+  },
+  {
+   "naam": "Politiebureau Mijdrecht",
+   "lat": 52.2028,
+   "lng": 4.8684
+  },
+  {
+   "naam": "Politiebureau Nieuw Vennep",
+   "lat": 52.2635,
+   "lng": 4.6298
+  },
+  {
+   "naam": "Politiebureau Nieuwegein",
+   "lat": 52.0276,
+   "lng": 5.0835
+  },
+  {
+   "naam": "Politiebureau Nieuwezijds Voorburgwal",
+   "lat": 52.3764,
+   "lng": 4.8944
+  },
+  {
+   "naam": "Politiebureau Nieuwkoop",
+   "lat": 52.1667,
+   "lng": 4.7078
+  },
+  {
+   "naam": "Politiebureau Nijkerk",
+   "lat": 52.226,
+   "lng": 5.48
+  },
+  {
+   "naam": "Politiebureau Nijmegen-Noord",
+   "lat": 51.845,
+   "lng": 5.8545
+  },
+  {
+   "naam": "Politiebureau Nijmegen-Zuid",
+   "lat": 51.8301,
+   "lng": 5.8348
+  },
+  {
+   "naam": "Politiebureau Noord",
+   "lat": 51.9435,
+   "lng": 4.4794
+  },
+  {
+   "naam": "Politiebureau Noordwijk",
+   "lat": 52.2419,
+   "lng": 4.4468
+  },
+  {
+   "naam": "Politiebureau Noordwijkerhout",
+   "lat": 52.2635,
+   "lng": 4.494
+  },
+  {
+   "naam": "Politiebureau Nunspeet",
+   "lat": 52.3785,
+   "lng": 5.7728
+  },
+  {
+   "naam": "Politiebureau Oisterwijk",
+   "lat": 51.5808,
+   "lng": 5.1903
+  },
+  {
+   "naam": "Politiebureau Oldenzaal",
+   "lat": 52.3143,
+   "lng": 6.9262
+  },
+  {
+   "naam": "Politiebureau Oost Watergraafsmeer",
+   "lat": 52.3575,
+   "lng": 4.9273
+  },
+  {
+   "naam": "Politiebureau Oost Zeeburg",
+   "lat": 52.369,
+   "lng": 4.9714
+  },
+  {
+   "naam": "Politiebureau Oostburg",
+   "lat": 51.3282,
+   "lng": 3.4952
+  },
+  {
+   "naam": "Politiebureau Oosterbeek/Renkum",
+   "lat": 51.9886,
+   "lng": 5.8419
+  },
+  {
+   "naam": "Politiebureau Oosterhout",
+   "lat": 51.6301,
+   "lng": 4.8594
+  },
+  {
+   "naam": "Politiebureau Oosterwolde",
+   "lat": 52.9917,
+   "lng": 6.296
+  },
+  {
+   "naam": "Politiebureau Oss",
+   "lat": 51.764,
+   "lng": 5.5212
+  },
+  {
+   "naam": "Politiebureau Oud-Beijerland",
+   "lat": 51.829,
+   "lng": 4.4087
+  },
+  {
+   "naam": "Politiebureau Overbosch",
+   "lat": 52.0894,
+   "lng": 4.3458
+  },
+  {
+   "naam": "Politiebureau Papendrecht",
+   "lat": 51.8435,
+   "lng": 4.6827
+  },
+  {
+   "naam": "Politiebureau Parkallee",
+   "lat": 53.2368,
+   "lng": 6.6017
+  },
+  {
+   "naam": "Politiebureau Peel en Maas",
+   "lat": 51.3302,
+   "lng": 5.9866
+  },
+  {
+   "naam": "Politiebureau Pijnacker-Nootdorp",
+   "lat": 52.0199,
+   "lng": 4.4268
+  },
+  {
+   "naam": "Politiebureau Postjesweg",
+   "lat": 52.3637,
+   "lng": 4.8387
+  },
+  {
+   "naam": "Politiebureau Purmerend",
+   "lat": 52.5139,
+   "lng": 5.0082
+  },
+  {
+   "naam": "Politiebureau Putten",
+   "lat": 52.2614,
+   "lng": 5.6077
+  },
+  {
+   "naam": "Politiebureau Raalte",
+   "lat": 52.386,
+   "lng": 6.2792
+  },
+  {
+   "naam": "Politiebureau Ridderkerk",
+   "lat": 51.8801,
+   "lng": 4.5977
+  },
+  {
+   "naam": "Politiebureau Rijswijk",
+   "lat": 52.0445,
+   "lng": 4.3326
+  },
+  {
+   "naam": "Politiebureau Roermond",
+   "lat": 51.1858,
+   "lng": 5.989
+  },
+  {
+   "naam": "Politiebureau Roosendaal",
+   "lat": 51.5328,
+   "lng": 4.4598
+  },
+  {
+   "naam": "Politiebureau Rozenburg",
+   "lat": 51.9039,
+   "lng": 4.2491
+  },
+  {
+   "naam": "Politiebureau Schagen",
+   "lat": 52.783,
+   "lng": 4.7853
+  },
+  {
+   "naam": "Politiebureau Scheveningen",
+   "lat": 52.1117,
+   "lng": 4.284
+  },
+  {
+   "naam": "Politiebureau Schiedam",
+   "lat": 51.9232,
+   "lng": 4.3819
+  },
+  {
+   "naam": "Politiebureau Schiermonnikoog",
+   "lat": 53.4779,
+   "lng": 6.1569
+  },
+  {
+   "naam": "Politiebureau Schouwen-Duiveland",
+   "lat": 51.6496,
+   "lng": 3.915
+  },
+  {
+   "naam": "Politiebureau Segbroek",
+   "lat": 52.0729,
+   "lng": 4.2749
+  },
+  {
+   "naam": "Politiebureau Sint Annaparochie",
+   "lat": 53.2718,
+   "lng": 5.6585
+  },
+  {
+   "naam": "Politiebureau Sittard",
+   "lat": 51.0,
+   "lng": 5.8588
+  },
+  {
+   "naam": "Politiebureau Slinge",
+   "lat": 51.8732,
+   "lng": 4.4833
+  },
+  {
+   "naam": "Politiebureau Sneek",
+   "lat": 53.0273,
+   "lng": 5.6572
+  },
+  {
+   "naam": "Politiebureau Spijkenisse",
+   "lat": 51.8445,
+   "lng": 4.3312
+  },
+  {
+   "naam": "Politiebureau Stadskanaal",
+   "lat": 52.9906,
+   "lng": 6.9516
+  },
+  {
+   "naam": "Politiebureau Staphorst",
+   "lat": 52.6438,
+   "lng": 6.2105
+  },
+  {
+   "naam": "Politiebureau Stede Broec",
+   "lat": 52.6934,
+   "lng": 5.2304
+  },
+  {
+   "naam": "Politiebureau Steenwijk",
+   "lat": 52.782,
+   "lng": 6.1159
+  },
+  {
+   "naam": "Politiebureau Terneuzen",
+   "lat": 51.3356,
+   "lng": 3.8304
+  },
+  {
+   "naam": "Politiebureau Terschelling",
+   "lat": 53.3658,
+   "lng": 5.215
+  },
+  {
+   "naam": "Politiebureau Texel",
+   "lat": 53.0559,
+   "lng": 4.7864
+  },
+  {
+   "naam": "Politiebureau Tiel",
+   "lat": 51.8869,
+   "lng": 5.4268
+  },
+  {
+   "naam": "Politiebureau Tilburg Centrum",
+   "lat": 51.5592,
+   "lng": 5.0828
+  },
+  {
+   "naam": "Politiebureau Tilburg Centrum",
+   "lat": 51.5837,
+   "lng": 5.0877
+  },
+  {
+   "naam": "Politiebureau Tilburg West",
+   "lat": 51.5791,
+   "lng": 5.024
+  },
+  {
+   "naam": "Politiebureau Tubbergen",
+   "lat": 52.4079,
+   "lng": 6.7804
+  },
+  {
+   "naam": "Politiebureau Uden",
+   "lat": 51.651,
+   "lng": 5.6393
+  },
+  {
+   "naam": "Politiebureau Urk",
+   "lat": 52.6609,
+   "lng": 5.6045
+  },
+  {
+   "naam": "Politiebureau Utrechtse Heuvelrug",
+   "lat": 52.0332,
+   "lng": 5.3477
+  },
+  {
+   "naam": "Politiebureau Vaals",
+   "lat": 50.7706,
+   "lng": 6.0194
+  },
+  {
+   "naam": "Politiebureau Valkenburg",
+   "lat": 50.8678,
+   "lng": 5.8343
+  },
+  {
+   "naam": "Politiebureau Van Leijenberghlaan",
+   "lat": 52.331,
+   "lng": 4.8798
+  },
+  {
+   "naam": "Politiebureau Veendam",
+   "lat": 53.1061,
+   "lng": 6.8665
+  },
+  {
+   "naam": "Politiebureau Veenendaal",
+   "lat": 52.0222,
+   "lng": 5.557
+  },
+  {
+   "naam": "Politiebureau Veghel",
+   "lat": 51.6144,
+   "lng": 5.5481
+  },
+  {
+   "naam": "Politiebureau Veldhoven - Waalre",
+   "lat": 51.4221,
+   "lng": 5.4046
+  },
+  {
+   "naam": "Politiebureau Velp",
+   "lat": 51.9948,
+   "lng": 5.9781
+  },
+  {
+   "naam": "Politiebureau Venlo / Beesel",
+   "lat": 51.3712,
+   "lng": 6.1835
+  },
+  {
+   "naam": "Politiebureau Vlaardingen",
+   "lat": 51.9144,
+   "lng": 4.3436
+  },
+  {
+   "naam": "Politiebureau Vlieland",
+   "lat": 53.2998,
+   "lng": 5.0734
+  },
+  {
+   "naam": "Politiebureau Vlissingen",
+   "lat": 51.4423,
+   "lng": 3.5723
+  },
+  {
+   "naam": "Politiebureau Vondellaan",
+   "lat": 53.173,
+   "lng": 6.6006
+  },
+  {
+   "naam": "Politiebureau Voorthuizen",
+   "lat": 52.1876,
+   "lng": 5.6056
+  },
+  {
+   "naam": "Politiebureau Vroomshoop",
+   "lat": 52.458,
+   "lng": 6.5667
+  },
+  {
+   "naam": "Politiebureau Vught",
+   "lat": 51.6487,
+   "lng": 5.2966
+  },
+  {
+   "naam": "Politiebureau Waalwijk-Loon op Zand",
+   "lat": 51.6668,
+   "lng": 5.0537
+  },
+  {
+   "naam": "Politiebureau Waddinxveen - Zuidplas",
+   "lat": 52.039,
+   "lng": 4.6464
+  },
+  {
+   "naam": "Politiebureau Wageningen",
+   "lat": 51.9704,
+   "lng": 5.6755
+  },
+  {
+   "naam": "Politiebureau Wassenaar",
+   "lat": 52.1441,
+   "lng": 4.4055
+  },
+  {
+   "naam": "Politiebureau Weert",
+   "lat": 51.257,
+   "lng": 5.7069
+  },
+  {
+   "naam": "Politiebureau Weesp",
+   "lat": 52.3027,
+   "lng": 5.045
+  },
+  {
+   "naam": "Politiebureau West Overtoomsesluis",
+   "lat": 52.3767,
+   "lng": 4.8464
+  },
+  {
+   "naam": "Politiebureau Westland",
+   "lat": 51.9871,
+   "lng": 4.1993
+  },
+  {
+   "naam": "Politiebureau Wijchen",
+   "lat": 51.8046,
+   "lng": 5.7299
+  },
+  {
+   "naam": "Politiebureau Winschoten",
+   "lat": 53.1459,
+   "lng": 7.0447
+  },
+  {
+   "naam": "Politiebureau Winterswijk",
+   "lat": 51.9675,
+   "lng": 6.7178
+  },
+  {
+   "naam": "Politiebureau Woerden",
+   "lat": 52.0821,
+   "lng": 4.8889
+  },
+  {
+   "naam": "Politiebureau Wognum",
+   "lat": 52.6868,
+   "lng": 5.0285
+  },
+  {
+   "naam": "Politiebureau Wolvega",
+   "lat": 52.8867,
+   "lng": 6.0084
+  },
+  {
+   "naam": "Politiebureau Zaandam-Centrum",
+   "lat": 52.4383,
+   "lng": 4.8243
+  },
+  {
+   "naam": "Politiebureau Zaandijk",
+   "lat": 52.4688,
+   "lng": 4.7956
+  },
+  {
+   "naam": "Politiebureau Zaltbommel",
+   "lat": 51.8014,
+   "lng": 5.2434
+  },
+  {
+   "naam": "Politiebureau Zandvoort",
+   "lat": 52.3709,
+   "lng": 4.5279
+  },
+  {
+   "naam": "Politiebureau Zederik/Meerkerk",
+   "lat": 51.9202,
+   "lng": 4.9951
+  },
+  {
+   "naam": "Politiebureau Zeewolde",
+   "lat": 52.3309,
+   "lng": 5.5455
+  },
+  {
+   "naam": "Politiebureau Zeist",
+   "lat": 52.0841,
+   "lng": 5.2375
+  },
+  {
+   "naam": "Politiebureau Zevenaar",
+   "lat": 51.9346,
+   "lng": 6.0668
+  },
+  {
+   "naam": "Politiebureau Zoetermeer",
+   "lat": 52.0616,
+   "lng": 4.4866
+  },
+  {
+   "naam": "Politiebureau Zuid-De Pijp",
+   "lat": 52.34,
+   "lng": 4.9022
+  },
+  {
+   "naam": "Politiebureau Zuiderpark",
+   "lat": 52.0526,
+   "lng": 4.2897
+  },
+  {
+   "naam": "Politiebureau Zuidoost Gaasperdam",
+   "lat": 52.2973,
+   "lng": 4.9741
+  },
+  {
+   "naam": "Politiebureau Zuidplein",
+   "lat": 51.8894,
+   "lng": 4.4905
+  },
+  {
+   "naam": "Politiebureau Zutphen",
+   "lat": 52.1362,
+   "lng": 6.1979
+  },
+  {
+   "naam": "Politiebureau Zwijndrecht",
+   "lat": 51.8179,
+   "lng": 4.6487
+  },
+  {
+   "naam": "Politiebureau Zwolle",
+   "lat": 52.5035,
+   "lng": 6.0822
+  },
+  {
+   "naam": "Politieburo Montaña",
+   "lat": 12.1059,
+   "lng": -68.851
+  },
+  {
+   "naam": "Politiekantoor Baarle Hertog en Baarle Nassau gemeenschap",
+   "lat": 51.4399,
+   "lng": 4.9271
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 52.0621,
+   "lng": 6.1877
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 12.1498,
+   "lng": -68.2756
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 18.023,
+   "lng": -63.0462
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 52.6922,
+   "lng": 6.0698
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.9802,
+   "lng": 4.3187
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.8604,
+   "lng": 4.3958
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 52.3134,
+   "lng": 4.9582
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 52.6027,
+   "lng": 6.457
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.5595,
+   "lng": 3.5013
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 12.4997,
+   "lng": -69.9779
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 17.6288,
+   "lng": -63.2322
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.9541,
+   "lng": 4.0149
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.9339,
+   "lng": 4.0695
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 12.5185,
+   "lng": -70.0337
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 18.0362,
+   "lng": -63.0945
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 52.6471,
+   "lng": 4.7728
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.4312,
+   "lng": 3.7161
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.4301,
+   "lng": 3.7175
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.4333,
+   "lng": 3.7182
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 12.5229,
+   "lng": -70.0406
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 51.6914,
+   "lng": 4.4147
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 12.5653,
+   "lng": -70.0506
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 12.1442,
+   "lng": -68.9256
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 12.5188,
+   "lng": -70.034
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 12.5635,
+   "lng": -70.0318
+  },
+  {
+   "naam": "Politielocatie",
+   "lat": 52.105,
+   "lng": 4.3183
+  },
+  {
+   "naam": "Politieloket Boekel",
+   "lat": 51.6032,
+   "lng": 5.673
+  },
+  {
+   "naam": "Politieloket Heusden",
+   "lat": 51.7257,
+   "lng": 5.1381
+  },
+  {
+   "naam": "Politieloket Vlijmen",
+   "lat": 51.6916,
+   "lng": 5.2002
+  },
+  {
+   "naam": "Politiepost Apeldoorn 1e Wormenseweg",
+   "lat": 52.1928,
+   "lng": 5.9736
+  },
+  {
+   "naam": "Politiepost Apeldoorn Germanenlaan",
+   "lat": 52.2021,
+   "lng": 5.9311
+  },
+  {
+   "naam": "Politiepost Apeldoorn Maasstraat",
+   "lat": 52.1899,
+   "lng": 5.9709
+  },
+  {
+   "naam": "Politiepost Appingedam",
+   "lat": 53.3182,
+   "lng": 6.8574
+  },
+  {
+   "naam": "Politiepost Bedum",
+   "lat": 53.3013,
+   "lng": 6.596
+  },
+  {
+   "naam": "Politiepost Beekbergen",
+   "lat": 52.1585,
+   "lng": 5.9631
+  },
+  {
+   "naam": "Politiepost Bunnik",
+   "lat": 52.0553,
+   "lng": 5.2263
+  },
+  {
+   "naam": "Politiepost De Bilt",
+   "lat": 52.1215,
+   "lng": 5.1965
+  },
+  {
+   "naam": "Politiepost Ede-Veldhuizen",
+   "lat": 52.0438,
+   "lng": 5.6411
+  },
+  {
+   "naam": "Politiepost Franeker",
+   "lat": 53.1848,
+   "lng": 5.5316
+  },
+  {
+   "naam": "Politiepost Gieten",
+   "lat": 53.0054,
+   "lng": 6.7605
+  },
+  {
+   "naam": "Politiepost Halfweg/Zwanenburg",
+   "lat": 52.3856,
+   "lng": 4.7426
+  },
+  {
+   "naam": "Politiepost Hattem",
+   "lat": 52.4726,
+   "lng": 6.0641
+  },
+  {
+   "naam": "Politiepost Heerde",
+   "lat": 52.388,
+   "lng": 6.0467
+  },
+  {
+   "naam": "Politiepost Heeze-Leende",
+   "lat": 51.3515,
+   "lng": 5.5427
+  },
+  {
+   "naam": "Politiepost IJburg",
+   "lat": 52.3528,
+   "lng": 5.0004
+  },
+  {
+   "naam": "Politiepost IJsselstein",
+   "lat": 52.0179,
+   "lng": 5.0402
+  },
+  {
+   "naam": "Politiepost Klarenbeek",
+   "lat": 52.1676,
+   "lng": 6.0655
+  },
+  {
+   "naam": "Politiepost Laren/Blaricum",
+   "lat": 52.2586,
+   "lng": 5.2285
+  },
+  {
+   "naam": "Politiepost Leens",
+   "lat": 53.3628,
+   "lng": 6.3766
+  },
+  {
+   "naam": "Politiepost Loenen",
+   "lat": 52.1138,
+   "lng": 6.0186
+  },
+  {
+   "naam": "Politiepost Loppersum",
+   "lat": 53.3337,
+   "lng": 6.746
+  },
+  {
+   "naam": "Politiepost Lunteren",
+   "lat": 52.0833,
+   "lng": 5.6228
+  },
+  {
+   "naam": "Politiepost Maurik",
+   "lat": 51.957,
+   "lng": 5.4235
+  },
+  {
+   "naam": "Politiepost Nieuwerkerk aan den IJssel",
+   "lat": 51.968,
+   "lng": 4.617
+  },
+  {
+   "naam": "Politiepost Oude IJsselstreek",
+   "lat": 51.8775,
+   "lng": 6.3749
+  },
+  {
+   "naam": "Politiepost Oude Pekela",
+   "lat": 53.1045,
+   "lng": 7.0083
+  },
+  {
+   "naam": "Politiepost Renswoude",
+   "lat": 52.0719,
+   "lng": 5.5468
+  },
+  {
+   "naam": "Politiepost Rijssen",
+   "lat": 52.3073,
+   "lng": 6.5225
+  },
+  {
+   "naam": "Politiepost Ten Boer",
+   "lat": 53.2767,
+   "lng": 6.6959
+  },
+  {
+   "naam": "Politiepost Ter Apel",
+   "lat": 52.8752,
+   "lng": 7.0632
+  },
+  {
+   "naam": "Politiepost Twello",
+   "lat": 52.2365,
+   "lng": 6.1097
+  },
+  {
+   "naam": "Politiepost Uddel",
+   "lat": 52.255,
+   "lng": 5.7799
+  },
+  {
+   "naam": "Politiepost Ugchelen",
+   "lat": 52.1824,
+   "lng": 5.935
+  },
+  {
+   "naam": "Politiepost Uithuizen",
+   "lat": 53.4064,
+   "lng": 6.6727
+  },
+  {
+   "naam": "Politiepost Vaassen",
+   "lat": 52.2888,
+   "lng": 5.9707
+  },
+  {
+   "naam": "Politiepost Vries",
+   "lat": 53.0789,
+   "lng": 6.5826
+  },
+  {
+   "naam": "Politiepost Wezep",
+   "lat": 52.4646,
+   "lng": 5.9945
+  },
+  {
+   "naam": "Politiepost Winsum",
+   "lat": 53.3338,
+   "lng": 6.51
+  },
+  {
+   "naam": "Politiepost Woudenberg",
+   "lat": 52.0814,
+   "lng": 5.4147
+  },
+  {
+   "naam": "Politieservicepunt Haaksbergen",
+   "lat": 52.1552,
+   "lng": 6.7429
+  },
+  {
+   "naam": "Politieservicepunt Leiderdorp",
+   "lat": 52.1541,
+   "lng": 4.538
+  },
+  {
+   "naam": "Politieservicepunt Leudal",
+   "lat": 51.2499,
+   "lng": 5.9064
+  },
+  {
+   "naam": "Politieservicepunt Losser",
+   "lat": 52.263,
+   "lng": 7.0055
+  },
+  {
+   "naam": "Politieservicepunt Oegstgeest",
+   "lat": 52.1783,
+   "lng": 4.4623
+  },
+  {
+   "naam": "Politieservicepunt Reuver",
+   "lat": 51.2835,
+   "lng": 6.0777
+  },
+  {
+   "naam": "Politiesteunpunt 's-Gravendeel",
+   "lat": 51.7772,
+   "lng": 4.6121
+  },
+  {
+   "naam": "Politiesteunpunt 's-Heerenberg",
+   "lat": 51.8721,
+   "lng": 6.2483
+  },
+  {
+   "naam": "Politiesteunpunt Aalten",
+   "lat": 51.927,
+   "lng": 6.5811
+  },
+  {
+   "naam": "Politiesteunpunt Beek en Donk",
+   "lat": 51.5343,
+   "lng": 5.6329
+  },
+  {
+   "naam": "Politiesteunpunt Beneden-Leeuwen",
+   "lat": 51.8836,
+   "lng": 5.5175
+  },
+  {
+   "naam": "Politiesteunpunt Bergeijk",
+   "lat": 51.3205,
+   "lng": 5.3577
+  },
+  {
+   "naam": "Politiesteunpunt Bladel",
+   "lat": 51.3665,
+   "lng": 5.2147
+  },
+  {
+   "naam": "Politiesteunpunt Dinxperlo",
+   "lat": 51.861,
+   "lng": 6.4865
+  },
+  {
+   "naam": "Politiesteunpunt Druten",
+   "lat": 51.8887,
+   "lng": 5.605
+  },
+  {
+   "naam": "Politiesteunpunt Eerbeek",
+   "lat": 52.1058,
+   "lng": 6.0634
+  },
+  {
+   "naam": "Politiesteunpunt Geldermalsen",
+   "lat": 51.8739,
+   "lng": 5.2893
+  },
+  {
+   "naam": "Politiesteunpunt Hengelo",
+   "lat": 52.0455,
+   "lng": 6.3036
+  },
+  {
+   "naam": "Politiesteunpunt Lochem",
+   "lat": 52.165,
+   "lng": 6.4154
+  },
+  {
+   "naam": "Politiesteunpunt Lopik",
+   "lat": 51.9719,
+   "lng": 4.9503
+  },
+  {
+   "naam": "Politiesteunpunt Maasdam",
+   "lat": 51.7928,
+   "lng": 4.5564
+  },
+  {
+   "naam": "Politiesteunpunt Millingen aan de Rijn",
+   "lat": 51.8639,
+   "lng": 6.0467
+  },
+  {
+   "naam": "Politiesteunpunt Nuenen",
+   "lat": 51.4792,
+   "lng": 5.5531
+  },
+  {
+   "naam": "Politiesteunpunt Ochten",
+   "lat": 51.9096,
+   "lng": 5.5632
+  },
+  {
+   "naam": "Politiesteunpunt Oirschot",
+   "lat": 51.5039,
+   "lng": 5.3072
+  },
+  {
+   "naam": "Politiesteunpunt Oudewater",
+   "lat": 52.0203,
+   "lng": 4.8748
+  },
+  {
+   "naam": "Politiesteunpunt Piershil",
+   "lat": 51.7932,
+   "lng": 4.3155
+  },
+  {
+   "naam": "Politiesteunpunt Reusel",
+   "lat": 51.3617,
+   "lng": 5.1634
+  },
+  {
+   "naam": "Politiesteunpunt Strijen",
+   "lat": 51.7435,
+   "lng": 4.5574
+  },
+  {
+   "naam": "Politiesteunpunt Uitgeest",
+   "lat": 52.5282,
+   "lng": 4.713
+  },
+  {
+   "naam": "Politiesteunpunt Velserbroek",
+   "lat": 52.4333,
+   "lng": 4.6612
+  },
+  {
+   "naam": "Politiesteunpunt Voorhout",
+   "lat": 52.2229,
+   "lng": 4.4874
+  },
+  {
+   "naam": "Politiesteunpunt Wierden",
+   "lat": 52.3559,
+   "lng": 6.5924
+  },
+  {
+   "naam": "Politiesteunpunt Wijk bij Duurstede",
+   "lat": 51.9754,
+   "lng": 5.3415
+  },
+  {
+   "naam": "Regio Groningen",
+   "lat": 53.191,
+   "lng": 6.5471
+  },
+  {
+   "naam": "Rio Canario Polis",
+   "lat": 12.1445,
+   "lng": -68.9251
+  },
+  {
+   "naam": "Sint Eustatius Police Station",
+   "lat": 17.4839,
+   "lng": -62.9864
+  },
+  {
+   "naam": "Sint Maarten Police Department",
+   "lat": 18.0254,
+   "lng": -63.0442
+  },
+  {
+   "naam": "Spoorwegpolitie",
+   "lat": 51.5397,
+   "lng": 4.4577
+  },
+  {
+   "naam": "Tourism Police",
+   "lat": 12.3719,
+   "lng": -69.1484
+  },
+  {
+   "naam": "Walaardt Sacré Kamp",
+   "lat": 52.1169,
+   "lng": 5.2487
+  },
+  {
+   "naam": "Warda di Polis Noord",
+   "lat": 12.5527,
+   "lng": -70.0297
+  },
+  {
+   "naam": "Zeehavenpolitie",
+   "lat": 51.9058,
+   "lng": 4.4634
+  },
+  {
+   "naam": "Zeehavenpolitie locatie West",
+   "lat": 51.8923,
+   "lng": 4.2304
+  }
+ ],
+ "rechtbank": [
+  {
+   "naam": "Afdeling bestuursrechtspraak van de Raad van State",
+   "lat": 52.0815,
+   "lng": 4.3087
+  },
+  {
+   "naam": "Centrale Raad van Beroep",
+   "lat": 52.0863,
+   "lng": 5.1166
+  },
+  {
+   "naam": "College van Beroep voor het bedrijfsleven",
+   "lat": 52.082,
+   "lng": 4.3283
+  },
+  {
+   "naam": "Constitutioneel Hof Van Sint Maarten",
+   "lat": 18.0239,
+   "lng": -63.0457
+  },
+  {
+   "naam": "Cour Pénale Internationale / International Criminal Court",
+   "lat": 52.1054,
+   "lng": 4.318
+  },
+  {
+   "naam": "Cour internationale de Justice / International Court of Justice",
+   "lat": 52.0868,
+   "lng": 4.2954
+  },
+  {
+   "naam": "Cour permanente d'arbitrage / Permanent Court of Arbitration",
+   "lat": 52.0863,
+   "lng": 4.2957
+  },
+  {
+   "naam": "De Bunker",
+   "lat": 52.36,
+   "lng": 4.7861
+  },
+  {
+   "naam": "Gemeenschappelijk Hof van Justitie",
+   "lat": 12.1269,
+   "lng": -68.9076
+  },
+  {
+   "naam": "Gerechtshof 's-Hertogenbosch",
+   "lat": 51.69,
+   "lng": 5.2913
+  },
+  {
+   "naam": "Gerechtshof Amsterdam",
+   "lat": 52.3839,
+   "lng": 4.8949
+  },
+  {
+   "naam": "Gerechtshof Arnhem-Leeuwarden",
+   "lat": 53.1998,
+   "lng": 5.7921
+  },
+  {
+   "naam": "Gerechtshof Arnhem-Leeuwarden",
+   "lat": 51.9785,
+   "lng": 5.9115
+  },
+  {
+   "naam": "Gerechtshof Den Haag",
+   "lat": 52.082,
+   "lng": 4.33
+  },
+  {
+   "naam": "Hoge Raad der Nederlanden",
+   "lat": 52.083,
+   "lng": 4.3162
+  },
+  {
+   "naam": "Kosovo Specialist Chambers",
+   "lat": 52.0962,
+   "lng": 4.3084
+  },
+  {
+   "naam": "Rechtbank",
+   "lat": 12.5558,
+   "lng": -70.0229
+  },
+  {
+   "naam": "Rechtbank Amsterdam",
+   "lat": 52.34,
+   "lng": 4.8677
+  },
+  {
+   "naam": "Rechtbank Den Haag",
+   "lat": 52.0093,
+   "lng": 4.7121
+  },
+  {
+   "naam": "Rechtbank Den Haag",
+   "lat": 52.1595,
+   "lng": 4.4804
+  },
+  {
+   "naam": "Rechtbank Gelderland",
+   "lat": 51.9784,
+   "lng": 5.9115
+  },
+  {
+   "naam": "Rechtbank Gelderland",
+   "lat": 52.1382,
+   "lng": 6.1965
+  },
+  {
+   "naam": "Rechtbank Gelderland",
+   "lat": 52.2133,
+   "lng": 5.9672
+  },
+  {
+   "naam": "Rechtbank Gelderland",
+   "lat": 51.843,
+   "lng": 5.8662
+  },
+  {
+   "naam": "Rechtbank Limburg",
+   "lat": 50.8483,
+   "lng": 5.6709
+  },
+  {
+   "naam": "Rechtbank Limburg",
+   "lat": 51.189,
+   "lng": 5.9899
+  },
+  {
+   "naam": "Rechtbank Midden-Nederland",
+   "lat": 52.0862,
+   "lng": 5.1164
+  },
+  {
+   "naam": "Rechtbank Midden-Nederland",
+   "lat": 52.3704,
+   "lng": 5.2206
+  },
+  {
+   "naam": "Rechtbank Midden-Nederland",
+   "lat": 52.5078,
+   "lng": 5.4717
+  },
+  {
+   "naam": "Rechtbank Noord-Holland",
+   "lat": 52.3819,
+   "lng": 4.6379
+  },
+  {
+   "naam": "Rechtbank Noord-Holland",
+   "lat": 52.3809,
+   "lng": 4.6394
+  },
+  {
+   "naam": "Rechtbank Noord-Holland",
+   "lat": 52.4508,
+   "lng": 4.815
+  },
+  {
+   "naam": "Rechtbank Noord-Holland",
+   "lat": 52.6399,
+   "lng": 4.7447
+  },
+  {
+   "naam": "Rechtbank Noord-Holland",
+   "lat": 52.322,
+   "lng": 4.7521
+  },
+  {
+   "naam": "Rechtbank Noord-Nederland",
+   "lat": 53.2218,
+   "lng": 6.5614
+  },
+  {
+   "naam": "Rechtbank Noord-Nederland",
+   "lat": 52.9943,
+   "lng": 6.5639
+  },
+  {
+   "naam": "Rechtbank Noord-Nederland",
+   "lat": 53.1992,
+   "lng": 5.7938
+  },
+  {
+   "naam": "Rechtbank Oost-Brabant",
+   "lat": 51.4359,
+   "lng": 5.4809
+  },
+  {
+   "naam": "Rechtbank Oost-Brabant",
+   "lat": 51.6899,
+   "lng": 5.2919
+  },
+  {
+   "naam": "Rechtbank Overijssel",
+   "lat": 52.5104,
+   "lng": 6.1014
+  },
+  {
+   "naam": "Rechtbank Overijssel",
+   "lat": 52.2236,
+   "lng": 6.8944
+  },
+  {
+   "naam": "Rechtbank Overijssel",
+   "lat": 52.3576,
+   "lng": 6.6584
+  },
+  {
+   "naam": "Rechtbank Rotterdam",
+   "lat": 51.9074,
+   "lng": 4.4922
+  },
+  {
+   "naam": "Rechtbank Rotterdam",
+   "lat": 51.8156,
+   "lng": 4.6713
+  },
+  {
+   "naam": "Rechtbank Zeeland-West-Brabant",
+   "lat": 51.4907,
+   "lng": 4.2909
+  },
+  {
+   "naam": "Rechtbank Zeeland-West-Brabant",
+   "lat": 51.5547,
+   "lng": 5.0907
+  },
+  {
+   "naam": "Rechtbank Zeeland-West-Brabant",
+   "lat": 51.5956,
+   "lng": 4.7719
+  },
+  {
+   "naam": "Rechtbank Zeeland-West-Brabant",
+   "lat": 51.4954,
+   "lng": 3.6132
+  }
+ ]
+}
