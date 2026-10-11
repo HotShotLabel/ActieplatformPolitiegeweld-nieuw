@@ -1,4 +1,5 @@
 import { NIEUWS_ARCHIEF, type NieuwsSoort } from "@/lib/nieuws-archief";
+import { NIEUWS_GEOOGST } from "@/lib/nieuws-geoogst";
 
 export const maxDuration = 60;
 
@@ -117,12 +118,17 @@ export async function GET() {
 
   const live = resultaten.flat();
   const liveUrls = new Set(live.map((bericht) => bericht.url));
+  const archiefUrls = new Set(NIEUWS_ARCHIEF.map((bericht) => bericht.url));
 
   const archief: Bericht[] = NIEUWS_ARCHIEF.filter(
     (bericht) => !liveUrls.has(bericht.url)
   ).map((bericht) => ({ ...bericht, live: false }));
 
-  const alles = [...live, ...archief].sort((a, b) =>
+  const geoogst: Bericht[] = NIEUWS_GEOOGST.filter(
+    (bericht) => !liveUrls.has(bericht.url) && !archiefUrls.has(bericht.url)
+  ).map((bericht) => ({ ...bericht, live: false }));
+
+  const alles = [...live, ...archief, ...geoogst].sort((a, b) =>
     (b.datum || "").localeCompare(a.datum || "")
   );
 
