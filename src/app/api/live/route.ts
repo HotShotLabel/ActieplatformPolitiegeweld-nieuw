@@ -20,6 +20,15 @@ export interface Uitzending {
   dagenOver: number;
 }
 
+export interface LiveLink {
+  id: string;
+  url: string;
+  host: string;
+  titel: string;
+  naam: string;
+  toegevoegdOp: string;
+}
+
 const BEWAAR_DAGEN = 30;
 
 async function verwijderBestanden(urls: string[]): Promise<void> {
@@ -84,11 +93,43 @@ export async function GET() {
       await batch.commit().catch(() => {});
     }
 
+    // Ingestuurde live-links (48 uur geldig), met opruiming van verlopen.
+    const linkSnapshot = await db
+      .collection("livelinks")
+      .orderBy("toegevoegdOp", "desc")
+      .limit(50)
+      .get();
+    const linkLijst: LiveLink[] = [];
+    const verlopenLinks: string[] = [];
+    for (const doc of linkSnapshot.docs) {
+      const data = doc.data();
+      const verloopt = Date.parse(String(data.verlooptOp ?? ""));
+      if (!Number.isNaN(verloopt) && verloopt < nu) {
+        verlopenLinks.push(doc.id);
+        continue;
+      }
+      linkLijst.push({
+        id: doc.id,
+        url: String(data.url ?? ""),
+        host: String(data.host ?? ""),
+        titel: String(data.titel ?? ""),
+        naam: String(data.naam ?? ""),
+        toegevoegdOp: String(data.toegevoegdOp ?? ""),
+      });
+    }
+    if (verlopenLinks.length > 0) {
+      const linkBatch = db.batch();
+      for (const id of verlopenLinks) {
+        linkBatch.delete(db.collection("livelinks").doc(id));
+      }
+      await linkBatch.commit().catch(() => {});
+    }
+
     // Is er nu iemand live? Dat vragen we aan LiveKit zelf.
     const live = await liveStand();
 
     return Response.json(
-      { uitzendingen: actief, live, bewaardagen: BEWAAR_DAGEN },
+      { uitzendingen: actief, links: linkLijst.slice(0, 30), live, bewaardagen: BEWAAR_DAGEN },
       {
         headers: {
           "Cache-Control": "public, s-maxage=5, stale-while-revalidate=10",
@@ -100,6 +141,7 @@ export async function GET() {
     return Response.json(
       {
         uitzendingen: [],
+        links: [],
         live: { live: false, titel: "", kijkers: 0, gestartOp: "" },
         bewaardagen: BEWAAR_DAGEN,
       },

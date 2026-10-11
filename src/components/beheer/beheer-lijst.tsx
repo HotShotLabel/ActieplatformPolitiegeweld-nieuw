@@ -27,6 +27,14 @@ interface BeheerUitzending {
   youtubeUrl: string;
 }
 
+interface BeheerLink {
+  id: string;
+  url: string;
+  host: string;
+  titel: string;
+  naam: string;
+}
+
 const datumFormatter = new Intl.DateTimeFormat("nl-NL", {
   dateStyle: "long",
   timeStyle: "short",
@@ -60,6 +68,9 @@ export function BeheerLijst() {
   const [uitzendingen, setUitzendingen] = useState<BeheerUitzending[]>([]);
   const [opnameBezig, setOpnameBezig] = useState("");
   const [uitzendingMelding, setUitzendingMelding] = useState("");
+  const [links, setLinks] = useState<BeheerLink[]>([]);
+  const [linkBezig, setLinkBezig] = useState("");
+  const [linkMelding, setLinkMelding] = useState("");
 
   const laadLive = useCallback(async () => {
     try {
@@ -74,6 +85,7 @@ export function BeheerLijst() {
       setUitzendingen(
         Array.isArray(data?.uitzendingen) ? data.uitzendingen : []
       );
+      setLinks(Array.isArray(data?.links) ? data.links : []);
     } catch {
       // stil blijven; het is een hulpmiddel
     }
@@ -180,6 +192,33 @@ export function BeheerLijst() {
       );
     } finally {
       setOpnameBezig("");
+    }
+  }
+
+  async function verwijderLink(id: string) {
+    if (!window.confirm("Deze ingestuurde link verwijderen?")) return;
+    setLinkBezig(id);
+    setLinkMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/livelink", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      const data = await antwoord.json().catch(() => ({}));
+      if (antwoord.ok) {
+        setLinkMelding("De link is verwijderd.");
+        await laadLive();
+      } else {
+        setLinkMelding(data.fout ?? "Verwijderen mislukte.");
+      }
+    } catch {
+      setLinkMelding("Verwijderen mislukte. Probeer het opnieuw.");
+    } finally {
+      setLinkBezig("");
     }
   }
 
@@ -441,6 +480,70 @@ export function BeheerLijst() {
         {uitzendingMelding ? (
           <p aria-live="polite" className="mt-3 text-sm">
             {uitzendingMelding}
+          </p>
+        ) : null}
+      </section>
+
+      {/* Ingestuurde live-links */}
+      <section
+        aria-label="Live-links van bezoekers"
+        className="mb-8 rounded-xl border border-line bg-surface p-6"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="font-display text-lg font-semibold tracking-tight">
+            Live-links van bezoekers
+          </p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
+            {links.length} online
+          </p>
+        </div>
+        {links.length === 0 ? (
+          <p className="mt-3 text-sm text-muted">
+            Er staan nu geen ingestuurde links.
+          </p>
+        ) : (
+          <ul className="mt-4 space-y-3">
+            {links.map((link) => (
+              <li
+                key={link.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{link.titel}</p>
+                  <p className="mt-0.5 truncate text-xs text-muted-2">
+                    {link.host}
+                    {link.naam ? ` · ${link.naam}` : ""} · {link.url}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={cn(btnGhost, "h-9 px-4 text-xs")}
+                  >
+                    Open
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => verwijderLink(link.id)}
+                    disabled={linkBezig === link.id}
+                    className={cn(
+                      btnGhost,
+                      "h-9 px-4 text-xs text-accent hover:text-accent",
+                      linkBezig === link.id && "opacity-60"
+                    )}
+                  >
+                    {linkBezig === link.id ? "Bezig…" : "Verwijder"}
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+        {linkMelding ? (
+          <p aria-live="polite" className="mt-3 text-sm">
+            {linkMelding}
           </p>
         ) : null}
       </section>

@@ -29,6 +29,11 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Ingestuurde live-links (alleen via de server).
+    match /livelinks/{document} {
+      allow read, write: if false;
+    }
+
     match /instellingen/{document} {
       allow read, write: if false;
     }

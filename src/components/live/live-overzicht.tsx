@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
@@ -24,10 +24,38 @@ interface LiveStand {
   gestartOp: string;
 }
 
+interface LiveLink {
+  id: string;
+  url: string;
+  host: string;
+  titel: string;
+  naam: string;
+  toegevoegdOp: string;
+}
+
 interface LiveData {
   uitzendingen: Uitzending[];
+  links: LiveLink[];
   live: LiveStand;
   bewaardagen: number;
+}
+
+function platformVan(host: string): string {
+  const schoon = host.toLowerCase();
+  if (schoon.includes("youtu")) return "YouTube";
+  if (schoon.includes("tiktok")) return "TikTok";
+  if (schoon.includes("instagram")) return "Instagram";
+  if (schoon.includes("facebook") || schoon.includes("fb.watch")) return "Facebook";
+  if (schoon.includes("twitch")) return "Twitch";
+  return host;
+}
+
+function urenGeleden(iso: string): string {
+  const tijd = Date.parse(iso);
+  if (Number.isNaN(tijd)) return "";
+  const uren = Math.floor((Date.now() - tijd) / 3_600_000);
+  if (uren < 1) return "net geplaatst";
+  return `${uren} ${uren === 1 ? "uur" : "uur"} geleden`;
 }
 
 const datumFormatter = new Intl.DateTimeFormat("nl-NL", {
@@ -52,6 +80,11 @@ function formatDuur(seconden: number): string {
 export function LiveOverzicht() {
   const [data, setData] = useState<LiveData | null>(null);
   const [mislukt, setMislukt] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkTitel, setLinkTitel] = useState("");
+  const [linkNaam, setLinkNaam] = useState("");
+  const [linkBezig, setLinkBezig] = useState(false);
+  const [linkMelding, setLinkMelding] = useState("");
 
   const laad = useCallback(async () => {
     try {
@@ -70,7 +103,43 @@ export function LiveOverzicht() {
     return () => window.clearInterval(timer);
   }, [laad]);
 
+  async function zetLinkErbij(gebeurtenis: FormEvent<HTMLFormElement>) {
+    gebeurtenis.preventDefault();
+    const honing = String(
+      new FormData(gebeurtenis.currentTarget).get("honing") ?? ""
+    );
+    gebeurtenis.preventDefault();
+    setLinkBezig(true);
+    setLinkMelding("");
+    try {
+      const antwoord = await fetch("/api/live/link", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          url: linkUrl.trim(),
+          titel: linkTitel.trim(),
+          naam: linkNaam.trim(),
+          honing,
+        }),
+      });
+      const uitkomst = await antwoord.json().catch(() => ({}));
+      if (!antwoord.ok) {
+        setLinkMelding(uitkomst.fout ?? "Er ging iets mis. Probeer het opnieuw.");
+        return;
+      }
+      setLinkMelding("Je link staat erbij en blijft 48 uur online.");
+      setLinkUrl("");
+      setLinkTitel("");
+      await laad();
+    } catch {
+      setLinkMelding("Er ging iets mis. Probeer het opnieuw.");
+    } finally {
+      setLinkBezig(false);
+    }
+  }
+
   const uitzendingen = data?.uitzendingen ?? [];
+  const links = data?.links ?? [];
   const isLive = Boolean(data?.live?.live);
 
   return (
@@ -112,6 +181,118 @@ export function LiveOverzicht() {
               </a>
             </div>
           </div>
+        )}
+      </section>
+
+      {/* Gaat het ergens anders live? Eigen links erbij zetten */}
+      <section
+        aria-label="Andere live-uitzendingen"
+        className="rounded-2xl border border-line bg-white/[0.02] p-8 md:p-10"
+      >
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="font-display text-2xl font-semibold tracking-tight">
+              Gaat het ergens anders live?
+            </h2>
+            <p className="mt-2 max-w-[64ch] text-sm leading-relaxed text-muted">
+              Gaat iemand live op TikTok, YouTube of Instagram? Zet de link
+              erbij, zodat iedereen het kan vinden. De link blijft 48 uur
+              staan en gaat daarna automatisch weg. Links komen van
+              bezoekers en zijn niet door ons gecontroleerd.
+            </p>
+          </div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
+            {links.length > 0
+              ? `${links.length} ${links.length === 1 ? "link" : "links"}`
+              : "nog geen links"}
+          </p>
+        </div>
+
+        <form
+          onSubmit={zetLinkErbij}
+          className="mt-6 grid gap-3 md:grid-cols-[1.4fr_1fr_0.8fr_auto]"
+        >
+          <input
+            type="url"
+            required
+            value={linkUrl}
+            onChange={(gebeurtenis) => setLinkUrl(gebeurtenis.target.value)}
+            maxLength={500}
+            placeholder="Plak hier de live-link (https://...)"
+            aria-label="Live-link"
+            className="h-11 min-w-0 rounded-lg border border-line-strong bg-transparent px-3 text-sm outline-none focus:border-muted-2"
+          />
+          <input
+            type="text"
+            required
+            value={linkTitel}
+            onChange={(gebeurtenis) => setLinkTitel(gebeurtenis.target.value)}
+            maxLength={120}
+            placeholder="Korte titel, bijv. Live vanaf het plein"
+            aria-label="Titel van de uitzending"
+            className="h-11 min-w-0 rounded-lg border border-line-strong bg-transparent px-3 text-sm outline-none focus:border-muted-2"
+          />
+          <input
+            type="text"
+            value={linkNaam}
+            onChange={(gebeurtenis) => setLinkNaam(gebeurtenis.target.value)}
+            maxLength={40}
+            placeholder="Je naam (mag leeg)"
+            aria-label="Je naam"
+            className="h-11 min-w-0 rounded-lg border border-line-strong bg-transparent px-3 text-sm outline-none focus:border-muted-2"
+          />
+          <input
+            type="text"
+            name="honing"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="hidden"
+          />
+          <button
+            type="submit"
+            disabled={linkBezig}
+            className={cn(
+              btnPrimary,
+              "h-11 bg-accent px-5 hover:bg-[#d0431f]",
+              linkBezig && "opacity-60"
+            )}
+          >
+            {linkBezig ? "Bezig..." : "Zet erbij"}
+          </button>
+        </form>
+        {linkMelding && (
+          <p aria-live="polite" className="mt-3 text-sm">
+            {linkMelding}
+          </p>
+        )}
+
+        {links.length > 0 && (
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+            {links.map((link) => (
+              <li
+                key={link.id}
+                className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{link.titel}</p>
+                  <p className="mt-0.5 text-xs text-muted-2">
+                    {platformVan(link.host)}
+                    {link.naam ? ` · ${link.naam}` : ""} ·{" "}
+                    {urenGeleden(link.toegevoegdOp)}
+                  </p>
+                </div>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={cn(btnGhost, "h-9 shrink-0 px-4 text-xs")}
+                >
+                  Bekijk
+                </a>
+              </li>
+            ))}
+          </ul>
         )}
       </section>
 
