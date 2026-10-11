@@ -89,7 +89,7 @@ export async function GET() {
       { uitzendingen: actief, live, bewaardagen: BEWAAR_DAGEN },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=15, stale-while-revalidate=30",
+          "Cache-Control": "public, s-maxage=5, stale-while-revalidate=10",
         },
       }
     );
