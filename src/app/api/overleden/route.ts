@@ -27,6 +27,11 @@ export interface OverledenZaak {
   plaats: string;
   lat: number;
   lng: number;
+  naam: string;
+  leeftijd: string;
+  datum: string;
+  tekst: string;
+  foto: string;
   geweld: string;
   geschoten: string;
   vervolgd: string;
@@ -107,6 +112,13 @@ export async function GET() {
         plaats: stad,
         lat: Math.round(lat * 10000) / 10000,
         lng: Math.round(lng * 10000) / 10000,
+        naam: String(mens.name ?? "").trim(),
+        leeftijd: String(mens.age ?? "").trim(),
+        datum: String(mens.formatted_date ?? mens.us_date ?? "").trim(),
+        tekst: String(mens.text ?? "").trim(),
+        foto: mens.local_image_link
+          ? `https://overleden.controlealtdelete.nl/${String(mens.local_image_link).replace(/^\//, "")}`
+          : "",
         geweld: String(mens.police_violence ?? "Onbekend"),
         geschoten: String(mens.is_shot ?? "Onbekend"),
         vervolgd: String(mens.officer_persecuted ?? "Onbekend"),

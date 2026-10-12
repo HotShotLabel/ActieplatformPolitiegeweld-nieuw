@@ -15,6 +15,7 @@ const LINKS = [
   { href: "/kaart", label: "Kaart" },
   { href: "/uitspraken", label: "Uitspraken" },
   { href: "/overleden", label: "Overleden" },
+  { href: "/agenten", label: "Agenten" },
   { href: "/cijfers", label: "Cijfers" },
   { href: "/nieuws", label: "Nieuws" },
   { href: "/live", label: "Live" },
@@ -64,7 +65,7 @@ export function SiteNav() {
 
         <nav
           aria-label="Hoofdmenu"
-          className="hidden items-center gap-7 md:flex"
+          className="hidden items-center gap-5 lg:flex"
         >
           {LINKS.map((link) => (
             <Link

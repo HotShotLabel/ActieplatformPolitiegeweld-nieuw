@@ -492,6 +492,11 @@ export function MeldingenKaart() {
       plaats: string;
       lat: number;
       lng: number;
+      naam?: string;
+      leeftijd?: string;
+      datum?: string;
+      tekst?: string;
+      foto?: string;
       geweld: string;
       geschoten: string;
       vervolgd: string;
@@ -510,13 +515,16 @@ export function MeldingenKaart() {
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
-            `<strong>Overleden na politieoptreden</strong><br>` +
-              `${zaak.jaar} · ${zaak.plaats}<br>` +
+            `${zaak.foto ? `<img src="${zaak.foto}" alt="" loading="lazy" style="float:right;margin:0 0 8px 10px;width:64px;height:64px;border-radius:10px;object-fit:cover" onerror="this.style.display='none'" />` : ""}` +
+              `<strong>${zaak.naam && zaak.naam !== "Onbekend" ? escapeHtml(zaak.naam) : "Overleden na politieoptreden"}${zaak.leeftijd && zaak.leeftijd !== "Onbekend" ? ` (${escapeHtml(zaak.leeftijd)})` : ""}</strong><br>` +
+              `${zaak.datum ? escapeHtml(zaak.datum) + " · " : zaak.jaar + " · "}${zaak.plaats}<br>` +
               `Politiegeweld: ${zaak.geweld} · Doodgeschoten: ${zaak.geschoten}<br>` +
               `${zaak.eenheid ? "Eenheid: " + zaak.eenheid + "<br>" : ""}` +
+              `${zaak.vervolgd && zaak.vervolgd !== "Onbekend" ? "Agent vervolgd: " + zaak.vervolgd + "<br>" : ""}` +
+              `${zaak.veroordeeld && zaak.veroordeeld !== "Onbekend" ? "Agent veroordeeld: " + zaak.veroordeeld + "<br>" : ""}` +
               `${zaak.status && zaak.status !== "Onbekend" ? zaak.status + "<br>" : ""}` +
-              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${zaak.bronLabel}</a><br>` +
-              `<span style="opacity:.7">Naam en verhaal staan in de database van Controle Alt Delete.</span>`
+              `${zaak.tekst && zaak.tekst !== "Toedracht onbekend." ? `<span style="opacity:.85">${escapeHtml(zaak.tekst.slice(0, 240))}${zaak.tekst.length > 240 ? "…" : ""}</span><br>` : ""}` +
+              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${zaak.bronLabel}</a>`
           )
         );
       if (toonStand.current.overleden) marker.addTo(map);
