@@ -6,6 +6,7 @@ import {
   GERICHTE_SCHOTEN_PER_JAAR,
   GEWELDSINCIDENTEN_PER_JAAR,
   GEWELDSMIDDELEN_2025,
+  KLACHTEN_GEWELD_PER_JAAR,
 } from "@/lib/cijfers";
 
 export const metadata: Metadata = {
@@ -56,6 +57,16 @@ export default function CijfersPage() {
             <Balken3D
               balken={GERICHTE_SCHOTEN_PER_JAAR}
               bron="Rapportage Geweldsaanwendingen door politieambtenaren 2025 (politie.nl). In 198 van de 212 gerichte schoten in 2025 ging het om een ernstig gewond of agressief dier."
+            />
+          </section>
+
+          <section>
+            <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight md:text-3xl">
+              Klachten over geweldstoepassing
+            </h2>
+            <Balken3D
+              balken={KLACHTEN_GEWELD_PER_JAAR}
+              bron="Analyse van de politie (IAT) in de Woo-documenten 'Geweldsaanwendingen door politieambtenaren' (politie.nl, 2023). * 2021 is tot en met augustus. Een klein deel van de klachten wordt gegrond verklaard; het grootste deel ongegrond."
             />
           </section>
         </div>

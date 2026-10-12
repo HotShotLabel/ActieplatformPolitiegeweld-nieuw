@@ -42,6 +42,15 @@ export const GERICHTE_SCHOTEN_PER_JAAR: ReeksPunt[] = [
   { label: "2025", waarde: 212 },
 ];
 
+/* Klachten over geweldstoepassing per jaar, uit de Woo-documenten
+   "geweldsaanwendingen door politieambtenaren" (IAT-analyse, politie.nl).
+   2021 is tot en met augustus. */
+export const KLACHTEN_GEWELD_PER_JAAR: ReeksPunt[] = [
+  { label: "2019", waarde: 550 },
+  { label: "2020", waarde: 609 },
+  { label: "2021*", waarde: 407 },
+];
+
 export const RIJKSRECHERCHE_DODELIJK_PER_JAAR: ReeksPunt[] = [
   { label: "2016", waarde: 9 },
   { label: "2017", waarde: 10 },
@@ -56,6 +65,15 @@ export const RIJKSRECHERCHE_DODELIJK_PER_JAAR: ReeksPunt[] = [
 ];
 
 export const CIJFERBLOKKEN: CijferBlok[] = [
+  {
+    titel: "Gegronde klachten over geweld",
+    waarde: "6",
+    toelichting:
+      "Klachten over politiegeweld die in 2020 door de klachtencommissie gegrond werden verklaard (van de 22 die in de tweede fase werden behandeld). In 2019 was dat een enkele; in 2021 (t/m augustus) werden 4 klachten in de tweede fase behandeld.",
+    bron: "Woo-documenten geweldsaanwendingen door politieambtenaren 2023 (politie.nl)",
+    bronUrl:
+      "https://www.politie.nl/wet-open-overheid/woo-verzoeken/staf-korpsleiding/woo-verzoeken-per-jaar/2023/2023-geweldsaanwendingen-door-politieambtenaren.html",
+  },
   {
     titel: "Geweldsincidenten in 2025",
     waarde: "25.163",
