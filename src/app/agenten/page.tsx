@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   AGENT_ZAKEN,
   CATEGORIE_TITEL,
+  OVERIGE_AGENT_ZAKEN,
   type AgentZaakCategorie,
 } from "@/lib/agent-zaken";
 
@@ -73,6 +74,41 @@ export default function AgentenPage() {
             </div>
           </section>
         ))}
+
+        <section className="mt-14">
+          <h2 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
+            Overige zaken uit het rechtspraak-onderzoek
+          </h2>
+          <p className="mt-3 max-w-[66ch] text-sm leading-relaxed text-muted">
+            Uitspraken zonder vindbare plaats of uit het Caribisch deel van het
+            Koninkrijk; allemaal gevonden via de uitputtende zoekactie in de
+            rechtspraak-databank (oktober 2026).
+          </p>
+          <ul className="mt-6 space-y-3">
+            {OVERIGE_AGENT_ZAKEN.map((zaak) => (
+              <li
+                key={zaak.ecli}
+                className="rounded-xl border border-line bg-surface px-5 py-4"
+              >
+                <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+                  {zaak.datum}
+                </p>
+                <p className="mt-1.5 text-sm leading-relaxed">{zaak.omschrijving}</p>
+                <p className="mt-2 text-xs text-muted-2">
+                  Bron:{" "}
+                  <a
+                    href={`https://uitspraken.rechtspraak.nl/details?id=${encodeURIComponent(zaak.ecli)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-4 hover:text-muted"
+                  >
+                    {zaak.ecli}
+                  </a>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <p className="mt-14 max-w-[70ch] text-sm leading-relaxed text-muted-2">
           Methode: zoekactie in de rechtspraak-databank (ruim dertig
