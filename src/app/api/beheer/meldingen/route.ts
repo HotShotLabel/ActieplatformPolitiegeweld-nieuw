@@ -44,6 +44,16 @@ export async function GET(request: NextRequest) {
         beschrijving: String(data.beschrijving ?? ""),
         opKaart: Boolean(data.opKaart),
         contactEmail: String(data.contactEmail ?? ""),
+        agentGeslacht: String(data.agentGeslacht ?? ""),
+        agentLeeftijd: String(data.agentLeeftijd ?? ""),
+        agentNaam: String(data.agentNaam ?? ""),
+        eenheid: String(data.eenheid ?? ""),
+        voertuig: String(data.voertuig ?? ""),
+        kentekens: String(data.kentekens ?? ""),
+        dienstnummers: String(data.dienstnummers ?? ""),
+        soortAgent: String(data.soortAgent ?? ""),
+        aantalAgenten: String(data.aantalAgenten ?? ""),
+        agentBeschrijving: String(data.agentBeschrijving ?? ""),
         createdAt:
           typeof data.createdAt?.toDate === "function"
             ? (data.createdAt.toDate() as Date).toISOString()

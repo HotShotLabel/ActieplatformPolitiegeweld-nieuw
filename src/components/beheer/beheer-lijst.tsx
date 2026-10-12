@@ -14,7 +14,32 @@ interface BeheerMelding {
   beschrijving: string;
   opKaart: boolean;
   contactEmail: string;
+  agentGeslacht: string;
+  agentLeeftijd: string;
+  agentNaam: string;
+  eenheid: string;
+  voertuig: string;
+  kentekens: string;
+  dienstnummers: string;
+  soortAgent: string;
+  aantalAgenten: string;
+  agentBeschrijving: string;
   createdAt: string;
+}
+
+function agentRijen(melding: BeheerMelding): [string, string][] {
+  const rijen: [string, string][] = [
+    ["Aantal agenten", melding.aantalAgenten],
+    ["Geslacht", melding.agentGeslacht],
+    ["Leeftijd (schatting)", melding.agentLeeftijd],
+    ["Naam", melding.agentNaam],
+    ["Eenheid", melding.eenheid],
+    ["Soort agent", melding.soortAgent],
+    ["Voertuig", melding.voertuig],
+    ["Kenteken(s)", melding.kentekens],
+    ["Dienstnummer(s)", melding.dienstnummers],
+  ];
+  return rijen.filter((rij) => rij[1] !== "");
 }
 
 interface BeheerUitzending {
@@ -638,6 +663,34 @@ export function BeheerLijst() {
               <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-muted">
                 {melding.beschrijving}
               </p>
+              {(() => {
+                const rijen = agentRijen(melding);
+                if (rijen.length === 0 && !melding.agentBeschrijving) {
+                  return null;
+                }
+                return (
+                  <div className="mt-4 rounded-lg border border-line bg-surface-2 p-4">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+                      Over de agent(en)
+                    </p>
+                    {rijen.length > 0 ? (
+                      <dl className="mt-2 grid gap-x-6 gap-y-1 text-sm text-muted sm:grid-cols-2">
+                        {rijen.map(([label, waarde]) => (
+                          <div key={label} className="flex gap-2">
+                            <dt className="shrink-0 text-muted-2">{label}:</dt>
+                            <dd>{waarde}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ) : null}
+                    {melding.agentBeschrijving ? (
+                      <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted">
+                        {melding.agentBeschrijving}
+                      </p>
+                    ) : null}
+                  </div>
+                );
+              })()}
               <div className="mt-4 flex items-center justify-between">
                 <span className="font-mono text-[11px] text-muted-2">
                   id: {melding.id}

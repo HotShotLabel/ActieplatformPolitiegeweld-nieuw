@@ -1,6 +1,12 @@
 import { NextRequest } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/lib/firebase-admin";
+import {
+  EENHEDEN,
+  GESLACHTEN_AGENT,
+  SOORTEN_AGENT,
+  VOERTUIGEN,
+} from "@/lib/meldingen";
 
 export const maxDuration = 30;
 
@@ -73,6 +79,23 @@ export async function POST(request: NextRequest) {
   const lat = typeof invoer.lat === "number" ? invoer.lat : undefined;
   const lng = typeof invoer.lng === "number" ? invoer.lng : undefined;
 
+  const kies = (waarde: unknown, opties: readonly string[]) => {
+    const tekst = String(waarde ?? "").trim();
+    return opties.includes(tekst) ? tekst : "";
+  };
+  const agentGeslacht = kies(invoer.agentGeslacht, GESLACHTEN_AGENT);
+  const eenheid = kies(invoer.eenheid, EENHEDEN);
+  const voertuig = kies(invoer.voertuig, VOERTUIGEN);
+  const soortAgent = kies(invoer.soortAgent, SOORTEN_AGENT);
+  const agentLeeftijd = String(invoer.agentLeeftijd ?? "").trim().slice(0, 60);
+  const agentNaam = String(invoer.agentNaam ?? "").trim().slice(0, 120);
+  const kentekens = String(invoer.kentekens ?? "").trim().slice(0, 200);
+  const dienstnummers = String(invoer.dienstnummers ?? "").trim().slice(0, 200);
+  const aantalAgenten = String(invoer.aantalAgenten ?? "").trim().slice(0, 20);
+  const agentBeschrijving = String(invoer.agentBeschrijving ?? "")
+    .trim()
+    .slice(0, 2000);
+
   if (!SOORTEN.includes(soort)) {
     return Response.json({ fout: "Kies wat er is gebeurd." }, { status: 400 });
   }
@@ -115,6 +138,16 @@ export async function POST(request: NextRequest) {
       beschrijving,
       opKaart,
       contactEmail,
+      agentGeslacht,
+      agentLeeftijd,
+      agentNaam,
+      eenheid,
+      voertuig,
+      kentekens,
+      dienstnummers,
+      soortAgent,
+      aantalAgenten,
+      agentBeschrijving,
       createdAt: FieldValue.serverTimestamp(),
     });
 

@@ -5,7 +5,15 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
-import { SOORTEN, type Soort, verstuurMelding } from "@/lib/meldingen";
+import {
+  EENHEDEN,
+  GESLACHTEN_AGENT,
+  SOORTEN,
+  SOORTEN_AGENT,
+  VOERTUIGEN,
+  type Soort,
+  verstuurMelding,
+} from "@/lib/meldingen";
 
 const LocatieKiezer = dynamic(
   () =>
@@ -33,6 +41,19 @@ const stapLabelClass =
 
 type Status = "invullen" | "versturen" | "gelukt" | "fout";
 
+const LEGE_AGENT_DETAILS = {
+  agentGeslacht: "",
+  agentLeeftijd: "",
+  agentNaam: "",
+  eenheid: "",
+  voertuig: "",
+  kentekens: "",
+  dienstnummers: "",
+  soortAgent: "",
+  aantalAgenten: "",
+  agentBeschrijving: "",
+};
+
 export function MeldForm() {
   const [soort, setSoort] = useState<Soort | "">("");
   const [datum, setDatum] = useState("");
@@ -47,6 +68,11 @@ export function MeldForm() {
   const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<Status>("invullen");
   const [foutmelding, setFoutmelding] = useState("");
+  const [agentDetails, setAgentDetails] = useState(LEGE_AGENT_DETAILS);
+
+  function zetAgent(veld: keyof typeof LEGE_AGENT_DETAILS, waarde: string) {
+    setAgentDetails((huidig) => ({ ...huidig, [veld]: waarde }));
+  }
 
   function valideer(): string {
     if (!soort) return "Kies wat er is gebeurd.";
@@ -87,6 +113,7 @@ export function MeldForm() {
         beschrijving,
         opKaart,
         contactEmail: contactWijze === "email" ? email : "",
+        ...agentDetails,
         lat: positie?.lat,
         lng: positie?.lng,
         website: honeypot,
@@ -111,6 +138,7 @@ export function MeldForm() {
     setPositie(null);
     setContactWijze("geen");
     setEmail("");
+    setAgentDetails(LEGE_AGENT_DETAILS);
     setStatus("invullen");
     setFoutmelding("");
   }
@@ -220,7 +248,205 @@ export function MeldForm() {
       </section>
 
       <section className="rounded-xl border border-line bg-surface p-7">
-        <p className={stapLabelClass}>Stap 2 · Op de kaart?</p>
+        <p className={stapLabelClass}>
+          Stap 2 · Over de agent(en) (optioneel)
+        </p>
+        <p className="mt-3 max-w-[64ch] text-sm leading-relaxed text-muted">
+          Alles in deze stap mag je overslaan. Hoe meer je weet, hoe scherper
+          het beeld wordt. Laat leeg wat je niet weet.
+        </p>
+
+        <div className="mt-5 grid gap-5 sm:grid-cols-2">
+          <div>
+            <label
+              htmlFor="agentGeslacht"
+              className="mb-2 block text-sm text-muted"
+            >
+              Was het een man of een vrouw?
+            </label>
+            <select
+              id="agentGeslacht"
+              className={inputClass}
+              value={agentDetails.agentGeslacht}
+              onChange={(event) => zetAgent("agentGeslacht", event.target.value)}
+              disabled={bezig}
+            >
+              <option value="">Kies of laat leeg</option>
+              {GESLACHTEN_AGENT.map((optie) => (
+                <option key={optie} value={optie}>
+                  {optie}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label
+              htmlFor="agentLeeftijd"
+              className="mb-2 block text-sm text-muted"
+            >
+              Leeftijd (schatting)
+            </label>
+            <input
+              id="agentLeeftijd"
+              type="text"
+              className={inputClass}
+              placeholder="Bijv. rond 30, of 45 tot 50"
+              value={agentDetails.agentLeeftijd}
+              onChange={(event) => zetAgent("agentLeeftijd", event.target.value)}
+              maxLength={60}
+              disabled={bezig}
+            />
+          </div>
+          <div>
+            <label htmlFor="eenheid" className="mb-2 block text-sm text-muted">
+              Welke eenheid of regio?
+            </label>
+            <select
+              id="eenheid"
+              className={inputClass}
+              value={agentDetails.eenheid}
+              onChange={(event) => zetAgent("eenheid", event.target.value)}
+              disabled={bezig}
+            >
+              <option value="">Kies of laat leeg</option>
+              {EENHEDEN.map((optie) => (
+                <option key={optie} value={optie}>
+                  {optie}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label
+              htmlFor="soortAgent"
+              className="mb-2 block text-sm text-muted"
+            >
+              Soort agent
+            </label>
+            <select
+              id="soortAgent"
+              className={inputClass}
+              value={agentDetails.soortAgent}
+              onChange={(event) => zetAgent("soortAgent", event.target.value)}
+              disabled={bezig}
+            >
+              <option value="">Kies of laat leeg</option>
+              {SOORTEN_AGENT.map((optie) => (
+                <option key={optie} value={optie}>
+                  {optie}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="voertuig" className="mb-2 block text-sm text-muted">
+              Waar kwamen ze mee?
+            </label>
+            <select
+              id="voertuig"
+              className={inputClass}
+              value={agentDetails.voertuig}
+              onChange={(event) => zetAgent("voertuig", event.target.value)}
+              disabled={bezig}
+            >
+              <option value="">Kies of laat leeg</option>
+              {VOERTUIGEN.map((optie) => (
+                <option key={optie} value={optie}>
+                  {optie}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label
+              htmlFor="aantalAgenten"
+              className="mb-2 block text-sm text-muted"
+            >
+              Hoeveel agenten waren erbij?
+            </label>
+            <input
+              id="aantalAgenten"
+              type="text"
+              className={inputClass}
+              placeholder="Bijv. 2"
+              value={agentDetails.aantalAgenten}
+              onChange={(event) => zetAgent("aantalAgenten", event.target.value)}
+              maxLength={20}
+              disabled={bezig}
+            />
+          </div>
+          <div>
+            <label htmlFor="kentekens" className="mb-2 block text-sm text-muted">
+              Kenteken(s) van het voertuig
+            </label>
+            <input
+              id="kentekens"
+              type="text"
+              className={inputClass}
+              placeholder="Bijv. 1-ABC-23 (meerdere mag, met komma)"
+              value={agentDetails.kentekens}
+              onChange={(event) => zetAgent("kentekens", event.target.value)}
+              maxLength={200}
+              disabled={bezig}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="dienstnummers"
+              className="mb-2 block text-sm text-muted"
+            >
+              Dienstnummer of nummer op het uniform
+            </label>
+            <input
+              id="dienstnummers"
+              type="text"
+              className={inputClass}
+              placeholder="Bijv. het nummer op het schouderstuk"
+              value={agentDetails.dienstnummers}
+              onChange={(event) => zetAgent("dienstnummers", event.target.value)}
+              maxLength={200}
+              disabled={bezig}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="agentNaam" className="mb-2 block text-sm text-muted">
+              Naam van de agent (als je die weet)
+            </label>
+            <input
+              id="agentNaam"
+              type="text"
+              className={inputClass}
+              placeholder="Mag je leeg laten"
+              value={agentDetails.agentNaam}
+              onChange={(event) => zetAgent("agentNaam", event.target.value)}
+              maxLength={120}
+              disabled={bezig}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label
+              htmlFor="agentBeschrijving"
+              className="mb-2 block text-sm text-muted"
+            >
+              Beschrijf hoe de agent(en) eruitzagen
+            </label>
+            <textarea
+              id="agentBeschrijving"
+              className={textareaClass}
+              placeholder="Lengte (schatting), haar, baard, bril, tattoo, dialect, onderscheidingen. Alles wat opviel helpt."
+              value={agentDetails.agentBeschrijving}
+              onChange={(event) =>
+                zetAgent("agentBeschrijving", event.target.value)
+              }
+              maxLength={2000}
+              disabled={bezig}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-line bg-surface p-7">
+        <p className={stapLabelClass}>Stap 3 · Op de kaart?</p>
         <div className="mt-4 flex items-start gap-4">
           <button
             type="button"
@@ -289,7 +515,7 @@ export function MeldForm() {
       </section>
 
       <section className="rounded-xl border border-line bg-surface p-7">
-        <p className={stapLabelClass}>Stap 3 · Contact (optioneel)</p>
+        <p className={stapLabelClass}>Stap 4 · Contact (optioneel)</p>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
           <label className="cursor-pointer">
             <input
