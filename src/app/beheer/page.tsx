@@ -14,8 +14,9 @@ export default function BeheerPage() {
           Beheer
         </h1>
         <p className="mt-5 max-w-[62ch] text-lg leading-relaxed text-muted">
-          Binnengekomen meldingen van het meldformulier. Deze pagina is niet
-          openbaar en wordt niet geïndexeerd.
+          Alles wat binnenkomt op één plek: meldingen, live-uitzendingen en
+          ingestuurde links. Deze pagina is niet openbaar en wordt niet
+          geïndexeerd.
         </p>
         <div className="mt-10">
           <BeheerLijst />

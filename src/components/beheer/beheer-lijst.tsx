@@ -24,6 +24,7 @@ interface BeheerMelding {
   soortAgent: string;
   aantalAgenten: string;
   agentBeschrijving: string;
+  kaartpunt: { lat: number; lng: number } | null;
   createdAt: string;
 }
 
@@ -116,12 +117,33 @@ export function BeheerLijst() {
     }
   }, []);
 
+  const verversMeldingenStil = useCallback(async () => {
+    try {
+      const antwoord = await fetch("/api/beheer/meldingen", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!antwoord.ok) return;
+      const data = (await antwoord.json()) as { meldingen: BeheerMelding[] };
+      setMeldingen(data.meldingen);
+    } catch {
+      // stil; de volgende ronde probeert het opnieuw
+    }
+  }, [token]);
+
   useEffect(() => {
     if (status !== "klaar") return;
     laadLive();
-    const timer = window.setInterval(laadLive, 15 * 1000);
-    return () => window.clearInterval(timer);
-  }, [status, laadLive]);
+    verversMeldingenStil();
+    const timerLive = window.setInterval(laadLive, 15 * 1000);
+    const timerMeldingen = window.setInterval(
+      verversMeldingenStil,
+      60 * 1000
+    );
+    return () => {
+      window.clearInterval(timerLive);
+      window.clearInterval(timerMeldingen);
+    };
+  }, [status, laadLive, verversMeldingenStil]);
 
   // Na verversen: het bewaarde wachtwoord opnieuw gebruiken (zelfde tab).
   useEffect(() => {
@@ -454,10 +476,10 @@ export function BeheerLijst() {
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
             {uitzendingen.length} online · opslag{" "}
             <span
-              className={cn(totaleOpslagMb > 700 && "text-accent")}
-              title="De gratis opslag is ongeveer 1000 MB. Ruim op wanneer je er dicht bij zit."
+              className={cn(totaleOpslagMb > 8500 && "text-accent")}
+              title="Cloudflare R2 geeft 10 GB gratis opslag. Ruim op wanneer je er dicht bij zit."
             >
-              {Math.round(totaleOpslagMb)} MB / ±1000 MB
+              {Math.round(totaleOpslagMb)} MB / ±10.240 MB (10 GB gratis)
             </span>
           </p>
         </div>
@@ -639,7 +661,7 @@ export function BeheerLijst() {
             Nog geen meldingen.
           </p>
           <p className="mt-2 text-sm text-muted">
-            Nieuwe meldingen verschijnen hier automatisch na verversen.
+            Nieuwe meldingen verschijnen hier vanzelf, binnen een minuut.
           </p>
         </div>
       ) : (
@@ -711,6 +733,20 @@ export function BeheerLijst() {
                   </div>
                 );
               })()}
+              {melding.kaartpunt ? (
+                <p className="mt-3 text-xs text-muted-2">
+                  Kaartpunt: {melding.kaartpunt.lat.toFixed(2)},{" "}
+                  {melding.kaartpunt.lng.toFixed(2)} ·{" "}
+                  <a
+                    className="underline underline-offset-4 hover:text-foreground"
+                    href={`https://www.openstreetmap.org/?mlat=${melding.kaartpunt.lat}&mlon=${melding.kaartpunt.lng}#map=15/${melding.kaartpunt.lat}/${melding.kaartpunt.lng}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    bekijk op kaart
+                  </a>
+                </p>
+              ) : null}
               <div className="mt-4 flex items-center justify-between">
                 <span className="font-mono text-[11px] text-muted-2">
                   id: {melding.id}

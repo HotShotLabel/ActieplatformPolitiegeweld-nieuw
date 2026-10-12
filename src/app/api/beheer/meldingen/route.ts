@@ -34,6 +34,23 @@ export async function GET(request: NextRequest) {
       .limit(200)
       .get();
 
+    const puntenSnapshot = await db
+      .collection("kaartpunten")
+      .orderBy("createdAt", "desc")
+      .limit(500)
+      .get();
+    const puntPerMelding = new Map<string, { lat: number; lng: number }>();
+    for (const punt of puntenSnapshot.docs) {
+      const puntData = punt.data();
+      const meldingId = String(puntData.meldingId ?? "");
+      if (meldingId && !puntPerMelding.has(meldingId)) {
+        puntPerMelding.set(meldingId, {
+          lat: Number(puntData.lat),
+          lng: Number(puntData.lng),
+        });
+      }
+    }
+
     const meldingen = snapshot.docs.map((document) => {
       const data = document.data();
       return {
@@ -54,6 +71,7 @@ export async function GET(request: NextRequest) {
         soortAgent: String(data.soortAgent ?? ""),
         aantalAgenten: String(data.aantalAgenten ?? ""),
         agentBeschrijving: String(data.agentBeschrijving ?? ""),
+        kaartpunt: puntPerMelding.get(document.id) ?? null,
         createdAt:
           typeof data.createdAt?.toDate === "function"
             ? (data.createdAt.toDate() as Date).toISOString()
