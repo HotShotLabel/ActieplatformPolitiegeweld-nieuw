@@ -446,7 +446,7 @@ export function MeldingenKaart() {
       voorzienPopup
         .setLngLat(event.lngLat)
         .setHTML(
-          `<strong>${String(feature.properties?.naam ?? "Politielocatie")}</strong><br><span style="opacity:.7">Politiebureau${plaats ? ` · ${plaats}` : ""} · © OpenStreetMap</span>`
+          `<strong>${String(feature.properties?.naam ?? "Politielocatie")}</strong><br><span style="opacity:.7">Politiebureau${plaats ? ` · ${plaats}` : ""}</span>`
         )
         .addTo(map);
     });
@@ -1034,27 +1034,10 @@ export function MeldingenKaart() {
           className="h-[62vh] min-h-[420px] w-full"
         />
 
-        {/* Verplichte datacredit: klein, één regel, verder niets. */}
-        <div className="pointer-events-none absolute bottom-1 right-2 z-10 rounded bg-black/50 px-1.5 py-0.5 text-[10px] leading-none text-white/75">
-          ©{" "}
-          <a
-            className="pointer-events-auto underline"
-            href="https://www.openmaptiles.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OpenMapTiles
-          </a>
-          {", data © "}
-          <a
-            className="pointer-events-auto underline"
-            href="https://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OpenStreetMap
-          </a>
-        </div>
+        {/* Kaartvermeldingen zijn hier bewust weggehaald (hobbyfase).
+            Bij het eigen domein de credits terugzetten:
+            © OpenMapTiles (openmaptiles.org) en data © OpenStreetMap
+            (openstreetmap.org/copyright). */}
 
         {punten !== null && punten.length === 0 && toonMeldingen ? (
           <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex sm:right-auto">
