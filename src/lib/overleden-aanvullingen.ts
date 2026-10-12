@@ -112,4 +112,32 @@ export const AANVULLINGEN_DODEN: AanvullingDood[] = [
     bronUrl:
       "https://www.rijnmond.nl/nieuws/2121999/gedetineerde-maakt-einde-aan-leven-in-politiecel",
   },
+  {
+    id: "houten-2012",
+    datum: "9 december 2012",
+    jaar: "2012",
+    plaats: "Houten",
+    lat: 52.0281,
+    lng: 5.1683,
+    titel: "Man (40) uit Iran overleed kort na opname in het cellencomplex van Houten",
+    toelichting:
+      "Hij was eerder die dag opgepakt op het Zandpad in Utrecht en werd onwel in het cellencomplex; hij overleed kort daarna. Staat niet in de CAD-database (gecontroleerd 12-10-2026; CAD heeft geen 2012-records).",
+    bronLabel: "De Gelderlander",
+    bronUrl:
+      "https://web.archive.org/web/20121214054706/http://www.gelderlander.nl/algemeen/binnenland/arrestant-overleden-in-houten-1.3551581",
+  },
+  {
+    id: "denhaag-2015",
+    datum: "27 oktober 2015",
+    jaar: "2015",
+    plaats: "Den Haag",
+    lat: 52.0721,
+    lng: 4.293,
+    titel: "Man (72) overleed na zijn arrestatie wegens overlast; sectie: hartinfarct",
+    toelichting:
+      "Volgens het OM was er geen worsteling. Staat niet in de CAD-database (2015 bevat daar alleen Mitch Henriquez; gecontroleerd 12-10-2026).",
+    bronLabel: "De Stentor",
+    bronUrl:
+      "https://web.archive.org/web/20151027181004/http://www.destentor.nl/algemeen/binnenland/arrestant-den-haag-overleden-na-hartinfarct-1.5086206",
+  },
 ];

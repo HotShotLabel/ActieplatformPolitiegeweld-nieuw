@@ -102,3 +102,21 @@ Nog niet doorzocht: DPG/Mediahuis-krantenarchieven (De Stentor, Tubantia,
 BN DeStem, PZC, Dagblad van het Noorden, Leeuwarder Courant); daar kunnen
 extra lokaal-gedekte zaken zitten. Eén zaak met onbekende afloop (Brabantse
 agent 2016, aangehouden voor lekken/witwassen) is bewust niet geplaatst.
+
+## Vierde speurronde 12-10-2026 (DPG- en noordelijke krantenarchieven)
+
+De live zoekfuncties van De Stentor, Tubantia, BN DeStem, PZC, De Gelderlander,
+dvhn.nl en lc.nl dekken alleen de recente jaren. Via het Internet Archive
+(CDX-API plus de gearchiveerde artikelen zelf) is de periode 2006-2016 alsnog
+doorzocht. Resultaat:
+
+- Coevorden 2025: politieagente (37) verdacht van lekken en computervredebreuk,
+  zaak loopt (DVHN) - op de kaart.
+- In de overige lijst: Pernis 2007 (vier agenten verdacht van dood door schuld),
+  Tilburg 2008 (agente en de hennepdiefstal), Brabant 2013 (stalking), Eindhoven
+  2013 (arrestatieteamlid en het dodelijk ongeval), Haarlem 2015 en Oosterhout
+  2015 (schietincidenten door agenten), Wijk bij Duurstede 2016 (chantage op
+  homoparkeerplaats) en twee Drentse/Groningse zaken uit 2026.
+- Wat niet kon worden geverifieerd: het DVHN-artikel over gesjoemel met
+  facturen bij de politie Noord-Nederland (alleen via zoekindex gezien) en de
+  agent die in 2016 in Zeeland-West-Brabant werd aangehouden (afloop onbekend).

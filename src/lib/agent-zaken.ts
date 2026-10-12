@@ -280,6 +280,10 @@ export const AGENT_ZAKEN: AgentZaak[] = [
     titel: "Corrupte motoragent uit Vianen maakte deel uit van een crimineel netwerk",
     uitkomst: "4 jaar cel",
     bronLabel: "RTV Utrecht", bronUrl: "https://www.rtvutrecht.nl/nieuws/2122351/corrupte-motoragent-uit-vianen-krijgt-vier-jaar-cel" },
+  { id: "coevorden-2025", jaar: "2025", plaats: "Coevorden", eenheid: "Drenthe", lat: 52.6602, lng: 6.7426, categorie: "ambtsmisbruik",
+    titel: "Politieagente (37) verdacht van het lekken van informatie en computervredebreuk",
+    uitkomst: "Zaak loopt; zat langer vast",
+    bronLabel: "Dagblad van het Noorden", bronUrl: "https://dvhn.nl/regio/drenthe/coevorden/politieagente-uit-coevorden-blijft-langer-vastzitten-voor-lekken-informatie/155099411.html" },
 ];
 
 /* Overige zaken uit het uitputtende rechtspraak-onderzoek (geen kaartpunt:
@@ -307,6 +311,15 @@ export const OVERIGE_AGENT_ZAKEN: { ecli: string; datum: string; omschrijving: s
   { ecli: "ECLI:NL:OGEABES:2024:142", datum: "2024-11-07", omschrijving: "Politieambtenaar Bonaire: mishandeling met gebruik van een ambtelijk middel en meineed." },
   { ecli: "nieuws:eindhoven-2016", datum: "2016", omschrijving: "Ex-brigadier Eindhoven gaf vertrouwelijke politie-informatie door aan een privédetective, die haar doorverkocht aan tv-programma's; 240 uur taakstraf + 3 maanden voorwaardelijk (Omroep Brabant)." },
   { ecli: "nieuws:enschede-2020", datum: "2020", omschrijving: "Oud-politieagent uit Enschede veroordeeld voor het stalken van zijn ex-vriendin (RTV Oost)." },
+  { ecli: "nieuws:pernis-2007", datum: "2008", omschrijving: "OM verdacht vier aanwezige agenten van dood door schuld na de dood van een 28-jarige Rotterdammer in een woning in Pernis (juni 2007); geen van hen is vervolgd (De Stentor)." },
+  { ecli: "nieuws:tilburg-agente-2008", datum: "2008", omschrijving: "Politieagente (30) verdacht van hulp bij de diefstal van 17 kilo hennep uit het politiebureau in Tilburg; ze kreeg naar verluidt 500 euro (BN DeStem)." },
+  { ecli: "nieuws:brabant-stalker-2013", datum: "2013", omschrijving: "Brabantse politieman ontslagen wegens stalking, laster en smaad; daarnaast strafrechtelijk vervolgd (De Gelderlander)." },
+  { ecli: "nieuws:eindhoven-2013", datum: "2015", omschrijving: "Lid van een arrestatieteam veroordeeld voor een dodelijk ongeval in Eindhoven (2013), waarbij een 18-jarige scooterrijdster omkwam; voorwaardelijke rijontzegging (De Stentor)." },
+  { ecli: "nieuws:haarlem-2015", datum: "2015", omschrijving: "Politieman (34) vervolgd voor het schieten op een auto die op hem inreed (Haarlem, Botermarkt, januari 2015); hem en de automobilist werd poging tot doodslag verweten (De Gelderlander/OM)." },
+  { ecli: "nieuws:oosterhout-2015", datum: "2015", omschrijving: "Agent schoot acht keer op de wegrijdende auto van een verdachte (Oosterhout, november 2014); het OM sloot noodweer uit en vervolgde hem voor poging tot doodslag (De Stentor)." },
+  { ecli: "nieuws:wijkbijduurstede-2016", datum: "2016", omschrijving: "Politieman (36) op non-actief; het OM verdacht hem van chantage en afpersing van bezoekers van een homoparkeerplaats via brieven (De Stentor)." },
+  { ecli: "nieuws:drenthe-2026", datum: "2026", omschrijving: "Ex-politieagent (32) uit Emmen aangehouden op verdenking van het omkopen van een collega; de Rijksrecherche onderzoekt (Dagblad van het Noorden)." },
+  { ecli: "nieuws:hoogezand-2026", datum: "2026", omschrijving: "Politieman uit Hoogezand drie jaar gestalkt door een voormalige vrouwelijke collega; het OM eiste celstraf tegen haar (Dagblad van het Noorden)." },
   { ecli: "ECLI:NL:GHDHA:2014:49", datum: "2014-01-21", omschrijving: "Twee politieambtenaren: wederrechtelijke vrijheidsberoving en misbruik van gezag tijdens dienst." },
   { ecli: "ECLI:NL:RBSGR:2004:AO9348", datum: "2004-05-12", omschrijving: "Verduistering van politiedocumenten, omkoping van politieambtenaren, schending ambtsgeheim." },
   { ecli: "ECLI:NL:RBHAA:2010:BM8272", datum: "2010-06-17", omschrijving: "Dodelijk ongeval met gepantserd politievoertuig (90 km/u waar 50 gold); artikel 6 WVW." },

@@ -50,3 +50,18 @@ kaartlaag met bron.
 - **Gevolg**: de kaartlaag Overleden is compleet voor wat publiek
   gedocumenteerd is, maar de werkelijke aantallen liggen hoger. Verwacht gat:
   honderden gevallen landelijk, waarvan het merendeel nooit is gepubliceerd.
+
+## Aanvulling 12-10-2026: DPG-kranten via Internet Archive
+
+Via gearchiveerde artikelen van De Stentor, Tubania, BN DeStem, PZC en
+De Gelderlander zijn alsnog gevonden en toegevoegd (periode 2006-2013):
+Amsterdam-Zuidoost 2006 (dode na politie-inval), Pernis 2007 (dode; vier
+agenten verdacht), Haarlem 2008 (arrestant schoot zichzelf op bureau),
+Eersel 2009 (twee doden na achtervolging), Veenendaal 2009 (doodgeschoten),
+Tilburg 2009 (cel), Hoofddorp 2009 (dodelijk ongeval met politieauto),
+Hoek van Holland 2009 (strandrellen), Amsterdam 2009 (vrouw aangereden door
+motoragent), Spijkenisse 2010 (doodgeschoten) en Eindhoven 2013 (scooterrijdster
+bij ongeval arrestatieteam).
+Ook twee gevallen buiten CAD gevonden: Houten 2012 (cel) en Den Haag 2015
+(72-jarige arrestant). Groningen 2025 (47-jarige in cel) en Eindhoven 2016
+(Rupert Lodovica) bleken al in CAD te staan.
