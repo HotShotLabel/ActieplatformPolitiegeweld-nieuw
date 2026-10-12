@@ -91,3 +91,33 @@ wél gearchiveerd (gecontroleerd via de CDX-index). Het archief was op
 
 **Herhaalbaar:** dezelfde oogst (15 eenheidspagina's -> 1.517 links ->
 filter) kan periodiek opnieuw; nieuwe besluiten komen er jaarlijks bij.
+
+## Update 12-10-2026 (2): uitkomsten en vergeten bronnen
+
+**GLZ-besluit (gedownload):** inhoudelijk een afwijzing. De eenheid Oost-Nederland
+geeft geen interne geweldsformulieren/klachtdossiers vrij: die zijn herleidbaar
+tot personen (Wet politiegegevens + privacy). Ze verwijzen naar al openbare
+stukken (Politiewet, Ambtsinstructie, politie.nl/politiegeweld).
+
+**OM Woo-lijst:** openbaar op om.nl/onderwerpen/w/wet-open-overheid/woo-documenten,
+pagineert per 10; recente items zijn vooral CVOM/verkeer. De relevante OM-stukken
+over politiegeweld zitten in hun nieuwsberichten (Rijksrecherche-uitkomsten) en
+de eerder gevonden Woo-besluiten.
+
+**VERGETEN BRONNEN (nieuw gevonden — hier zit de oude data):**
+- **opennieuwsbank.nl**: archief met oude OM/politie-persberichten (2004+) over
+  overlijdens in politiecellen MET stad, datum en doodsoorzaak.
+  Voorbeelden: Zwolle 13-12-2004 (hartstilstand, 34-jarige man);
+  Den Bosch, overlijden 23-11-2003 (intoxicatie; Rijksrecherche).
+  Kandidaat voor een aparte oogst (per-zaak, vroege jaren).
+- **UMCG-scriptie Iwema (2013), "Geboeid overlijden"**: systematische analyse van
+  Rijksrecherche-dossiers van overlijdens onder politieverantwoordelijkheid
+  2004-2010 (o.a. positionele asfyxie; problemen in medische zorg).
+- **Inspectie/Eerste Kamer (2016), "Arrestantenzorg Nederland"**: systeemcijfers
+  (~240.000 insluitingen per jaar; kwetsbare groepen in cellen).
+- **Nationale ombudsman**: per-zaak rapporten over overlijden in detentie
+  (o.a. 2017/054; eerder 2012/037).
+
+**Conclusie:** het oude Wob-document "Overleden personen in politiecellen
+2004-2016" is van politie.nl verdwenen en niet in het webarchief te vinden
+(alleen redirect-opnames), maar de INHOUD leeft voort in bovenstaande bronnen.
