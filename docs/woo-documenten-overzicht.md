@@ -138,3 +138,21 @@ De volledige oogst is gedownload (in 7 blokken via de browsermethode):
 
 Herhaalbaar: blokgewijs downloaden via dezelfde methode; URL-lijst is
 reproduceerbaar uit de 15 eenheidspagina's.
+
+## Update 12-10-2026 (4): klachtcijfers gevonden + vuist-laag gebouwd
+
+**Klachten (uit de gedownloade 2023-set, landelijke cijfers):**
+De documenten bevatten de interne klachtoverzichten over geweldstoepassing
+(categorieën fysiek geweld, diensthond, handboeien): per jaar tientallen
+klachten, waarvan een klein deel **gegrond** (o.a. 2019: 1 gegrond; 2020: 6
+gegrond; 2021: enkele). Er is GEEN openbare per-zaak-lijst van gegronde
+klachten per stad; die komen alleen via Nationale ombudsman-rapporten,
+rechtszaken en nieuws.
+
+**Vuist-laag op de kaart (nieuw, live):**
+Nieuwe kaartlaag "Geweld (geen dood)" met vuist-icoon: 8 bekende, herleidbare
+zaken uit openbare bronnen (OM, Woo-besluiten politie, rechtspraak):
+Coolsingel Rotterdam 2021 (5 gewonden), Ter Apel 2024, Broek in Waterland
+2021, rechtbank Den Haag 2023-2024, Bilthoven 2020, Markelo, Middenbeemster
+1987, Gaanderen 1982. Schakelbaar; legenda en popups met bronlinks.
+Code: src/lib/geweld-zaken.ts.
