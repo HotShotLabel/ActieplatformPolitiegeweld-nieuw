@@ -8,6 +8,7 @@ const PLATFORM_LINKS = [
   { href: "/cijfers", label: "Politiegeweld in cijfers" },
   { href: "/nieuws", label: "Nieuws" },
   { href: "/live", label: "Live-uitzendingen" },
+  { href: "/agenten", label: "Agenten als dader" },
   { href: "/juridisch", label: "Juridische hulp" },
 ];
 

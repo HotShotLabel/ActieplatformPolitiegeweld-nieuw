@@ -1,0 +1,158 @@
+/* Inventaris: politieambtenaren als verdachte/dader.
+   Bron: vier-koppig onderzoek (rechtspraak-API, nieuwsarchieven, archieven,
+   OM/Rijksrecherche), 12 oktober 2026. Namen alleen waar openbaar gemeld;
+   iedere zaak heeft een bron. Er bestaat geen volledige overheidslijst. */
+
+export type AgentZaakCategorie = "levensdelict" | "zeden" | "dienstgeweld";
+
+export interface AgentZaak {
+  id: string;
+  jaar: string;
+  plaats: string;
+  eenheid: string;
+  lat: number;
+  lng: number;
+  categorie: AgentZaakCategorie;
+  titel: string;
+  uitkomst: string;
+  bronLabel: string;
+  bronUrl: string;
+}
+
+export const CATEGORIE_TITEL: Record<AgentZaakCategorie, string> = {
+  levensdelict: "Levensdelicten (moord en doodslag)",
+  zeden: "Zedendelicten",
+  dienstgeweld: "Geweld tijdens de dienst",
+};
+
+export const AGENT_ZAKEN: AgentZaak[] = [
+  // Levensdelicten
+  { id: "milly", jaar: "2010", plaats: "Dordrecht", eenheid: "Rotterdam-Rijnmond", lat: 51.7815, lng: 4.7089, categorie: "levensdelict",
+    titel: "Surveillant verkracht en vermoordt buurmeisje Milly Boele (12)",
+    uitkomst: "18 jaar cel + tbs (onherroepelijk)",
+    bronLabel: "ECLI:NL:GHSGR:2012:BW7425", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AGHSGR%3A2012%3ABW7425" },
+  { id: "almere", jaar: "2008", plaats: "Almere", eenheid: "Flevoland", lat: 52.4025, lng: 5.2057, categorie: "levensdelict",
+    titel: "Agente schiet ex-partner dood met dienstwapen",
+    uitkomst: "10 jaar cel (moord)",
+    bronLabel: "ECLI:NL:GHARN:2010:BL2868", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AGHARN%3A2010%3ABL2868" },
+  { id: "schiebroek", jaar: "2009", plaats: "Rotterdam", eenheid: "Rotterdam-Rijnmond", lat: 51.9225, lng: 4.4865, categorie: "levensdelict",
+    titel: "Agent steekt (ex-)vriendin dood (tientallen messteken, Schiebroek)",
+    uitkomst: "8 jaar cel (doodslag)",
+    bronLabel: "NU.nl", bronUrl: "https://www.nu.nl/algemeen/2221742/acht-jaar-voor-doodsteken-vriendin.html" },
+  { id: "cardoze", jaar: "2019", plaats: "Dordrecht", eenheid: "Rotterdam-Rijnmond", lat: 51.7815, lng: 4.7089, categorie: "levensdelict",
+    titel: "Hoofdagent doodt vrouw en twee dochters met dienstwapen; daarna zelfdoding",
+    uitkomst: "Dader overleed; geen vervolging",
+    bronLabel: "OM", bronUrl: "https://www.om.nl/actueel/nieuws/2019/10/08/politieagent-is-verantwoordelijk-voor-doden-gezin-dordrecht" },
+  { id: "everdingen", jaar: "2020", plaats: "Everdingen", eenheid: "Landelijke Eenheid", lat: 51.9571, lng: 5.1518, categorie: "levensdelict",
+    titel: "Verkeersagent doodt partner; daarna zelfdoding",
+    uitkomst: "Dader overleed; geen vervolging",
+    bronLabel: "AD.nl", bronUrl: "https://www.ad.nl/binnenland/familiedrama-everdingen-buurt-geschokt-door-dood-van-politieagent-rene-43-en-kapster-willeke-40~a8ee3cce1/" },
+  { id: "hilversum-2005", jaar: "2005", plaats: "Hilversum", eenheid: "KLPD", lat: 52.2231, lng: 5.168, categorie: "levensdelict",
+    titel: "Hoofdagent doodt vrouw en drie zoons met dienstwapen; daarna zelfdoding",
+    uitkomst: "Dader overleed; geen vervolging",
+    bronLabel: "Volkskrant", bronUrl: "https://www.volkskrant.nl/nieuws-achtergrond/familiedrama-hilversum-eist-vijf-levens~b1446e3c/" },
+  { id: "kekerdom", jaar: "2012", plaats: "Kekerdom", eenheid: "Gelderland-Zuid", lat: 51.8601, lng: 6.0066, categorie: "levensdelict",
+    titel: "Districtsrecherchechef doodt ex-vriendin en haar vriend met dienstwapen; daarna zelfdoding",
+    uitkomst: "Dader overleed; geen vervolging",
+    bronLabel: "NU.nl", bronUrl: "https://www.nu.nl/algemeen/2912662/schutter-kekerdom-vermoedelijk-politiechef-zelf.html" },
+  { id: "ermelo", jaar: "2006", plaats: "Ermelo", eenheid: "Noord- en Oost-Gelderland", lat: 52.2882, lng: 5.6662, categorie: "levensdelict",
+    titel: "Politieman doodt echtgenote met dienstwapen; daarna zelfdoding",
+    uitkomst: "Dader overleed; geen vervolging",
+    bronLabel: "Blik op Nieuws", bronUrl: "https://www.blikopnieuws.nl/196139/dienstwapen-gebruikt-bij-drama-in-ermelo.html" },
+  { id: "winterswijk", jaar: "2023", plaats: "Winterswijk", eenheid: "Oost-Nederland", lat: 51.9719, lng: 6.7117, categorie: "levensdelict",
+    titel: "Brigadier doodt vrouw (31); daarna zelfdoding (niet het dienstwapen)",
+    uitkomst: "Dader overleed; geen vervolging",
+    bronLabel: "De Gelderlander", bronUrl: "https://www.gelderlander.nl/winterswijk/agent-frank-50-kon-zich-niet-neerleggen-bij-de-breuk-met-sanne-31-we-zijn-aangeslagen-kapot-van-verdriet~a2b5e1d2/" },
+  { id: "almelo", jaar: "2011", plaats: "Almelo", eenheid: "Politieopleiding (Amsterdam)", lat: 52.3577, lng: 6.6599, categorie: "levensdelict",
+    titel: "Agent in opleiding schiet caissière dood met dienstwapen; daarna zelfdoding",
+    uitkomst: "Dader overleed; geen vervolging",
+    bronLabel: "Volkskrant", bronUrl: "https://www.volkskrant.nl/mensen/politieagent-schoot-caissiere-met-dienstwapen-dood~b7ed4c02/" },
+  { id: "delft-wessel", jaar: "2018", plaats: "Delft", eenheid: "Den Haag", lat: 51.9985, lng: 4.3631, categorie: "levensdelict",
+    titel: "Agent schiet Wessel (18) dood bij coffeeshop; bewezen doodslag",
+    uitkomst: "Ontslag rechtsvervolging (noodweer); vervolging pas na art. 12 Sv",
+    bronLabel: "ECLI:NL:RBMNE:2024:3662", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBMNE%3A2024%3A3662" },
+  { id: "koomen", jaar: "2011", plaats: "Amsterdam", eenheid: "Amsterdam", lat: 52.3734, lng: 4.9045, categorie: "levensdelict",
+    titel: "Hondengeleider schiet Michael Koomen (31) dood aan de Spiegelgracht",
+    uitkomst: "Niet vervolgd (sepot; hof bevestigt 2014)",
+    bronLabel: "Parool", bronUrl: "https://www.parool.nl/nieuws/hof-hondengeleider-fred-b-niet-vervolgd-voor-doodschieten-voetballer~b603b7cc/" },
+  { id: "waalwijk", jaar: "2022", plaats: "Waalwijk", eenheid: "Arrestatieteam (landelijk)", lat: 51.6943, lng: 5.0689, categorie: "levensdelict",
+    titel: "AT-agent schiet Tim van der Boor (27) dood bij geplande aanhouding",
+    uitkomst: "Vrijspraak dood door schuld; hoger beroep loopt",
+    bronLabel: "ECLI:NL:RBMNE:2023:5681", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBMNE%3A2023%3A5681" },
+
+  // Zedendelicten
+  { id: "utrecht-2026", jaar: "2026", plaats: "Utrecht", eenheid: "Midden-Nederland", lat: 52.0887, lng: 5.0952, categorie: "zeden",
+    titel: "Politievrijwilliger: seksuele handelingen met minderjarige jongens + kinderporno",
+    uitkomst: "6 jaar cel + tbs (februari 2026)",
+    bronLabel: "OM", bronUrl: "https://www.om.nl/actueel/nieuws/2026/01/22/zes-jaar-en-tbs-geeist-tegen-politiemedewerker" },
+  { id: "raalte", jaar: "2012", plaats: "Raalte", eenheid: "Overijssel", lat: 52.3957, lng: 6.2696, categorie: "zeden",
+    titel: "Twee agenten plegen ontucht met dronken vrouw in dienstauto (carnavalsnacht)",
+    uitkomst: "24-30 maanden; Hoge Raad bevestigt 2022",
+    bronLabel: "ECLI:NL:HR:2022:413", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AHR%3A2022%3A413" },
+  { id: "molenlanden", jaar: "2021", plaats: "Brandwijk", eenheid: "Rotterdam (zeehavenpolitie)", lat: 51.8897, lng: 4.8122, categorie: "zeden",
+    titel: "Ex-agent: ontucht met vier jongens (8-13) in Molenlanden",
+    uitkomst: "Twee veroordelingen (8 en 14 maanden)",
+    bronLabel: "ECLI:NL:RBROT:2021:10236", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBROT%3A2021%3A10236" },
+  { id: "bas-s", jaar: "2015", plaats: "Rotterdam", eenheid: "Rotterdam-Rijnmond", lat: 51.9225, lng: 4.4865, categorie: "zeden",
+    titel: "Agent: kinderporno (ook zelfgemaakte beelden nichtjes 13-15); benaderde aangeefsters voor seks",
+    uitkomst: "22 maanden (12 voorwaardelijk)",
+    bronLabel: "NOS", bronUrl: "https://nos.nl/artikel/2061035-politieagent-verdacht-van-bezit-kinderporno" },
+  { id: "bennekom", jaar: "2008", plaats: "Bennekom", eenheid: "Gelderland-Midden", lat: 52.0074, lng: 5.6697, categorie: "zeden",
+    titel: "Agent: seksueel binnendringen van een 14-jarig meisje",
+    uitkomst: "200 uur werkstraf; hof en Hoge Raad bevestigen",
+    bronLabel: "ECLI:NL:GHARN:2011:BP8682", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AGHARN%3A2011%3ABP8682" },
+  { id: "werkendam", jaar: "2025", plaats: "Werkendam", eenheid: "Rotterdam (meldkamer)", lat: 51.7774, lng: 4.8273, categorie: "zeden",
+    titel: "Hoofdagent: verdenking ontucht/verkrachting vier minderjarige jongens; lopende zaak",
+    uitkomst: "Lopende zaak (behandeling 2026)",
+    bronLabel: "Omroep Brabant", bronUrl: "https://www.omroepbrabant.nl/nieuws/4899147/politieagent-uit-werkendam-blijft-voorlopig-vast-voor-ontucht-met-minderjarige-jongens" },
+  { id: "ijsselstein", jaar: "2026", plaats: "IJsselstein", eenheid: "Midden-Nederland", lat: 52.0277, lng: 5.0288, categorie: "zeden",
+    titel: "Agent vrijgesproken van aanranding 17-jarige (meegenomen uit café); OM in hoger beroep",
+    uitkomst: "Vrijspraak (juni 2026)",
+    bronLabel: "ECLI:NL:RBMNE:2026:3786", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBMNE%3A2026%3A3786" },
+  { id: "roermond", jaar: "2026", plaats: "Roermond", eenheid: "Limburg (ex)", lat: 51.1904, lng: 6.0102, categorie: "zeden",
+    titel: "Ex-agent vrijgesproken van verkrachting na festival (onvoldoende steunbewijs)",
+    uitkomst: "Vrijspraak (augustus 2026)",
+    bronLabel: "L1 Nieuws", bronUrl: "https://www.l1nieuws.nl/nieuws/2771713/ex-politieagent-vrijgesproken-van-verkrachting" },
+
+  // Dienstgeweld
+  { id: "mitch", jaar: "2015", plaats: "Den Haag", eenheid: "Den Haag", lat: 52.0721, lng: 4.293, categorie: "dienstgeweld",
+    titel: "Nekklem Zuiderpark: Mitch Henriquez (42) overlijdt na aanhouding",
+    uitkomst: "Agent veroordeeld; Hoge Raad houdt stand (2021)",
+    bronLabel: "ECLI:NL:HR:2021:211", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AHR%3A2021%3A211" },
+  { id: "heerenveen", jaar: "2022", plaats: "Heerenveen", eenheid: "Noord-Nederland", lat: 52.9624, lng: 5.926, categorie: "dienstgeweld",
+    titel: "Agent schiet op tractor met 16-jarige bestuurder (boerenprotest)",
+    uitkomst: "Veroordeeld poging tot doodslag (taakstraf + voorw. maand)",
+    bronLabel: "ECLI:NL:RBMNE:2023:6396", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBMNE%3A2023%3A6396" },
+  { id: "eendrachtsweg", jaar: "2012", plaats: "Rotterdam", eenheid: "Rotterdam", lat: 51.9225, lng: 4.4865, categorie: "dienstgeweld",
+    titel: "Agent schiet automobilist bij alcoholcontrole (blijvende dwarslaesie)",
+    uitkomst: "Veroordeeld poging tot doodslag",
+    bronLabel: "ECLI:NL:RBROT:2014:9992", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBROT%3A2014%3A9992" },
+  { id: "kerkrade", jaar: "2013", plaats: "Kerkrade", eenheid: "Limburg (arrestatie-eenheid)", lat: 50.8678, lng: 6.0489, categorie: "dienstgeweld",
+    titel: "AT-agent raakt bijrijder bij schot op bestuurder",
+    uitkomst: "2 jaar cel (poging tot doodslag)",
+    bronLabel: "ECLI:NL:RBLIM:2015:6059", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBLIM%3A2015%3A6059" },
+  { id: "apotheek", jaar: "2023", plaats: "Hilversum", eenheid: "Midden-Nederland", lat: 52.2231, lng: 5.168, categorie: "dienstgeweld",
+    titel: "Hondengeleider slaat aangever in apotheek; neusletsel",
+    uitkomst: "Veroordeeld mishandeling (hof 2025)",
+    bronLabel: "ECLI:NL:GHARL:2025:6354", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AGHARL%3A2025%3A6354" },
+  { id: "vuistslag", jaar: "2017", plaats: "Rotterdam", eenheid: "Rotterdam", lat: 51.9225, lng: 4.4865, categorie: "dienstgeweld",
+    titel: "Leidinggevend agent: vuistslag; gebroken oogkas en neus",
+    uitkomst: "Veroordeeld zware mishandeling (hof 2021)",
+    bronLabel: "ECLI:NL:GHDHA:2021:717", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AGHDHA%3A2021%3A717" },
+  { id: "scheveningen", jaar: "2020", plaats: "Den Haag", eenheid: "Den Haag", lat: 52.0721, lng: 4.293, categorie: "dienstgeweld",
+    titel: "Agent schiet man met bijl; blijvende dwarslaesie",
+    uitkomst: "Ontslag rechtsvervolging (conform geweldsinstructie)",
+    bronLabel: "ECLI:NL:RBDHA:2022:12601", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBDHA%3A2022%3A12601" },
+  { id: "malieveld", jaar: "2021", plaats: "Den Haag", eenheid: "Den Haag / Rotterdam (ME)", lat: 52.0721, lng: 4.293, categorie: "dienstgeweld",
+    titel: "Hondengeleider en ME'er; demonstrant hoofdletsel en bijtwond (coronademo)",
+    uitkomst: "Vrijspraak beiden (2024)",
+    bronLabel: "ECLI:NL:RBMNE:2024:6928", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBMNE%3A2024%3A6928" },
+  { id: "mateusz", jaar: "2023", plaats: "Rotterdam", eenheid: "Rotterdam", lat: 51.9225, lng: 4.4865, categorie: "dienstgeweld",
+    titel: "Acht agenten vervolgd na dood arrestant Mateusz (taseren en langdurig bedwang)",
+    uitkomst: "Lopende zaak; grootste groep agenten ooit tegelijk vervolgd",
+    bronLabel: "OM", bronUrl: "https://www.om.nl/actueel/nieuws/2024/02/15/openbaar-ministerie-vervolgt-acht-agenten-voor-dood-arrestant-s-gravenweg" },
+  { id: "capelle", jaar: "2025", plaats: "Capelle aan den IJssel", eenheid: "Rotterdam", lat: 51.9349, lng: 4.5801, categorie: "dienstgeweld",
+    titel: "Agent schiet Jerryson (15) dood na fatbikeroof",
+    uitkomst: "Geen vervolging (OM 2026); gerechtvaardigd conform Ambtsinstructie",
+    bronLabel: "Rijksrecherche", bronUrl: "https://www.rijksrecherche.nl/actueel/nieuws/2026/06/11/agent-niet-vervolgd-voor-dodelijk-schietincident-na-fatbikeroof-capelle-aan-den-ijssel" },
+];
