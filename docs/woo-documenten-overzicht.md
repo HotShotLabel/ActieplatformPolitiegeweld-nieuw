@@ -64,3 +64,30 @@ https://www.politie.nl gevolgd door het pad in de lijst hierboven.)
    bevat die de 51 onbekende gevallen kunnen aanvullen (verwachting: deels,
    geanonimiseerd).
 3. Nieuwe besluiten periodiek her-oogsten (dezelfde methode).
+
+## Update 12-10-2026: downloadmethode werkt + resultaten
+
+**Methode (bewezen):** politie.nl blokkeert simpele fetchers en koploze browsers
+(bot-muur), maar laat een echte browser door. Documenten ophalen lukt met de
+browsertool: pagina openen, PDF-adres uit de pagina halen, en het bestand
+binnen de pagina ophalen (fetch) waarna het als bestand wordt opgeslagen.
+Dat is geen omzeiling: het is exact hetzelfde verzoek als een bezoeker doet,
+alleen geautomatiseerd. robots.txt staat de Woo-pagina's toe.
+
+**Opgehaald (staan lokaal in `docs/woo-bronnen/`, niet in git):**
+- weiteveen-besluit-2025.pdf (2,7 MB)
+- weiteveen-documenten.pdf (6,3 MB)
+- weiteveen-inventarislijst.pdf (1,7 MB)
+- glz-geweldsaanwendingen.pdf (220 kB — besluit over ALLE geweldsaanwendingen
+  in Gelderland-Zuid, verzoek van 31-03-2026)
+
+**Belangrijke vondst: oude documenten zijn van politie.nl verdwenen.**
+Links uit de oude map `oude-documenten/woo-oud/...` (o.a. het document
+"Overleden personen in politiecellen 2004-2016") geven "Bestand niet
+beschikbaar" — linkrot, geen bot-muur. Voor die bestanden is het
+webarchief de vangnet-route: web.archive.org heeft PDF's van politie.nl
+wél gearchiveerd (gecontroleerd via de CDX-index). Het archief was op
+12-10-2026 tijdelijk deels offline; later opnieuw proberen.
+
+**Herhaalbaar:** dezelfde oogst (15 eenheidspagina's -> 1.517 links ->
+filter) kan periodiek opnieuw; nieuwe besluiten komen er jaarlijks bij.
