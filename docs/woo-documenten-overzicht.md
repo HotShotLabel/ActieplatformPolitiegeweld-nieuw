@@ -177,3 +177,31 @@ Op verzoek nagelopen. Bronnen (diep gezocht):
   Wikipedia "Moord op Milly Boele", rechtspraak.nl.
 - Toegevoegd aan: uitspraken-databank (curated) en de kaart (rechtspraak-
   laag, Dordrecht).
+
+## Rapporten-archief (aanvulling 12-10-2026)
+
+Opgehaald/gedocumenteerd (lokaal in docs/woo-bronnen/, buiten git):
+- **Bureau Beke, "Fatale politie-incidenten"** (2021): analyse van 50 Rijksrecherchezaken 2016-2020 + verwijzing naar Thoonen/Kubat/Duijst (78 fatale incidenten 2005-2010, NFI): 55% overleed tijdens aanhouding/transport; oorzaken: 27 ongeluk, 15 natuurlijk, 15 schietincident, 5 zelfmoord, 2 geweld.
+- **Rijksrecherche Jaarbericht 2005** (via NRC 17-5-2006): 5-7 sterfgevallen per jaar in politiecellen 1983-2004.
+- **Parlementaire cijfers (Kamerstuk 34641, nr. 24)**: 835 gerichte schoten 1978-1995, 53 doden, 10 ongewild.
+- Aangehaald op /cijfers onder "Kerncijfers".
+
+## Delpher-oogst (12-10-2026): ~50 sterfgevallen 1949-1997
+
+Via het krantenarchief van de KB (Delpher) zijn ~50 concrete gevallen gevonden
+en toegevoegd aan de archief-laag op de kaart (totaal nu 84):
+o.a. Deventer 1949, Hans Kok (Amsterdam 1985), Ferry Groot (Amsterdam 1977),
+Rinus de Groot (Rotterdam 1984), Silvia A. (Amsterdam 1976), Krommenie 1987,
+Bergen op Zoom 1972, Zwolle 1988. Elk met datum, plaats en Delpher-bronlink.
+
+## Rapportencijfers (aanvulling op /cijfers)
+
+- Duijst c.s. (via Argos): 118 doden onder politiezorg in tien jaar;
+  35 na fysiek geweld, 27 politiekogel, bij 24 aanhoudingsdoden 12x nekklem.
+- Rijksrecherche Jaarbericht 2025: 65 onderzoeken; TSI 37 -> 22 dodelijke
+  slachtoffers + 21 gewonden; 13 schietincidenten -> 5 doden, 11 gewonden.
+- Inspectie "De nekklem" (2016): ~1/5 van fysiek geweld betreft de nek;
+  2005-2015 twee sterfgevallen met verstikking als doodsoorzaak.
+- Nivel 2025 (stroomstootwapen): 2.831 inzetten, 94% geen/gering letsel,
+  1 overlijden waarbij het wapen mogelijk een geringe rol had.
+- Amnesty NL: rapporten over demonstratierecht en politiegeweld (2022-2025).

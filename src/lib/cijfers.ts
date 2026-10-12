@@ -68,6 +68,49 @@ export const RIJKSRECHERCHE_DODELIJK_PER_JAAR: ReeksPunt[] = [
 
 export const CIJFERBLOKKEN: CijferBlok[] = [
   {
+    titel: "Fatale politie-incidenten 2005-2010",
+    waarde: "78",
+    toelichting:
+      "Geanalyseerd door Thoonen, Kubat en Duijst (2015) via NFI-sectieverslagen. 43 slachtoffers (55%) overleden tijdens het aanhouden of het transport; bekende doodsoorzaken: 27 ongelukken, 15 natuurlijke oorzaken, 15 dodelijke politie-schietincidenten, 5 zelfdodingen en 2 geweldsfeiten. Bureau Beke analyseerde daarnaast 50 Rijksrecherchezaken uit 2016-2020.",
+    bron: "Bureau Beke, Fatale politie-incidenten (2021)",
+    bronUrl:
+      "https://bureaubeke.nl/wp-content/uploads/2022/02/Download_Bekereeks_Fatale_politie_incidenten.pdf",
+  },
+  {
+    titel: "Sterfgevallen in politiecellen (per jaar)",
+    waarde: "5-7",
+    toelichting:
+      "Volgens het Jaarbericht 2005 van de Rijksrecherche over de periode 1983-2004; in 2000-2004 lag het gemiddelde op ongeveer 7 per jaar. Vóór 2016 bestond er geen consequente openbare registratie van deze gevallen.",
+    bron: "NRC, op basis van Rijksrecherche Jaarbericht 2005",
+    bronUrl:
+      "https://www.nrc.nl/nieuws/2006/05/17/dode-arrestanten-door-gebrek-zorg-11130699-a810477",
+  },
+  {
+    titel: "Doden door politiekogels 1978-1995",
+    waarde: "53",
+    toelichting:
+      "Bij 835 keer gericht schieten vielen 53 doden; tien daarvan door een ongewild schot (onderzoek naar aanleiding van de parlementaire enquête; aangehaald in Kamerstuk 34641, nr. 24). In 1995-2005 gemiddeld ongeveer één dode per vijf miljoen inwoners per jaar door politiekogels.",
+    bron: "Kamerstuk 34641, nr. 24 (18-12-2019)",
+    bronUrl: "https://zoek.officielebekendmakingen.nl/kst-34641-24.html",
+  },
+  {
+    titel: "Doden onder politiezorg (10 jaar)",
+    waarde: "118",
+    toelichting:
+      "Over een periode van tien jaar overleden 118 mensen onder verantwoordelijkheid van de politie: 35 na fysiek geweld, 27 door een politiekogel. Bij 24 sterfgevallen tijdens een aanhouding met fysiek geweld was in 12 gevallen een nekklem in het spel (onderzoek Duijst c.s., via Argos).",
+    bron: "Argos (VPRO), onderzoek Duijst c.s.",
+    bronUrl:
+      "https://argos.vpro.nl/artikelen/nekklem-zelden-doodsoorzaak-bij-arrestatie",
+  },
+  {
+    titel: "Rijksrecherche-onderzoeken 2025",
+    waarde: "65",
+    toelichting:
+      "De Rijksrecherche deed in 2025 65 onderzoeken (2024: 88), waarvan 37 TSI-onderzoeken met 22 dodelijke slachtoffers en 21 gewonden; de 13 schietincidenten telden 5 doden en 11 gewonden (2024: 1 dode, 13 gewonden).",
+    bron: "OM/Rijksrecherche Jaarbericht 2025",
+    bronUrl: "https://www.om.nl/actueel/magazines/jaarbericht/2025/01/rijksrecherche",
+  },
+  {
     titel: "Gegronde klachten over geweld",
     waarde: "6",
     toelichting:
