@@ -38,6 +38,21 @@ export { CAD_ZAKEN };
 
 export const OPENBARE_ZAKEN: OpenbareZaak[] = [
   {
+    id: "ghsgr-2012-bw7425",
+    jaar: 2010,
+    plaats: "Dordrecht",
+    lat: 51.7815,
+    lng: 4.7089,
+    soort: "rechter",
+    titel:
+      "Zaak-Milly Boele: politieagent verkracht en vermoordt buurmeisje (12); 18 jaar cel en tbs",
+    uitslag:
+      "Hof: moord + verkrachting + vrijheidsberoving bewezen; 18 jaar en tbs met dwangverpleging (Hoge Raad: definitief)",
+    bronLabel: "ECLI:NL:GHSGR:2012:BW7425",
+    bronUrl:
+      "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AGHSGR%3A2012%3ABW7425",
+  },
+  {
     id: "rbams-2025-1753",
     jaar: 2024,
     plaats: "Amsterdam",

@@ -156,3 +156,24 @@ Coolsingel Rotterdam 2021 (5 gewonden), Ter Apel 2024, Broek in Waterland
 2021, rechtbank Den Haag 2023-2024, Bilthoven 2020, Markelo, Middenbeemster
 1987, Gaanderen 1982. Schakelbaar; legenda en popups met bronlinks.
 Code: src/lib/geweld-zaken.ts.
+
+## Bijzondere zaak: Milly Boele (Dordrecht, 2010) — agent als dader
+
+Op verzoek nagelopen. Bronnen (diep gezocht):
+- **Feiten**: Milly (Amalia) Boele, 12 jaar, verdween 10 maart 2010 in
+  Dordrecht (Sterrenburg); haar buurman — surveillant bij de politie
+  Rotterdam-Rijnmond — bekende en wees haar lichaam aan (begraven in zijn
+  tuin, gevonden 16 maart 2010).
+- **Rechtbank Dordrecht 26-11-2010**: 18 jaar + tbs
+  (ECLI:NL:RBDOR:2010:BO5167; verkrachting daarin als ontucht).
+- **Gerechtshof Den Haag 05-06-2012**: moord + verkrachting + vrijheids-
+  beroving bewezen; 18 jaar + tbs met dwangverpleging
+  (ECLI:NL:GHSGR:2012:BW7425).
+- **Hoge Raad 04-10-2013**: cassatieberoep verworpen (81 RO);
+  veroordeling definitief (ECLI:NL:HR:2013:853).
+- **Commissie-Leeuwe (2011)**: evaluatie politieoptreden; kritiek op te
+  late opschaling en Amber Alert (Kamerstuk 32500-VI, nr. 94).
+- Verdere bronnen: NOS, NRC (11-12-2018), Trouw/AD (05-06-2012),
+  Wikipedia "Moord op Milly Boele", rechtspraak.nl.
+- Toegevoegd aan: uitspraken-databank (curated) en de kaart (rechtspraak-
+  laag, Dordrecht).

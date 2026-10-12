@@ -63,6 +63,18 @@ export function rechtspraakUrl(ecli: string): string {
 */
 const CURATED: Uitspraak[] = [
   {
+    ecli: "ECLI:NL:GHSGR:2012:BW7425",
+    titel:
+      "Politieagent verkracht en vermoordt buurmeisje (12); 18 jaar cel en tbs",
+    instantie: "Gerechtshof 's-Gravenhage",
+    datum: "2012-06-05",
+    zaaknummer: "22-006088-10",
+    categorie: "agent-vervolgd",
+    samenvatting:
+      "Zaak-Milly Boele (Dordrecht, 10 maart 2010). Het hof acht bewezen dat de verdachte, surveillant bij de politie Rotterdam-Rijnmond en buurman van het slachtoffer, het 12-jarige meisje met een verhaal over katten naar zijn woning lokte, haar oraal verkrachtte, met zijn broeksriem wurgde en haar lichaam in zijn tuin begroef. Veroordeling voor moord, verkrachting, vrijheidsberoving en het verbergen van het lichaam: 18 jaar gevangenisstraf en tbs met dwangverpleging. In eerste aanleg (ECLI:NL:RBDOR:2010:BO5167) was ontucht bewezen geacht; de Hoge Raad verwierp het cassatieberoep (ECLI:NL:HR:2013:853), waarmee de veroordeling definitief werd.",
+    samenvattingBron: "platform",
+  },
+  {
     ecli: "ECLI:NL:GHARL:2025:6354",
     titel: "Agent in hoger beroep veroordeeld voor vuistslag bij aanhouding",
     instantie: "Gerechtshof Arnhem-Leeuwarden (Blauwe Kamer)",
