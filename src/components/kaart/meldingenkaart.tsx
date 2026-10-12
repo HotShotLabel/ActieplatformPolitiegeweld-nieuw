@@ -15,6 +15,7 @@ import {
 } from "lucide";
 import { luisterNaarKaartpunten, type KaartPunt } from "@/lib/kaartpunten";
 import { AGENT_ZAKEN } from "@/lib/agent-zaken";
+import { ARCHIEF_ZAKEN } from "@/lib/overleden-archief";
 import { GEWELD_ZAKEN } from "@/lib/geweld-zaken";
 import { SOORT_LABEL } from "@/lib/meldingen";
 import { NL_PLAATSEN } from "@/lib/nl-plaatsen";
@@ -223,6 +224,7 @@ export function MeldingenKaart() {
   const markersNieuws = useRef<Marker[]>([]);
   const markersGeweld = useRef<Marker[]>([]);
   const markersAgenten = useRef<Marker[]>([]);
+  const markersArchief = useRef<Marker[]>([]);
   const nieuwsUrls = useRef(new Set<string>());
   const voorzieningen = useRef<Voorzieningen | null>(null);
   const eersteStijlwissel = useRef(true);
@@ -231,6 +233,7 @@ export function MeldingenKaart() {
     rechtspraak: true,
     geweld: true,
     agenten: true,
+    archief: true,
     overleden: true,
     nieuws: true,
     politie: true,
@@ -256,6 +259,7 @@ export function MeldingenKaart() {
   const [toonRechtspraak, setToonRechtspraak] = useState(true);
   const [toonGeweld, setToonGeweld] = useState(true);
   const [toonAgenten, setToonAgenten] = useState(true);
+  const [toonArchief, setToonArchief] = useState(true);
   const [toonOverleden, setToonOverleden] = useState(true);
   const [toonNieuws, setToonNieuws] = useState(true);
   const [toonPolitie, setToonPolitie] = useState(true);
@@ -482,6 +486,25 @@ export function MeldingenKaart() {
         .addTo(map)
     );
 
+    // Laag: archief vóór 2016 (grijze/amber grafsteen). Gedocumenteerde
+    // sterfgevallen rond politieoptreden van vóór de CAD-registratie.
+    markersArchief.current = ARCHIEF_ZAKEN.map((zaak) =>
+      new Marker({
+        element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#a16207", "#78350f", 26),
+      })
+        .setLngLat([zaak.lng, zaak.lat])
+        .setPopup(
+          new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
+            `<strong>${escapeHtml(zaak.plaats)} · ${escapeHtml(zaak.jaar)}</strong><br>` +
+              `${escapeHtml(zaak.datum)}<br>` +
+              `${escapeHtml(zaak.titel)}<br>` +
+              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${escapeHtml(zaak.bronLabel)}</a><br>` +
+              `<span style="opacity:.7">Archief: van vóór de registratie (2016); lijst is niet volledig.</span>`
+          )
+        )
+        .addTo(map)
+    );
+
     // Laag: overleden onder verantwoordelijkheid van wetshandhavers. De
     // lijst wordt dagelijks automatisch opgehaald uit de openbare database
     // van Controle Alt Delete; de statische kopie dient als terugval.
@@ -682,6 +705,7 @@ export function MeldingenKaart() {
       markersRechtspraak.current = [];
       markersGeweld.current = [];
       markersAgenten.current = [];
+      markersArchief.current = [];
       markersOverleden.current = [];
       markersNieuws.current = [];
       nieuwsUrls.current.clear();
@@ -723,6 +747,15 @@ export function MeldingenKaart() {
       toonAgenten ? marker.addTo(map) : marker.remove()
     );
   }, [toonAgenten]);
+
+  useEffect(() => {
+    toonStand.current.archief = toonArchief;
+    const map = mapRef.current;
+    if (!map) return;
+    markersArchief.current.forEach((marker) =>
+      toonArchief ? marker.addTo(map) : marker.remove()
+    );
+  }, [toonArchief]);
 
   useEffect(() => {
     toonStand.current.overleden = toonOverleden;
@@ -811,6 +844,10 @@ export function MeldingenKaart() {
         <button type="button" onClick={() => setToonAgenten((w) => !w)} aria-pressed={toonAgenten} className={chip(toonAgenten)}>
           <IcoonChipBadge icoon={ICOON_SCHILD} badgeKleur="#eef1f5" randKleur="#3f5871" icoonKleur="#2f4055" />
           Agenten als dader ({AGENT_ZAKEN.length})
+        </button>
+        <button type="button" onClick={() => setToonArchief((w) => !w)} aria-pressed={toonArchief} className={chip(toonArchief)}>
+          <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#a16207" icoonKleur="#78350f" />
+          Archief vóór 2016 ({ARCHIEF_ZAKEN.length})
         </button>
         <button type="button" onClick={() => setToonOverleden((w) => !w)} aria-pressed={toonOverleden} className={chip(toonOverleden)}>
           <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#e5484d" icoonKleur="#c93a3f" />
@@ -947,8 +984,8 @@ export function MeldingenKaart() {
       <p className="mt-3 text-xs leading-relaxed text-muted-2">
         Elk punt heeft een eigen icoon: politieauto = politiebureau, zuilen =
         rechtbank, hamer = rechterlijke uitspraak, vuist = bekend geweld
-        zonder dodelijke afloop, schild = agenten als dader, grafsteen =
-        overleden na politieoptreden,
+        zonder dodelijke afloop, schild = agenten als dader, rode grafsteen =
+        overleden na politieoptreden, amber grafsteen = archief vóór 2016,
         waarschuwingsdriehoek = melding van geweld, krant =
         nieuwsbericht (live nieuws pulseert; alleen berichten waarvan de
         plaats bekend is staan op de kaart). Alleen het huidige jaar (2026)

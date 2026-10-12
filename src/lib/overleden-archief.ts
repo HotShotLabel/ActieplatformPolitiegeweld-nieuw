@@ -1,0 +1,122 @@
+/* Archief: gedocumenteerde sterfgevallen rond politieoptreden VÓÓR 2016.
+   Controle Alt Delete registreert pas sinds 2016; deze gevallen komen uit
+   oude OM-persberichten (opennieuwsbank), kranten (Delpher), NOS en
+   rechtspraak. Lang geen volledige lijst: de Rijksrecherche telde 5 tot 7
+   sterfgevallen per jaar alleen al in politiecellen (1983-2004) en Bureau
+   Beke vond 78 fatale politie-incidenten in 2005-2010. */
+
+export interface ArchiefZaak {
+  id: string;
+  datum: string;
+  jaar: string;
+  plaats: string;
+  lat: number;
+  lng: number;
+  titel: string;
+  bronLabel: string;
+  bronUrl: string;
+}
+
+const ONB = "https://www.opennieuwsbank.nl";
+
+export const ARCHIEF_ZAKEN: ArchiefZaak[] = [
+  { id: "kampen-2002", datum: "24 januari 2002", jaar: "2002", plaats: "Kampen", lat: 52.5819, lng: 5.8854,
+    titel: "37-jarige man overleed in cel ter ontnuchtering; hof beval vervolging agent wegens verlaten hulpbehoevende",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2003/10/09/R002-ingezonden-persbericht.html` },
+  { id: "tilburg-2002", datum: "28 februari 2002", jaar: "2002", plaats: "Tilburg", lat: 51.5727, lng: 5.0453,
+    titel: "Aangehouden overvaller werd onwel in het cellencomplex en overleed",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2002/02/28/G002-aangehouden-verdachte-overlijdt-na-aanhouding.html` },
+  { id: "nieuwegein-2002", datum: "22 april 2002", jaar: "2002", plaats: "Nieuwegein", lat: 52.0308, lng: 5.0947,
+    titel: "35-jarige man zonder vaste woonplaats overleed in het ziekenhuis na poging tot zelfdoding in de cel",
+    bronLabel: "OpenNieuwsbank", bronUrl: `${ONB}/bericht/2002/04/23/X069-arrestant-in-nieuwegein-overleden.html` },
+  { id: "sittard-2003", datum: "13 maart 2003", jaar: "2003", plaats: "Sittard", lat: 51.0004, lng: 5.8697,
+    titel: "Arrestant dood aangetroffen in cel van het cellencomplex",
+    bronLabel: "OpenNieuwsbank", bronUrl: `${ONB}/bericht/2003/03/13/R156-sittard-arrestant-overleden-in-politiecel.html` },
+  { id: "denhaag-2003", datum: "25 september 2003", jaar: "2003", plaats: "Den Haag", lat: 52.0721, lng: 4.293,
+    titel: "48-jarige vrouw, verdachte in de zaak-Kumral Bagci, pleegde zelfdoding in de cel",
+    bronLabel: "OpenNieuwsbank", bronUrl: `${ONB}/bericht/2003/09/25/R032-verdachte-zaak-kumral-bagci-pleegde-zelfmoord.html` },
+  { id: "denbosch-2003", datum: "23 november 2003", jaar: "2003", plaats: "'s-Hertogenbosch", lat: 51.71, lng: 5.2957,
+    titel: "49-jarige man overleed in het arrestantencomplex; intoxicatie (methadon, codeïne); politie niets verweten",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2003/11/23/D027-2311-brabant-noord.html` },
+  { id: "tilburg-2004", datum: "4 februari 2004", jaar: "2004", plaats: "Tilburg", lat: 51.5555, lng: 5.0913,
+    titel: "20-jarige verwarde man uit Oisterwijk overleed na pepperspray en observatiecel; OM: correct gehandeld",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2004/02/04/E229-arrondissementsparket-breda.html` },
+  { id: "zwolle-2004", datum: "13 december 2004", jaar: "2004", plaats: "Zwolle", lat: 52.5187, lng: 6.1184,
+    titel: "34-jarige man zonder vaste woonplaats overleed in de cel (hartstilstand)",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2004/12/15/E183-openbaar-ministerie-zwollelelystad.html` },
+  { id: "heerlen-2005", datum: "23 april 2005", jaar: "2005", plaats: "Heerlen", lat: 50.888, lng: 5.9786,
+    titel: "50-jarige inwoner overleed in de cel door verhanging met een laken",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2005/04/25/S045-politie-limburg-zuid.html` },
+  { id: "haarlem-2005", datum: "3 juli 2005", jaar: "2005", plaats: "Haarlem", lat: 52.3824, lng: 4.6467,
+    titel: "Arrestant verloor bewustzijn in de observatiecel en overleed; beklag artikel 12 Sv afgewezen (2007)",
+    bronLabel: "Rechtspraak (LJN BA6609)", bronUrl: "http://www.wetboek-online.nl/jurisprudentie/ljnBA6609.html" },
+  { id: "nijmegen-2005", datum: "28 oktober 2005", jaar: "2005", plaats: "Nijmegen", lat: 51.8348, lng: 5.8332,
+    titel: "39-jarige Nijmegenaar overleed in de cel (natuurlijke dood)",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2005/10/29/I022-politie-gelderland-zuid.html` },
+  { id: "tiel-2006", datum: "nacht 4-5 januari 2006", jaar: "2006", plaats: "Tiel", lat: 51.8942, lng: 5.428,
+    titel: "24-jarige arrestant overleed aan hartinfarct; agenten handelden rechtmatig",
+    bronLabel: "Blik op Nieuws", bronUrl: "https://www.blikopnieuws.nl/201818/onderzoek-dood-arrestant-afgerond.html" },
+  { id: "heerlen-2007", datum: "13 mei 2007", jaar: "2007", plaats: "Heerlen", lat: 50.8875, lng: 5.98,
+    titel: "39-jarige man zonder vaste woonplaats overleed in de cel na aanhouding wegens openbare dronkenschap",
+    bronLabel: "OpenNieuwsbank", bronUrl: `${ONB}/bericht/2007/05/13/Y051-heerlen-man-overleden-in-politiecel.html` },
+  { id: "maastricht-2007", datum: "3 juli 2007", jaar: "2007", plaats: "Maastricht", lat: 50.853, lng: 5.6995,
+    titel: "48-jarige inwoner van Maasmechelen overleed in het ziekenhuis (dubbele longontsteking)",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2007/07/04/E124-maastricht-arrestant-in-ziekenhuis-overleden.html` },
+  { id: "tilburg-2007", datum: "23 augustus 2007", jaar: "2007", plaats: "Tilburg", lat: 51.5603, lng: 5.0365,
+    titel: "39-jarige verwarde man werd onwel na overmeestering door vier agenten en overleed in het ziekenhuis",
+    bronLabel: "OpenNieuwsbank", bronUrl: `${ONB}/bericht/2007/08/23/S173-man-gestorven-bij-politie-aanhouding-in-tilburg.html` },
+  { id: "lelystad-2007", datum: "9 augustus 2007", jaar: "2007", plaats: "Lelystad", lat: 52.5427, lng: 5.3748,
+    titel: "21-jarige Groninger raakte na een achtervolging vermist en werd vier dagen later dood gevonden; politie geen schuld",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2007/09/06/S080-politie-flevoland.html` },
+  { id: "denhaag-2008", datum: "nacht 13-14 mei 2008", jaar: "2008", plaats: "Den Haag", lat: 52.0876, lng: 4.3251,
+    titel: "27-jarige Hagenaar aangehouden voor winkeldiefstal, overleed in de cel",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2008/05/15/O067-politie-haaglanden.html` },
+  { id: "amsterdam-2008a", datum: "16 augustus 2008", jaar: "2008", plaats: "Amsterdam", lat: 52.3799, lng: 4.8829,
+    titel: "51-jarige vrouw dood aangetroffen in een cel aan de Marnixstraat",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2008/08/17/U064-politie-amsterdam-amstelland.html` },
+  { id: "amsterdam-2008b", datum: "30 december 2008", jaar: "2008", plaats: "Amsterdam", lat: 52.3131, lng: 4.9576,
+    titel: "54-jarige man werd onwel in het politiedagverblijf en overleed (natuurlijke dood)",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2008/12/30/U007-politie-amsterdam-amstelland.html` },
+  { id: "weert-2009", datum: "19 november 2009", jaar: "2009", plaats: "Weert", lat: 51.2388, lng: 5.6896,
+    titel: "Man overleed in een politiecel",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2009/11/19/U147-politie-limburg-noord.html` },
+  { id: "amsterdam-2010", datum: "29 juli 2010", jaar: "2010", plaats: "Amsterdam", lat: 52.3734, lng: 4.9045,
+    titel: "48-jarige arrestant overleed in het ziekenhuis na verblijf in de observatiecel",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2010/07/30/E139-arrestant-overleden-in-ziekenhuis-amsterdam.html` },
+  { id: "heerlen-2010", datum: "24 oktober 2010", jaar: "2010", plaats: "Heerlen", lat: 50.8699, lng: 5.9603,
+    titel: "41-jarige Pool zonder vaste woonplaats overleed in een cel na ontnuchtering",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2010/10/25/E173-politie-limburg-zuid.html` },
+  { id: "ijmuiden-2011", datum: "nacht 2-3 juli 2011", jaar: "2011", plaats: "IJmuiden", lat: 52.4555, lng: 4.5778,
+    titel: "Ihsan Gürz (22) overleed na verblijf in de observatiecel; NFI: hartfalen, geen politiegeweld",
+    bronLabel: "Gerechtshof Den Haag 2019", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AGHDHA%3A2019%3A580" },
+  { id: "hofman-1981", datum: "1981", jaar: "1981", plaats: "Den Haag", lat: 52.0721, lng: 4.293,
+    titel: "Meta Hofman overleed door een politiekogel; de agent werd vrijgesproken",
+    bronLabel: "Wikipedia (Politiegeweld, met bronnen)", bronUrl: "https://nl.wikipedia.org/wiki/Politiegeweld" },
+  { id: "denbosch-2000", datum: "19 december 2000", jaar: "2000", plaats: "'s-Hertogenbosch", lat: 51.7097, lng: 5.2957,
+    titel: "Pierre Bouleij doodgeschoten in zijn eigen woning; politie beriep zich op noodweer",
+    bronLabel: "NRC", bronUrl: "https://www.nrc.nl/nieuws/2000/12/19/er-is-door-de-deur-geschoten-7522927-a258373" },
+  { id: "amsterdam-2004", datum: "8 augustus 2004", jaar: "2004", plaats: "Amsterdam", lat: 52.3602, lng: 4.8987,
+    titel: "Man overleed op het Frederiksplein nadat zeven agenten gericht schoten; geen vervolging",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2005/02/16/E136-veilig-amsterdam-.html` },
+  { id: "fijnaart-2005", datum: "7 maart 2005", jaar: "2005", plaats: "Fijnaart", lat: 51.6379, lng: 4.4728,
+    titel: "37-jarige man overleed ter plaatse na een schotenwisseling met de politie; geen vervolging",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2005/06/13/E164-openbaar-ministerie.html` },
+  { id: "utrecht-2007", datum: "11 maart 2007", jaar: "2007", plaats: "Utrecht", lat: 52.0932, lng: 5.1155,
+    titel: "Man met mes dodelijk getroffen door een motoragent (Thorbeckelaan)",
+    bronLabel: "OpenNieuwsbank (politie)", bronUrl: `${ONB}/bericht/2007/03/12/S020-extra-persbericht-utrecht-stad-0120-uur.html` },
+  { id: "leens-2007", datum: "5 augustus 2007", jaar: "2007", plaats: "Leens", lat: 53.3639, lng: 6.3863,
+    titel: "33-jarige bewoner met mes doodgeschoten; agent niet vervolgd (noodweer)",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2007/11/26/S156-openbaar-ministerie.html` },
+  { id: "amsterdam-2007", datum: "14 oktober 2007", jaar: "2007", plaats: "Amsterdam", lat: 52.3578, lng: 4.8325,
+    titel: "22-jarige man (weggelopen uit de psychiatrie) doodgeschoten bij politiebureau August Allebéplein; agente niet vervolgd",
+    bronLabel: "OpenNieuwsbank (OM)", bronUrl: `${ONB}/bericht/2008/08/13/U150-openbaar-ministerie.html` },
+  { id: "eindhoven-2008", datum: "november 2008", jaar: "2008", plaats: "Eindhoven", lat: 51.4416, lng: 5.4697,
+    titel: "52-jarige verdachte van overvallen doodgeschoten na achtervolging; geen vervolging",
+    bronLabel: "Omroep Brabant", bronUrl: "https://www.omroepbrabant.nl/nieuws/2198559/in-tien-jaar-vier-doden-door-politiekogels-politiemensen-vrijuit" },
+  { id: "oss-2009", datum: "juli 2009", jaar: "2009", plaats: "Oss", lat: 51.765, lng: 5.5217,
+    titel: "40-jarige man met mes doodgeschoten (Kapeijnestraat); geen vervolging",
+    bronLabel: "Omroep Brabant", bronUrl: "https://www.omroepbrabant.nl/nieuws/2198559/in-tien-jaar-vier-doden-door-politiekogels-politiemensen-vrijuit" },
+  { id: "zevenbergen-2011", datum: "23 september 2011", jaar: "2011", plaats: "Zevenbergen", lat: 51.6484, lng: 4.6053,
+    titel: "Barry Kouwenberg (22) neergeschoten en enkele dagen later overleden; geen vervolging",
+    bronLabel: "Omroep Brabant", bronUrl: "https://www.omroepbrabant.nl/nieuws/2198559/in-tien-jaar-vier-doden-door-politiekogels-politiemensen-vrijuit" },
+];

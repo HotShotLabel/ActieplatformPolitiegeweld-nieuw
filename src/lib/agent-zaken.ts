@@ -196,6 +196,11 @@ export const AGENT_ZAKEN: AgentZaak[] = [
 /* Overige zaken uit het uitputtende rechtspraak-onderzoek (geen kaartpunt:
    geen plaats bekend of Caribisch deel). Korte omschrijving per uitspraak. */
 export const OVERIGE_AGENT_ZAKEN: { ecli: string; datum: string; omschrijving: string }[] = [
+  { ecli: "ECLI:NL:RBMNE:2024:6541", datum: "2024-12-02", omschrijving: "Hondengeleider liet diensthond bijten in been van aangehouden persoon (Almere, 2021); vrijspraak." },
+  { ecli: "ECLI:NL:RBMNE:2024:5168", datum: "2024-05-07", omschrijving: "Blauwe Kamer: verzoeken tot afscherming van de identiteit van de agent in onderzoek Cuzco (Delft-zaak) toegewezen." },
+  { ecli: "ECLI:NL:GHARL:2023:10020", datum: "2023-11-27", omschrijving: "Hoger beroep over vergoeding van rechtsbijstandskosten na feitenonderzoek naar geweldsaanwending (art. 530 Sv)." },
+  { ecli: "ECLI:NL:GHARL:2023:10020", datum: "2023-11-27", omschrijving: "Hoger beroep over vergoeding van rechtsbijstandskosten na feitenonderzoek naar geweldaanwending (art. 530 Sv)." },
+  { ecli: "ECLI:NL:RBROT:2025:12186", datum: "2025-10-17", omschrijving: "Oud-politieagente: voorbereiding moord op ex-partner; zeven jaar cel." },
   { ecli: "ECLI:NL:GHDHA:2014:49", datum: "2014-01-21", omschrijving: "Twee politieambtenaren: wederrechtelijke vrijheidsberoving en misbruik van gezag tijdens dienst." },
   { ecli: "ECLI:NL:RBSGR:2004:AO9348", datum: "2004-05-12", omschrijving: "Verduistering van politiedocumenten, omkoping van politieambtenaren, schending ambtsgeheim." },
   { ecli: "ECLI:NL:RBHAA:2010:BM8272", datum: "2010-06-17", omschrijving: "Dodelijk ongeval met gepantserd politievoertuig (90 km/u waar 50 gold); artikel 6 WVW." },
