@@ -78,6 +78,15 @@ const GRAF_STEEN_D = "M88 216V124a40 40 0 0 1 80 0v92";
 const GRAF_GROND_D = "M56 216h144";
 const GRAF_LIJN_D = "M108 152h44";
 
+/* Dodelijke zaken waarin de dader een politieambtenaar was en die niet al in
+   de CAD-lijst of het archief zitten (familiedrama's, partnerdodingen);
+   horen met een grafsteen onder "Overleden". */
+const OFFICER_DODEN = AGENT_ZAKEN.filter(
+  (zaak) =>
+    zaak.categorie === "levensdelict" &&
+    !["delft-wessel", "waalwijk", "koomen"].includes(zaak.id)
+);
+
 function lucideIcoon(knoop: IconNode, sw: number): Icoon {
   return {
     viewBox: "0 0 24 24",
@@ -243,6 +252,7 @@ export function MeldingenKaart() {
   const markersGeweld = useRef<Marker[]>([]);
   const markersAgenten = useRef<Marker[]>([]);
   const markersArchief = useRef<Marker[]>([]);
+  const markersOfficerDoden = useRef<Marker[]>([]);
   const markersVervolgd = useRef<Marker[]>([]);
   const nieuwsUrls = useRef(new Set<string>());
   const voorzieningen = useRef<Voorzieningen | null>(null);
@@ -507,6 +517,24 @@ export function MeldingenKaart() {
         .addTo(map)
     );
 
+    // Grafstenen voor dodelijke zaken met een politieambtenaar als dader
+    // (familiedrama's en partnerdodingen); vallen onder de knop Overleden.
+    markersOfficerDoden.current = OFFICER_DODEN.map((zaak) =>
+      new Marker({
+        element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28),
+      })
+        .setLngLat([zaak.lng, zaak.lat])
+        .setPopup(
+          new Popup({ offset: 12, maxWidth: "330px" }).setHTML(
+            `<strong>${escapeHtml(zaak.titel)}</strong><br>` +
+              `${zaak.jaar} · ${escapeHtml(zaak.plaats)} · dader was politieambtenaar<br>` +
+              `<em>${escapeHtml(zaak.uitkomst)}</em><br>` +
+              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${escapeHtml(zaak.bronLabel)}</a>`
+          )
+        )
+        .addTo(map)
+    );
+
     // Laag: archief vóór 2016 (grijze/amber grafsteen). Gedocumenteerde
     // sterfgevallen rond politieoptreden van vóór de CAD-registratie.
     markersArchief.current = ARCHIEF_ZAKEN.map((zaak) =>
@@ -550,11 +578,11 @@ export function MeldingenKaart() {
       bronUrl: string;
       bronLabel: string;
     }
-    const huidigJaar = String(new Date().getFullYear());
+    const gloeiJaren = ["2025", "2026"];
     function maakOverledenMarker(zaak: OverledenZaak) {
       const element = maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28);
       element.classList.add("marker-in");
-      if (zaak.jaar === huidigJaar) element.classList.add("marker-brand");
+      if (gloeiJaren.includes(String(zaak.jaar))) element.classList.add("marker-brand");
       const marker = new Marker({ element })
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
@@ -685,9 +713,10 @@ export function MeldingenKaart() {
             "#07090c"
           );
           element.classList.add("marker-in");
-          // Alleen berichten uit het huidige jaar gloeien (2026).
-          const ditJaar = String(new Date().getFullYear());
-          const gloeit = bericht.datum.startsWith(ditJaar);
+          // Alleen berichten uit 2025 en 2026 gloeien.
+          const gloeit =
+            bericht.datum.startsWith("2025") ||
+            bericht.datum.startsWith("2026");
           if (gloeit) element.classList.add("marker-brand");
           if (bericht.live) element.classList.add("marker-brand-live");
           let platform = "";
@@ -761,6 +790,7 @@ export function MeldingenKaart() {
       markersGeweld.current = [];
       markersAgenten.current = [];
       markersArchief.current = [];
+      markersOfficerDoden.current = [];
       markersVervolgd.current = [];
       markersOverleden.current = [];
       markersNieuws.current = [];
@@ -804,6 +834,9 @@ export function MeldingenKaart() {
       toonOverleden ? marker.addTo(map) : marker.remove()
     );
     markersArchief.current.forEach((marker) =>
+      toonOverleden ? marker.addTo(map) : marker.remove()
+    );
+    markersOfficerDoden.current.forEach((marker) =>
       toonOverleden ? marker.addTo(map) : marker.remove()
     );
   }, [toonOverleden]);
@@ -1035,7 +1068,7 @@ export function MeldingenKaart() {
       <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-2">
         <span>nieuws {nieuwsGepind ?? "…"}</span>
         <span>rechtszaken {OPENBARE_ZAKEN.length}</span>
-        <span>{overledenAantal === null ? "overleden …" : `overleden ${overledenAantal + ARCHIEF_ZAKEN.length} (incl. ${ARCHIEF_ZAKEN.length} archief vóór 2016)`}</span>
+        <span>{overledenAantal === null ? "overleden …" : `overleden ${overledenAantal + ARCHIEF_ZAKEN.length + OFFICER_DODEN.length} (incl. archief en agent-dodingen)`}</span>
         <span>politiebureaus {aantallen ? aantallen.politie : "…"}</span>
         <span>rechtbanken {aantallen ? aantallen.rechtbank : "…"}</span>
         <span>meldingen {punten === null ? "…" : aantalMeldingen}</span>
