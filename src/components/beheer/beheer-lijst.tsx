@@ -123,6 +123,20 @@ export function BeheerLijst() {
     return () => window.clearInterval(timer);
   }, [status, laadLive]);
 
+  // Na verversen: het bewaarde wachtwoord opnieuw gebruiken (zelfde tab).
+  useEffect(() => {
+    let bewaard = "";
+    try {
+      bewaard = sessionStorage.getItem("beheer-token") ?? "";
+    } catch {
+      bewaard = "";
+    }
+    if (!bewaard) return;
+    setToken(bewaard);
+    void laadMeldingen(bewaard);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function stopUitzending() {
     if (!window.confirm("De live-uitzending meteen stoppen voor iedereen?")) {
       return;
@@ -257,6 +271,12 @@ export function BeheerLijst() {
       if (antwoord.status === 401) {
         setStatus("fout");
         setFoutmelding("Onjuist wachtwoord.");
+        setToken("");
+        try {
+          sessionStorage.removeItem("beheer-token");
+        } catch {
+          // niets
+        }
         return;
       }
       if (!antwoord.ok) {
