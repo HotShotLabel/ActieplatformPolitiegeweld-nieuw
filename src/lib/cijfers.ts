@@ -1,6 +1,8 @@
 export interface ReeksPunt {
   label: string;
   waarde: number;
+  /** Naam van een lucide-icoon voor bij de balk (optioneel). */
+  icoon?: string;
 }
 
 export interface CijferBlok {
@@ -25,14 +27,14 @@ export const GEWELDSINCIDENTEN_PER_JAAR: ReeksPunt[] = [
 ];
 
 export const GEWELDSMIDDELEN_2025: ReeksPunt[] = [
-  { label: "Fysiek", waarde: 26502 },
-  { label: "Anders", waarde: 7854 },
-  { label: "Wapenstok", waarde: 3473 },
-  { label: "Vuurwapen", waarde: 1679 },
-  { label: "Spuugmasker", waarde: 1511 },
-  { label: "Stroomstoot", waarde: 1481 },
-  { label: "Pepperspray", waarde: 767 },
-  { label: "Diensthond", waarde: 172 },
+  { label: "Fysiek", waarde: 26502, icoon: "hand" },
+  { label: "Anders", waarde: 7854, icoon: "ellipsis" },
+  { label: "Wapenstok", waarde: 3473, icoon: "minus" },
+  { label: "Vuurwapen", waarde: 1679, icoon: "crosshair" },
+  { label: "Spuugmasker", waarde: 1511, icoon: "venetian-mask" },
+  { label: "Stroomstoot", waarde: 1481, icoon: "zap" },
+  { label: "Pepperspray", waarde: 767, icoon: "spray-can" },
+  { label: "Diensthond", waarde: 172, icoon: "dog" },
 ];
 
 export const GERICHTE_SCHOTEN_PER_JAAR: ReeksPunt[] = [

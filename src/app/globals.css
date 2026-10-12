@@ -249,3 +249,42 @@
 .hart-zweef {
   animation: hart-op 2.4s ease-out forwards;
 }
+
+/* Cijfers-pagina: sirenelichten en agenten in de scène. */
+@keyframes sirene-rood {
+  0%, 45% { opacity: 1; }
+  50%, 95% { opacity: 0.12; }
+  100% { opacity: 1; }
+}
+@keyframes sirene-blauw {
+  0%, 45% { opacity: 0.12; }
+  50%, 95% { opacity: 1; }
+  100% { opacity: 0.12; }
+}
+.sirene-rood {
+  animation: sirene-rood 1.5s steps(1, end) infinite;
+}
+.sirene-blauw {
+  animation: sirene-blauw 1.5s steps(1, end) infinite;
+}
+@keyframes agent-sway {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(1.2deg) translateY(-1px); }
+}
+.agent-sway {
+  animation: agent-sway 3.6s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+.agent-sway-langzaam {
+  animation: agent-sway 4.4s ease-in-out infinite;
+  animation-delay: -1.4s;
+  transform-origin: 50% 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sirene-rood,
+  .sirene-blauw,
+  .agent-sway,
+  .agent-sway-langzaam {
+    animation: none;
+  }
+}

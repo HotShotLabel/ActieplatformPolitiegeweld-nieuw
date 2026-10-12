@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Balken3D } from "@/components/cijfers/balken-3d";
+import { PolitieScene } from "@/components/cijfers/politie-scene";
 import {
   CIJFERBLOKKEN,
   GERICHTE_SCHOTEN_PER_JAAR,
@@ -28,6 +29,10 @@ export default function CijfersPage() {
           grafiek staat de bron eronder. Registratie is niet hetzelfde als de
           werkelijkheid: betere registratie kan ook een stijging verklaren.
         </p>
+
+        <div className="mt-10">
+          <PolitieScene />
+        </div>
 
         <div className="mt-14 space-y-12">
           <section>

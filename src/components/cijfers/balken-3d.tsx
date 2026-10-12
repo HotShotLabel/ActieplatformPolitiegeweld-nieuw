@@ -1,9 +1,30 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import {
+  Crosshair,
+  Dog,
+  Ellipsis,
+  Hand,
+  Minus,
+  SprayCan,
+  VenetianMask,
+  Zap,
+} from "lucide-react";
 import type { ReeksPunt } from "@/lib/cijfers";
 
 const getalFormatter = new Intl.NumberFormat("nl-NL");
+
+const BALK_ICONEN: Record<string, typeof Hand> = {
+  hand: Hand,
+  ellipsis: Ellipsis,
+  minus: Minus,
+  crosshair: Crosshair,
+  "venetian-mask": VenetianMask,
+  zap: Zap,
+  "spray-can": SprayCan,
+  dog: Dog,
+};
 
 export function Balken3D({
   balken,
@@ -37,6 +58,7 @@ export function Balken3D({
             <div className="flex h-full items-end gap-1.5 md:gap-3">
               {balken.map((punt, index) => {
                 const percentage = Math.max((punt.waarde / max) * 100, 2.5);
+                const Icoon = punt.icoon ? BALK_ICONEN[punt.icoon] : undefined;
                 return (
                   <div key={punt.label} className="relative h-full flex-1">
                     <span
@@ -45,6 +67,15 @@ export function Balken3D({
                     >
                       {getalFormatter.format(punt.waarde)}
                     </span>
+                    {Icoon ? (
+                      <span
+                        aria-hidden
+                        className="absolute left-1/2 -translate-x-1/2 text-muted-2"
+                        style={{ bottom: `calc(${percentage}% + 26px)` }}
+                      >
+                        <Icoon size={14} strokeWidth={1.8} />
+                      </span>
+                    ) : null}
                     <motion.div
                       className="absolute inset-x-0 bottom-0 rounded-t-md bg-[linear-gradient(180deg,#ff5a5f_0%,#d23a3f_55%,rgba(210,58,63,0.35)_100%)] shadow-[0_14px_34px_rgba(229,72,77,0.22)]"
                       initial={reduce ? false : { scaleY: 0, opacity: 0.6 }}
