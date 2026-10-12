@@ -501,11 +501,16 @@ export function MeldingenKaart() {
 
     // Laag: politieambtenaren als dader (schild-icoon). Uit de inventaris
     // (rechtszaken, OM, nieuws); plaats is de stad of anders de eenheid.
-    markersAgenten.current = AGENT_ZAKEN.map((zaak) =>
-      new Marker({
+    markersAgenten.current = AGENT_ZAKEN.map((zaak, index) => {
+      const hoek = index * 2.39996;
+      const straal = (index % 4) * 0.0018;
+      return new Marker({
         element: maakBadgeElement(ICOON_SCHILD, "#eef1f5", "#3f5871", "#2f4055"),
       })
-        .setLngLat([zaak.lng + 0.009, zaak.lat + 0.006])
+        .setLngLat([
+          zaak.lng + 0.009 + Math.cos(hoek) * straal,
+          zaak.lat + 0.006 + Math.sin(hoek) * straal,
+        ])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "330px" }).setHTML(
             `<strong>${escapeHtml(zaak.titel)}</strong><br>` +
@@ -514,17 +519,22 @@ export function MeldingenKaart() {
               `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(zaak.bronLabel)}</a>`
           )
         )
-        .addTo(map)
-    );
+        .addTo(map);
+    });
 
     // Grafstenen voor dodelijke zaken met een politieambtenaar als dader
     // (familiedrama's en partnerdodingen); vallen onder de knop Overleden.
     // Kleine offset zodat grafsteen, schild en hamer niet op elkaar stapelen.
-    markersOfficerDoden.current = OFFICER_DODEN.map((zaak) =>
-      new Marker({
+    markersOfficerDoden.current = OFFICER_DODEN.map((zaak, index) => {
+      const hoek = index * 2.39996;
+      const straal = (index % 4) * 0.0022;
+      return new Marker({
         element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28),
       })
-        .setLngLat([zaak.lng - 0.009, zaak.lat + 0.007])
+        .setLngLat([
+          zaak.lng - 0.009 + Math.cos(hoek) * straal,
+          zaak.lat + 0.007 + Math.sin(hoek) * straal,
+        ])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "330px" }).setHTML(
             `<strong>${escapeHtml(zaak.titel)}</strong><br>` +
@@ -534,8 +544,8 @@ export function MeldingenKaart() {
               `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${escapeHtml(zaak.bronLabel)}</a>`
           )
         )
-        .addTo(map)
-    );
+        .addTo(map);
+    });
 
     // Laag: archief vóór 2016 (grijze/amber grafsteen). Gedocumenteerde
     // sterfgevallen rond politieoptreden van vóór de CAD-registratie.
