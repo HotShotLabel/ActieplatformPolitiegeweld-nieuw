@@ -39,7 +39,17 @@ GROEPEN = [
     ("civiel", ["politie aansprakelijk geweld", "onrechtmatige daad politie"]),
     (
         "agent-vervolgd",
-        ["rijksrecherche politie mishandeling", "verdachte politieambtenaar mishandeling"],
+        [
+            "rijksrecherche politie mishandeling",
+            "verdachte politieambtenaar mishandeling",
+            "politieambtenaar doodslag",
+            "politieagent doodslag",
+            "politieambtenaar verkrachting",
+            "politieagent verkrachting",
+            "politieambtenaar moord",
+            "oud-politieagent geweld",
+            "verdachte politieagent schietincident",
+        ],
     ),
     (
         "geweld-tegen-politie",
@@ -53,8 +63,8 @@ GROEPEN = [
 ]
 
 PER_TERM = 30          # resultaten per zoekterm (relevantie-sortering)
-MAX_DOWNLOADS = 200    # maximaal aantal teksten ophalen
-MAX_ENTRIES = 160      # maximaal aantal entries in de bulk
+MAX_DOWNLOADS = 420    # maximaal aantal teksten ophalen
+MAX_ENTRIES = 230      # maximaal aantal entries in de bulk
 PAUZE_ZOEK = 0.6
 PAUZE_DOWNLOAD = 0.35
 
