@@ -894,7 +894,36 @@ export function MeldingenKaart() {
           <p className="mt-3 text-[11px] leading-relaxed text-muted-2">
             De bron (database Controle Alt Delete) vermeldt voor deze mensen
             geen plaats. We zetten ze daarom niet op de kaart en verzinnen
-            geen locatie. Ze horen wel bij het volledige overzicht.
+            geen locatie. Deze gevallen komen uit de jaarcijfers van het
+            Openbaar Ministerie (TSI-onderzoeken); daarin staan geen plaatsen
+            of namen. Meer proberen te achterhalen kan via de openbaarheid-
+            kanalen van politie en OM:{" "}
+            <a
+              className="underline"
+              href="https://open.overheid.nl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              open.overheid.nl
+            </a>
+            {" · "}
+            <a
+              className="underline"
+              href="https://www.om.nl/onderwerpen/w/wet-open-overheid/woo-documenten"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              OM (Woo)
+            </a>
+            {" · "}
+            <a
+              className="underline"
+              href="https://www.politie.nl/wet-open-overheid/woo-verzoeken"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              politie (Woo)
+            </a>
           </p>
         </details>
       ) : null}
