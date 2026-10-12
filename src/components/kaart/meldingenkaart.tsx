@@ -505,7 +505,7 @@ export function MeldingenKaart() {
       new Marker({
         element: maakBadgeElement(ICOON_SCHILD, "#eef1f5", "#3f5871", "#2f4055"),
       })
-        .setLngLat([zaak.lng, zaak.lat])
+        .setLngLat([zaak.lng + 0.009, zaak.lat + 0.006])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "330px" }).setHTML(
             `<strong>${escapeHtml(zaak.titel)}</strong><br>` +
@@ -519,15 +519,17 @@ export function MeldingenKaart() {
 
     // Grafstenen voor dodelijke zaken met een politieambtenaar als dader
     // (familiedrama's en partnerdodingen); vallen onder de knop Overleden.
+    // Kleine offset zodat grafsteen, schild en hamer niet op elkaar stapelen.
     markersOfficerDoden.current = OFFICER_DODEN.map((zaak) =>
       new Marker({
         element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28),
       })
-        .setLngLat([zaak.lng, zaak.lat])
+        .setLngLat([zaak.lng - 0.009, zaak.lat + 0.007])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "330px" }).setHTML(
             `<strong>${escapeHtml(zaak.titel)}</strong><br>` +
               `${zaak.jaar} · ${escapeHtml(zaak.plaats)} · dader was politieambtenaar<br>` +
+              `Eenheid: ${escapeHtml(zaak.eenheid)}<br>` +
               `<em>${escapeHtml(zaak.uitkomst)}</em><br>` +
               `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${escapeHtml(zaak.bronLabel)}</a>`
           )
@@ -630,7 +632,7 @@ export function MeldingenKaart() {
                 26
               ),
             })
-              .setLngLat([zaak.lng + 0.009, zaak.lat + 0.006])
+              .setLngLat([zaak.lng + 0.018, zaak.lat + 0.012])
               .setPopup(
                 new Popup({ offset: 12, maxWidth: "330px" }).setHTML(
                   `<strong>Agent vervolgd na dit incident</strong><br>` +
