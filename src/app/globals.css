@@ -288,3 +288,19 @@
     animation: none;
   }
 }
+
+/* Kaart: geen logo-tekst in de hoek en de verplichte datacredit klein en
+   onopvallend, alleen "© OpenMapTiles, data © OpenStreetMap". */
+.maplibregl-ctrl-logo {
+  display: none !important;
+}
+
+.maplibregl-ctrl-attrib {
+  font-size: 10px !important;
+  background: rgba(7, 9, 12, 0.55) !important;
+  border-radius: 6px;
+}
+
+.maplibregl-ctrl-attrib a {
+  color: inherit !important;
+}

@@ -38,7 +38,7 @@ export default function KaartPage() {
         </div>
 
         <p className="mt-6 max-w-[70ch] text-sm leading-relaxed text-muted-2">
-          De kaart gebruikt vrije kaarttegels van OpenStreetMap en CARTO: geen
+          De kaart gebruikt vrije kaarttegels, zonder betaalmuren: geen
           cookies, geen tracking, geen account nodig. Je verhaal zelf is nooit
           openbaar. Lees op de{" "}
           <Link

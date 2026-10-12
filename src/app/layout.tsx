@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteNav } from "@/components/site/site-nav";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SmoothScroll } from "@/components/site/smooth-scroll";
+import { ChatWidget } from "@/components/chat/chat-widget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "nl_NL",
   },
+  other: {
+    robots: "noai, noimageai",
+  },
 };
 
 export const viewport: Viewport = {
@@ -60,6 +64,7 @@ export default function RootLayout({
         <SiteNav />
         {children}
         <SiteFooter />
+        <ChatWidget />
       </body>
     </html>
   );

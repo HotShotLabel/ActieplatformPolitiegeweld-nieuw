@@ -81,7 +81,11 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-14 flex flex-col gap-3 border-t border-line pt-8 text-xs text-muted-2 md:flex-row md:items-center md:justify-between">
-          <p>© 2026 Actieplatform Politiegeweld</p>
+          <p>
+            © 2026 Actieplatform Politiegeweld. Alle rechten voorbehouden.
+            Overnemen van tekst, beeld of data alleen met voorafgaande
+            toestemming; citeren mag met bronvermelding.
+          </p>
           <p>
             Deze site geeft informatie, geen juridisch advies. Raadpleeg bij
             twijfel een jurist of advocaat.

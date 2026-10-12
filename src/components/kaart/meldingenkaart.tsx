@@ -43,9 +43,12 @@ function dichtstbijzijndePlaats(lat: number, lng: number): string {
   return beste;
 }
 
-const STIJL_DONKER = "https://tiles.openfreemap.org/styles/dark";
-const STIJL_LICHT = "https://tiles.openfreemap.org/styles/positron";
-const STIJL_NOOD = "https://tiles.openfreemap.org/styles/bright";
+/* Stijlen komen via onze eigen route (/api/kaartstijl): die haalt de
+   stijlbeschrijving op en stript de herkomst-verwijzingen, zodat alleen de
+   verplichte datacredit overblijft (die zetten we zelf, compact). */
+const STIJL_DONKER = "/api/kaartstijl?stijl=donker";
+const STIJL_LICHT = "/api/kaartstijl?stijl=licht";
+const STIJL_NOOD = "/api/kaartstijl?stijl=nood";
 
 interface Voorziening {
   naam: string;
@@ -308,6 +311,7 @@ export function MeldingenKaart() {
     const map = new MlMap({
       container: containerRef.current,
       style: STIJL_DONKER,
+      attributionControl: false,
       center: [5.3, 52.15],
       zoom: 7,
       minZoom: 6,
@@ -442,7 +446,7 @@ export function MeldingenKaart() {
       voorzienPopup
         .setLngLat(event.lngLat)
         .setHTML(
-          `<strong>${String(feature.properties?.naam ?? "Politielocatie")}</strong><br><span style="opacity:.7">Politiebureau${plaats ? ` · ${plaats}` : ""} · bron: OpenStreetMap</span>`
+          `<strong>${String(feature.properties?.naam ?? "Politielocatie")}</strong><br><span style="opacity:.7">Politiebureau${plaats ? ` · ${plaats}` : ""} · © OpenStreetMap</span>`
         )
         .addTo(map);
     });
@@ -1030,6 +1034,28 @@ export function MeldingenKaart() {
           className="h-[62vh] min-h-[420px] w-full"
         />
 
+        {/* Verplichte datacredit: klein, één regel, verder niets. */}
+        <div className="pointer-events-none absolute bottom-1 right-2 z-10 rounded bg-black/50 px-1.5 py-0.5 text-[10px] leading-none text-white/75">
+          ©{" "}
+          <a
+            className="pointer-events-auto underline"
+            href="https://www.openmaptiles.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OpenMapTiles
+          </a>
+          {", data © "}
+          <a
+            className="pointer-events-auto underline"
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OpenStreetMap
+          </a>
+        </div>
+
         {punten !== null && punten.length === 0 && toonMeldingen ? (
           <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex sm:right-auto">
             <p className="pointer-events-auto rounded-full border border-line bg-background/85 px-4 py-2 text-xs leading-relaxed text-muted backdrop-blur">
@@ -1137,12 +1163,11 @@ export function MeldingenKaart() {
         nieuwsbericht (live nieuws pulseert; alleen berichten waarvan de
         plaats bekend is staan op de kaart). Alleen het huidige jaar (2026)
         gloeit. Nieuwe berichten verschijnen
-        automatisch op de kaart. Kaartmateriaal: OpenStreetMap-bijdragers.
+        automatisch op de kaart.
         Openbare zaken op stadsniveau; meldingen afgerond op ongeveer een
         kilometer.
-        Politiebureaus: OpenStreetMap. Rechtbanken: de officiële locatielijst
-        van rechtspraak.nl (alle locaties), aangevuld met Hoge Raad en Raad
-        van State.
+        Politiebureaus en rechtbanken: openbare locatielijsten, aangevuld met
+        Hoge Raad en Raad van State.
       </p>
 
       {overledenZonder.length > 0 ? (

@@ -1,0 +1,9 @@
+# ai.txt
+# Het gebruik van deze site of zijn inhoud voor het trainen, fijnslijpen of
+# voeden van AI-modellen is zonder voorafgaande schriftelijke toestemming
+# niet toegestaan. Hetzelfde geldt voor het kopieren van gegevens voor
+# datasets, herdruk of doorverkoop.
+
+Site: actieplatform-politiegeweld-nieuw.vercel.app
+Toestemming: alleen na voorafgaande schriftelijke toestemming
+Contact: label@hot-shot.com
