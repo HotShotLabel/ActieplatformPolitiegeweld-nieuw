@@ -279,7 +279,6 @@ export function MeldingenKaart() {
   const [toonRechtspraak, setToonRechtspraak] = useState(true);
   const [toonGeweld, setToonGeweld] = useState(true);
   const [toonAgenten, setToonAgenten] = useState(true);
-  const [toonArchief, setToonArchief] = useState(true);
   const [toonVervolgd, setToonVervolgd] = useState(true);
   const [vervolgdAantal, setVervolgdAantal] = useState<number | null>(null);
   const [toonOverleden, setToonOverleden] = useState(true);
@@ -797,22 +796,17 @@ export function MeldingenKaart() {
   }, [toonGeweld]);
 
   useEffect(() => {
-    toonStand.current.agenten = toonAgenten;
+    toonStand.current.overleden = toonOverleden;
+    toonStand.current.archief = toonOverleden;
     const map = mapRef.current;
     if (!map) return;
-    markersAgenten.current.forEach((marker) =>
-      toonAgenten ? marker.addTo(map) : marker.remove()
+    markersOverleden.current.forEach((marker) =>
+      toonOverleden ? marker.addTo(map) : marker.remove()
     );
-  }, [toonAgenten]);
-
-  useEffect(() => {
-    toonStand.current.archief = toonArchief;
-    const map = mapRef.current;
-    if (!map) return;
     markersArchief.current.forEach((marker) =>
-      toonArchief ? marker.addTo(map) : marker.remove()
+      toonOverleden ? marker.addTo(map) : marker.remove()
     );
-  }, [toonArchief]);
+  }, [toonOverleden]);
 
   useEffect(() => {
     toonStand.current.vervolgd = toonVervolgd;
@@ -910,10 +904,6 @@ export function MeldingenKaart() {
         <button type="button" onClick={() => setToonAgenten((w) => !w)} aria-pressed={toonAgenten} className={chip(toonAgenten)}>
           <IcoonChipBadge icoon={ICOON_SCHILD} badgeKleur="#eef1f5" randKleur="#3f5871" icoonKleur="#2f4055" />
           Agenten als dader ({AGENT_ZAKEN.length})
-        </button>
-        <button type="button" onClick={() => setToonArchief((w) => !w)} aria-pressed={toonArchief} className={chip(toonArchief)}>
-          <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#a16207" icoonKleur="#78350f" />
-          Archief vóór 2016 ({ARCHIEF_ZAKEN.length})
         </button>
         <button type="button" onClick={() => setToonVervolgd((w) => !w)} aria-pressed={toonVervolgd} className={chip(toonVervolgd)}>
           <IcoonChipBadge icoon={ICOON_AGENT} badgeKleur="#e8eefc" randKleur="#2f5bb7" icoonKleur="#1e3a8a" />
@@ -1045,7 +1035,7 @@ export function MeldingenKaart() {
       <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-2">
         <span>nieuws {nieuwsGepind ?? "…"}</span>
         <span>rechtszaken {OPENBARE_ZAKEN.length}</span>
-        <span>overleden {overledenAantal ?? "…"} van {overledenTotaal ?? "…"}</span>
+        <span>{overledenAantal === null ? "overleden …" : `overleden ${overledenAantal + ARCHIEF_ZAKEN.length} (incl. ${ARCHIEF_ZAKEN.length} archief vóór 2016)`}</span>
         <span>politiebureaus {aantallen ? aantallen.politie : "…"}</span>
         <span>rechtbanken {aantallen ? aantallen.rechtbank : "…"}</span>
         <span>meldingen {punten === null ? "…" : aantalMeldingen}</span>
@@ -1054,9 +1044,11 @@ export function MeldingenKaart() {
       <p className="mt-3 text-xs leading-relaxed text-muted-2">
         Elk punt heeft een eigen icoon: politieauto = politiebureau, zuilen =
         rechtbank, hamer = rechterlijke uitspraak, vuist = bekend geweld
-        zonder dodelijke afloop, schild = agenten als dader, rode grafsteen =
-        overleden na politieoptreden, amber grafsteen = archief vóór 2016,
-        blauw agent-poppetje = agent vervolgd na een dodelijk incident,
+        zonder dodelijke afloop, schild = agenten als dader (waaronder
+        dodelijke familiedrama's door agenten), rode grafsteen = overleden na
+        politieoptreden (2016-nu), amber grafsteen = archief vóór 2016 (samen
+        onder de knop Overleden), blauw agent-poppetje = agent vervolgd na een
+        dodelijk incident,
         waarschuwingsdriehoek = melding van geweld, krant =
         nieuwsbericht (live nieuws pulseert; alleen berichten waarvan de
         plaats bekend is staan op de kaart). Alleen het huidige jaar (2026)
