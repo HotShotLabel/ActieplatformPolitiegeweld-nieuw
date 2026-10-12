@@ -3,7 +3,11 @@
    OM/Rijksrecherche), 12 oktober 2026. Namen alleen waar openbaar gemeld;
    iedere zaak heeft een bron. Er bestaat geen volledige overheidslijst. */
 
-export type AgentZaakCategorie = "levensdelict" | "zeden" | "dienstgeweld";
+export type AgentZaakCategorie =
+  | "levensdelict"
+  | "zeden"
+  | "dienstgeweld"
+  | "ambtsmisbruik";
 
 export interface AgentZaak {
   id: string;
@@ -23,6 +27,7 @@ export const CATEGORIE_TITEL: Record<AgentZaakCategorie, string> = {
   levensdelict: "Levensdelicten (moord en doodslag)",
   zeden: "Zedendelicten",
   dienstgeweld: "Geweld tijdens de dienst",
+  ambtsmisbruik: "Ambtsmisbruik, lekken en meineed",
 };
 
 export const AGENT_ZAKEN: AgentZaak[] = [
@@ -191,6 +196,52 @@ export const AGENT_ZAKEN: AgentZaak[] = [
     titel: "Agent Gerrit de Graaf: dood door schuld in functie (historische zaak)",
     uitkomst: "Zes maanden hechtenis; Hoge Raad verwerpt cassatie (1949)",
     bronLabel: "ECLI:NL:HR:1949:53", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3AHR%3A1949%3A53" },
+
+  // Ambtsmisbruik, lekken en meineed
+  { id: "fouad-el-a", jaar: "2025", plaats: "Amsterdam", eenheid: "Amsterdam", lat: 52.3734, lng: 4.9045, categorie: "ambtsmisbruik",
+    titel: "Hondengeleider: ambtsgeheim, computervredebreuk en passieve omkoping",
+    uitkomst: "18 maanden cel",
+    bronLabel: "ECLI:NL:RBAMS:2025:4727", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBAMS%3A2025%3A4727" },
+  { id: "ijmuiden-lek", jaar: "2025", plaats: "IJmuiden", eenheid: "Amsterdam", lat: 52.4555, lng: 4.5778, categorie: "ambtsmisbruik",
+    titel: "Politiemedewerker lekte vertrouwelijke informatie 'om stoer te doen'",
+    uitkomst: "Taakstraf 240 uur + 1 maand voorwaardelijk",
+    bronLabel: "ECLI:NL:RBAMS:2025:5709", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBAMS%3A2025%3A5709" },
+  { id: "almelo-lek", jaar: "2023", plaats: "Almelo", eenheid: "Oost-Nederland", lat: 52.3577, lng: 6.6599, categorie: "ambtsmisbruik",
+    titel: "Twee agenten lekten informatie naar een wietbende",
+    uitkomst: "34 dagen cel + taakstraffen (240 en 180 uur)",
+    bronLabel: "Rechtspraak.nl (nieuws)", bronUrl: "https://www.rechtspraak.nl/Organisatie-en-contact/Organisatie/Rechtbanken/Rechtbank-Overijssel/Nieuws/Paginas/Politieagenten-veroordeeld-voor-schending-ambtsgeheim-en-computervredebreuk-.aspx" },
+  { id: "nijverdal-drugs", jaar: "2018", plaats: "Nijverdal", eenheid: "Oost-Nederland", lat: 52.3593, lng: 6.4686, categorie: "ambtsmisbruik",
+    titel: "Politieman runde een hennepkwekerij en handelde in harddrugs",
+    uitkomst: "1 jaar cel",
+    bronLabel: "RTV Oost", bronUrl: "https://www.rtvoost.nl/nieuws/239340" },
+  { id: "spijkenisse-lek", jaar: "2024", plaats: "Spijkenisse", eenheid: "Rotterdam", lat: 51.8427, lng: 4.3429, categorie: "ambtsmisbruik",
+    titel: "Ex-agent: computervredebreuk, ambtsgeheim en drugshandel",
+    uitkomst: "Celstraf (april 2024)",
+    bronLabel: "Nederlands Dagblad", bronUrl: "https://www.nd.nl/varia/varia/1218934" },
+  { id: "stadskanaal-zeden", jaar: "2022", plaats: "Stadskanaal", eenheid: "Noord-Nederland", lat: 53.0053, lng: 6.9401, categorie: "ambtsmisbruik",
+    titel: "Ontslagen agent: lekken plus bezit kinder- en dierenporno",
+    uitkomst: "60 dagen (57 voorwaardelijk) + 240 uur werkstraf",
+    bronLabel: "Reformatorisch Dagblad", bronUrl: "https://www.rd.nl/artikel/cel-en-werkstraf-voor-lekkende-politieagent-met-dierenporno" },
+  { id: "ter-aar-kp", jaar: "onbekend", plaats: "Ter Aar", eenheid: "Den Haag", lat: 52.1777, lng: 4.7201, categorie: "ambtsmisbruik",
+    titel: "Agent: bezit van kinderporno",
+    uitkomst: "12 maanden (6 voorwaardelijk)",
+    bronLabel: "AD", bronUrl: "https://www.ad.nl/groene-hart/celstraf-voor-politieagent-vanwege-kinderporno~a8350e47/" },
+  { id: "horst-misbruik", jaar: "2025", plaats: "Horst", eenheid: "Limburg (team Horst)", lat: 51.4603, lng: 6.0583, categorie: "ambtsmisbruik",
+    titel: "Vier oud-agenten: misbruik van gezag en meineed",
+    uitkomst: "3 maanden cel + taakstraffen; één vrijgesproken",
+    bronLabel: "L1 Nieuws", bronUrl: "https://www.l1nieuws.nl/nieuws/2910368" },
+  { id: "doorn-pv", jaar: "2025", plaats: "Doorn", eenheid: "Midden-Nederland", lat: 52.0373, lng: 5.3423, categorie: "ambtsmisbruik",
+    titel: "Agent vervalste een proces-verbaal in een taser-zaak",
+    uitkomst: "1 maand voorwaardelijk + 240 uur werkstraf",
+    bronLabel: "ECLI:NL:RBMNE:2025:1357", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBMNE%3A2025%3A1357" },
+  { id: "emmen-meineed", jaar: "2023", plaats: "Emmen", eenheid: "Noord-Nederland", lat: 52.7783, lng: 6.9011, categorie: "ambtsmisbruik",
+    titel: "Agent: meineed, oplichting en verduistering",
+    uitkomst: "Veroordeling (2023)",
+    bronLabel: "ECLI:NL:RBNNE:2023:516", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBNNE%3A2023%3A516" },
+  { id: "dordrecht-kutneger", jaar: "2021", plaats: "Dordrecht", eenheid: "Rotterdam", lat: 51.7815, lng: 4.7089, categorie: "ambtsmisbruik",
+    titel: "Agent veroordeeld voor discriminerende belediging tijdens Sinterklaasavond",
+    uitkomst: "Geldboete van 250 euro",
+    bronLabel: "NRC", bronUrl: "https://www.nrc.nl/nieuws/2021/06/30/politieagent-tot-geldboete-veroordeeld-a4049460" },
 ];
 
 /* Overige zaken uit het uitputtende rechtspraak-onderzoek (geen kaartpunt:
@@ -201,6 +252,9 @@ export const OVERIGE_AGENT_ZAKEN: { ecli: string; datum: string; omschrijving: s
   { ecli: "ECLI:NL:GHARL:2023:10020", datum: "2023-11-27", omschrijving: "Hoger beroep over vergoeding van rechtsbijstandskosten na feitenonderzoek naar geweldsaanwending (art. 530 Sv)." },
   { ecli: "ECLI:NL:GHARL:2023:10020", datum: "2023-11-27", omschrijving: "Hoger beroep over vergoeding van rechtsbijstandskosten na feitenonderzoek naar geweldaanwending (art. 530 Sv)." },
   { ecli: "ECLI:NL:RBROT:2025:12186", datum: "2025-10-17", omschrijving: "Oud-politieagente: voorbereiding moord op ex-partner; zeven jaar cel." },
+  { ecli: "ECLI:NL:OGHACMB:2025:127", datum: "2025-01-01", omschrijving: "Waarnemend unithoofd politie Curaçao: misbruik van functie en valsheid; voorwaardelijk 4 maanden + 120 uur werkstraf + 2 jaar ontzetting uit het ambt." },
+  { ecli: "ECLI:NL:OGEABES:2025:170", datum: "2025-01-01", omschrijving: "Politieagent Bonaire: vrijgesproken van meineed." },
+  { ecli: "ECLI:NL:RBAMS:2025:4729", datum: "2025-01-01", omschrijving: "Informatiemakelaar (broer van een agent, geen politieambtenaar): 5,5 jaar voor lekken plus drugs en witwassen." },
   { ecli: "ECLI:NL:GHDHA:2014:49", datum: "2014-01-21", omschrijving: "Twee politieambtenaren: wederrechtelijke vrijheidsberoving en misbruik van gezag tijdens dienst." },
   { ecli: "ECLI:NL:RBSGR:2004:AO9348", datum: "2004-05-12", omschrijving: "Verduistering van politiedocumenten, omkoping van politieambtenaren, schending ambtsgeheim." },
   { ecli: "ECLI:NL:RBHAA:2010:BM8272", datum: "2010-06-17", omschrijving: "Dodelijk ongeval met gepantserd politievoertuig (90 km/u waar 50 gold); artikel 6 WVW." },

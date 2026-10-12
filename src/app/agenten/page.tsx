@@ -17,6 +17,7 @@ export default function AgentenPage() {
     "levensdelict",
     "zeden",
     "dienstgeweld",
+    "ambtsmisbruik",
   ];
 
   return (

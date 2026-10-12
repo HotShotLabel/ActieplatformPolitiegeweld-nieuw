@@ -15,6 +15,7 @@ import {
 } from "lucide";
 import { luisterNaarKaartpunten, type KaartPunt } from "@/lib/kaartpunten";
 import { AGENT_ZAKEN } from "@/lib/agent-zaken";
+import { AANVULLINGEN_DODEN } from "@/lib/overleden-aanvullingen";
 import { ARCHIEF_ZAKEN } from "@/lib/overleden-archief";
 import { GEWELD_ZAKEN } from "@/lib/geweld-zaken";
 import { SOORT_LABEL } from "@/lib/meldingen";
@@ -253,6 +254,7 @@ export function MeldingenKaart() {
   const markersAgenten = useRef<Marker[]>([]);
   const markersArchief = useRef<Marker[]>([]);
   const markersOfficerDoden = useRef<Marker[]>([]);
+  const markersAanvullingen = useRef<Marker[]>([]);
   const markersVervolgd = useRef<Marker[]>([]);
   const nieuwsUrls = useRef(new Set<string>());
   const voorzieningen = useRef<Voorzieningen | null>(null);
@@ -547,13 +549,41 @@ export function MeldingenKaart() {
         .addTo(map);
     });
 
+    // Grafstenen voor gedocumenteerde overlijdens die (nog) niet in de
+    // CAD-database staan; vallen onder de knop Overleden.
+    markersAanvullingen.current = AANVULLINGEN_DODEN.map((zaak, index) => {
+      const hoek = index * 2.39996;
+      const straal = (index % 4) * 0.0022;
+      return new Marker({
+        element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28),
+      })
+        .setLngLat([
+          zaak.lng + 0.014 + Math.cos(hoek) * straal,
+          zaak.lat - 0.010 + Math.sin(hoek) * straal,
+        ])
+        .setPopup(
+          new Popup({ offset: 12, maxWidth: "330px" }).setHTML(
+            `<strong>${escapeHtml(zaak.titel)}</strong><br>` +
+              `${zaak.datum} · ${escapeHtml(zaak.plaats)}<br>` +
+              `<span style="opacity:.85">${escapeHtml(zaak.toelichting)}</span><br>` +
+              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${escapeHtml(zaak.bronLabel)}</a>`
+          )
+        )
+        .addTo(map);
+    });
+
     // Laag: archief vóór 2016 (grijze/amber grafsteen). Gedocumenteerde
     // sterfgevallen rond politieoptreden van vóór de CAD-registratie.
-    markersArchief.current = ARCHIEF_ZAKEN.map((zaak) =>
-      new Marker({
+    markersArchief.current = ARCHIEF_ZAKEN.map((zaak, index) => {
+      const hoek = index * 2.39996;
+      const straal = (index % 5) * 0.0019;
+      return new Marker({
         element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#a16207", "#78350f", 26),
       })
-        .setLngLat([zaak.lng, zaak.lat])
+        .setLngLat([
+          zaak.lng + Math.cos(hoek) * straal,
+          zaak.lat + Math.sin(hoek) * straal,
+        ])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
             `<strong>${escapeHtml(zaak.plaats)} · ${escapeHtml(zaak.jaar)}</strong><br>` +
@@ -563,8 +593,8 @@ export function MeldingenKaart() {
               `<span style="opacity:.7">Archief: van vóór de registratie (2016); lijst is niet volledig.</span>`
           )
         )
-        .addTo(map)
-    );
+        .addTo(map);
+    });
 
     // Laag: overleden onder verantwoordelijkheid van wetshandhavers. De
     // lijst wordt dagelijks automatisch opgehaald uit de openbare database
@@ -745,7 +775,12 @@ export function MeldingenKaart() {
             .map((deel) => escapeHtml(String(deel)))
             .join(" · ");
           const marker = new Marker({ element })
-            .setLngLat([bericht.lng, bericht.lat])
+            .setLngLat([
+              bericht.lng +
+                Math.cos(toegevoegd * 2.39996) * ((toegevoegd % 5) * 0.0016),
+              bericht.lat +
+                Math.sin(toegevoegd * 2.39996) * ((toegevoegd % 5) * 0.0016),
+            ])
             .setPopup(
               new Popup({ offset: 12, maxWidth: "340px" }).setHTML(
                 `<strong>${escapeHtml(bericht.titel)}</strong>` +
@@ -803,6 +838,7 @@ export function MeldingenKaart() {
       markersAgenten.current = [];
       markersArchief.current = [];
       markersOfficerDoden.current = [];
+      markersAanvullingen.current = [];
       markersVervolgd.current = [];
       markersOverleden.current = [];
       markersNieuws.current = [];
@@ -849,6 +885,9 @@ export function MeldingenKaart() {
       toonOverleden ? marker.addTo(map) : marker.remove()
     );
     markersOfficerDoden.current.forEach((marker) =>
+      toonOverleden ? marker.addTo(map) : marker.remove()
+    );
+    markersAanvullingen.current.forEach((marker) =>
       toonOverleden ? marker.addTo(map) : marker.remove()
     );
   }, [toonOverleden]);
@@ -956,7 +995,7 @@ export function MeldingenKaart() {
         </button>
         <button type="button" onClick={() => setToonOverleden((w) => !w)} aria-pressed={toonOverleden} className={chip(toonOverleden)}>
           <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#e5484d" icoonKleur="#c93a3f" />
-          Overleden ({overledenAantal === null ? "…" : overledenAantal + ARCHIEF_ZAKEN.length + OFFICER_DODEN.length})
+          Overleden ({overledenAantal === null ? "…" : overledenAantal + ARCHIEF_ZAKEN.length + OFFICER_DODEN.length + AANVULLINGEN_DODEN.length})
         </button>
         <button type="button" onClick={() => setToonNieuws((w) => !w)} aria-pressed={toonNieuws} className={chip(toonNieuws)}>
           <IcoonChipBadge icoon={ICOON_NIEUWS} badgeKleur="#f4f5f6" randKleur="#07090c" icoonKleur="#07090c" />

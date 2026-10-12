@@ -52,3 +52,26 @@ Deventer).
 ## Op de site gezet (12-10-2026, commit d14dc95)
 13 curated zaken in de uitspraken-databank (incl. Milly Boele, Mitch Henriquez,
 Heerenveen, Blauwe Kamer Delft, Almere, zedenzaken, Caribisch).
+
+## Aanvulling 12-10-2026 (tweede speurronde)
+
+**Nieuw gevonden agent-zaken (11, categorie ambtsmisbruik):** Fouad el A.
+(Amsterdam 2025, 18 mnd; RBAMS:2025:4727), lekker IJmuiden (2025),
+Almelo-lek (2 agenten, 2023), Nijverdal drugs (2018), Spijkenisse (2024),
+Stadskanaal kinder-/dierenporno (2022), Ter Aar kinderporno, Horst vier
+oud-agenten (2025), Doorn vals pv (RBMNE:2025:1357), Emmen meineed
+(RBNNE:2023:516), Dordrecht discriminerende belediging (2021).
+Ook toegevoegd: Curaçao unithoofd (OGHACMB:2025:127), Bonaire-vrijspraak
+(OGEABES:2025:170).
+
+**CAD-controle (speurhond):** de CAD-database mist een bevestigd geval:
+de 28-jarige man uit Terneuzen die op 25-06-2026 overleed na een
+politieachtervolging bij Kapellebrug (Omroep Zeeland). Toegevoegd als
+aanvulling (bron: nieuwsbericht). CAD-cijfers versus OM: 2021 OM 12 vs CAD 6;
+2022 OM 20 vs CAD 14; 2025 OM 22 vs CAD 19 -- CAD mist gevallen, met name
+in anonieme jaren. Kapellebrug + Spijkenisse (politiecel) + Apeldoorn
+(achtervolging 2024, bron nog op te halen) op de lijst.
+
+**Bugs gefixt:** stapelende markers in dezelfde stad (Milly/Cardoze in
+Dordrecht; archief Den Haag 4x, Amsterdam 5x; nieuws). Alle lagen krijgen nu
+een kleine spreiding zodat elke zaak apart aanklikbaar is.
