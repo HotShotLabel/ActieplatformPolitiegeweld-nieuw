@@ -30,6 +30,7 @@ export interface OverledenZaak {
   geschoten: string;
   vervolgd: string;
   veroordeeld: string;
+  eenheid: string;
   status: string;
   bronUrl: string;
   bronLabel: string;
@@ -106,6 +107,10 @@ export async function GET() {
         geschoten: String(mens.is_shot ?? "Onbekend"),
         vervolgd: String(mens.officer_persecuted ?? "Onbekend"),
         veroordeeld: String(mens.officer_convicted ?? "Onbekend"),
+        eenheid: (() => {
+          const unit = String(mens.police_unit ?? "").trim();
+          return unit && unit !== "Onbekend" ? unit : "";
+        })(),
         status: String(mens.investigation_status ?? ""),
         bronUrl: artikel || bronStandaard,
         bronLabel: artikel ? "nieuwsbericht" : "database Controle Alt Delete",

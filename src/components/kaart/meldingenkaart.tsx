@@ -13,11 +13,29 @@ import {
 } from "lucide";
 import { luisterNaarKaartpunten, type KaartPunt } from "@/lib/kaartpunten";
 import { SOORT_LABEL } from "@/lib/meldingen";
+import { NL_PLAATSEN } from "@/lib/nl-plaatsen";
 import { CAD_ZAKEN, OPENBARE_ZAKEN } from "@/lib/openbare-zaken";
 import { cn } from "@/lib/utils";
 
 // Zelf gehoste worker; anders faalt de worker-load onder Turbopack.
 setWorkerUrl("/maplibre-gl-worker.mjs");
+
+/* Dichtstbijzijnde plaatsnaam bij een punt (voor politiebureaus e.d.).
+   Binnen ongeveer vijf kilometer; anders leeg. */
+function dichtstbijzijndePlaats(lat: number, lng: number): string {
+  let beste = "";
+  let besteAfstand = 0.045 * 0.045;
+  for (const [naam, coord] of Object.entries(NL_PLAATSEN)) {
+    const dy = coord[0] - lat;
+    const dx = (coord[1] - lng) * 0.62;
+    const afstand = dy * dy + dx * dx;
+    if (afstand < besteAfstand) {
+      besteAfstand = afstand;
+      beste = naam;
+    }
+  }
+  return beste;
+}
 
 const STIJL_DONKER = "https://tiles.openfreemap.org/styles/dark";
 const STIJL_LICHT = "https://tiles.openfreemap.org/styles/positron";
@@ -370,10 +388,12 @@ export function MeldingenKaart() {
     map.on("click", "politie-iconen", (event) => {
       const feature = event.features?.[0];
       if (!feature) return;
+      const { lat, lng } = event.lngLat;
+      const plaats = dichtstbijzijndePlaats(lat, lng);
       voorzienPopup
         .setLngLat(event.lngLat)
         .setHTML(
-          `<strong>${String(feature.properties?.naam ?? "Politielocatie")}</strong><br><span style="opacity:.7">Politiebureau · bron: OpenStreetMap</span>`
+          `<strong>${String(feature.properties?.naam ?? "Politielocatie")}</strong><br><span style="opacity:.7">Politiebureau${plaats ? ` · ${plaats}` : ""} · bron: OpenStreetMap</span>`
         )
         .addTo(map);
     });
@@ -427,6 +447,7 @@ export function MeldingenKaart() {
       geschoten: string;
       vervolgd: string;
       veroordeeld: string;
+      eenheid?: string;
       status: string;
       bronUrl: string;
       bronLabel: string;
@@ -443,7 +464,8 @@ export function MeldingenKaart() {
             `<strong>Overleden na politieoptreden</strong><br>` +
               `${zaak.jaar} · ${zaak.plaats}<br>` +
               `Politiegeweld: ${zaak.geweld} · Doodgeschoten: ${zaak.geschoten}<br>` +
-              `${zaak.status ? zaak.status + "<br>" : ""}` +
+              `${zaak.eenheid ? "Eenheid: " + zaak.eenheid + "<br>" : ""}` +
+              `${zaak.status && zaak.status !== "Onbekend" ? zaak.status + "<br>" : ""}` +
               `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${zaak.bronLabel}</a><br>` +
               `<span style="opacity:.7">Naam en verhaal staan in de database van Controle Alt Delete.</span>`
           )
