@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary } from "@/lib/ui";
 import { SOORT_LABEL } from "@/lib/meldingen";
 import { uploadNaarYouTube } from "@/lib/youtube-client";
+import { BeheerKaart } from "@/components/beheer/beheer-kaart";
 
 interface BeheerMelding {
   id: string;
@@ -24,6 +25,8 @@ interface BeheerMelding {
   soortAgent: string;
   aantalAgenten: string;
   agentBeschrijving: string;
+  status: string;
+  notitie: string;
   kaartpunt: { lat: number; lng: number } | null;
   createdAt: string;
 }
@@ -97,6 +100,16 @@ export function BeheerLijst() {
   const [links, setLinks] = useState<BeheerLink[]>([]);
   const [linkBezig, setLinkBezig] = useState("");
   const [linkMelding, setLinkMelding] = useState("");
+  const [zoek, setZoek] = useState("");
+  const [statusBezig, setStatusBezig] = useState("");
+  const [notitieBezig, setNotitieBezig] = useState("");
+  const [notitieConcepten, setNotitieConcepten] = useState<
+    Record<string, string>
+  >({});
+  const [pwNieuw, setPwNieuw] = useState("");
+  const [pwHerhaal, setPwHerhaal] = useState("");
+  const [pwBezig, setPwBezig] = useState(false);
+  const [pwMelding, setPwMelding] = useState("");
 
   const laadLive = useCallback(async () => {
     try {
@@ -351,6 +364,171 @@ export function BeheerLijst() {
     }
   }
 
+  async function zetStatus(melding: BeheerMelding, status: string) {
+    setStatusBezig(melding.id);
+    setFoutmelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/meldingen", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ id: melding.id, status }),
+      });
+      if (!antwoord.ok) throw new Error();
+      setMeldingen((huidig) =>
+        huidig
+          ? huidig.map((item) =>
+              item.id === melding.id ? { ...item, status } : item
+            )
+          : huidig
+      );
+    } catch {
+      setFoutmelding("Status opslaan mislukte. Probeer het opnieuw.");
+    } finally {
+      setStatusBezig("");
+    }
+  }
+
+  async function bewaarNotitie(melding: BeheerMelding) {
+    const notitie = notitieConcepten[melding.id] ?? melding.notitie;
+    setNotitieBezig(melding.id);
+    setFoutmelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/meldingen", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ id: melding.id, notitie }),
+      });
+      if (!antwoord.ok) throw new Error();
+      setMeldingen((huidig) =>
+        huidig
+          ? huidig.map((item) =>
+              item.id === melding.id ? { ...item, notitie } : item
+            )
+          : huidig
+      );
+      setNotitieConcepten((huidig) => {
+        const kopie = { ...huidig };
+        delete kopie[melding.id];
+        return kopie;
+      });
+    } catch {
+      setFoutmelding("Notitie opslaan mislukte. Probeer het opnieuw.");
+    } finally {
+      setNotitieBezig("");
+    }
+  }
+
+  function downloadCsv() {
+    if (!meldingen) return;
+    const koppen = [
+      "id",
+      "binnen",
+      "soort",
+      "datum",
+      "plaats",
+      "beschrijving",
+      "agentGeslacht",
+      "agentLeeftijd",
+      "agentNaam",
+      "eenheid",
+      "voertuig",
+      "kentekens",
+      "dienstnummers",
+      "soortAgent",
+      "aantalAgenten",
+      "agentBeschrijving",
+      "contactEmail",
+      "opKaart",
+      "status",
+      "notitie",
+      "lat",
+      "lng",
+    ];
+    const regels = meldingen.map((melding) =>
+      [
+        melding.id,
+        melding.createdAt,
+        SOORT_LABEL[melding.soort] ?? melding.soort,
+        melding.datum,
+        melding.plaats,
+        melding.beschrijving,
+        melding.agentGeslacht,
+        melding.agentLeeftijd,
+        melding.agentNaam,
+        melding.eenheid,
+        melding.voertuig,
+        melding.kentekens,
+        melding.dienstnummers,
+        melding.soortAgent,
+        melding.aantalAgenten,
+        melding.agentBeschrijving,
+        melding.contactEmail,
+        melding.opKaart ? "ja" : "nee",
+        melding.status,
+        melding.notitie,
+        melding.kaartpunt ? String(melding.kaartpunt.lat) : "",
+        melding.kaartpunt ? String(melding.kaartpunt.lng) : "",
+      ]
+        .map((waarde) => `"${String(waarde).replaceAll('"', '""')}"`)
+        .join(";")
+    );
+    const inhoud = "\uFEFF" + [koppen.join(";"), ...regels].join("\n");
+    const blob = new Blob([inhoud], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `meldingen-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function wijzigWachtwoord() {
+    if (pwNieuw.length < 12) {
+      setPwMelding("Kies een wachtwoord van minimaal 12 tekens.");
+      return;
+    }
+    if (pwNieuw !== pwHerhaal) {
+      setPwMelding("De twee wachtwoorden zijn niet gelijk.");
+      return;
+    }
+    setPwBezig(true);
+    setPwMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/wachtwoord", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ nieuwWachtwoord: pwNieuw }),
+      });
+      const data = await antwoord.json().catch(() => ({}));
+      if (!antwoord.ok || !data.ok) {
+        setPwMelding(data.fout ?? "Opslaan mislukte.");
+        return;
+      }
+      setToken(pwNieuw);
+      try {
+        sessionStorage.setItem("beheer-token", pwNieuw);
+      } catch {
+        // niets
+      }
+      setPwNieuw("");
+      setPwHerhaal("");
+      setPwMelding("Het nieuwe wachtwoord is ingesteld. Bewaar het goed.");
+    } catch {
+      setPwMelding("Opslaan mislukte. Probeer het opnieuw.");
+    } finally {
+      setPwBezig(false);
+    }
+  }
+
   function uitloggen() {
     setToken("");
     setMeldingen(null);
@@ -415,6 +593,45 @@ export function BeheerLijst() {
   const totaleOpslagMb = uitzendingen.reduce(
     (som, uitzending) => som + (Number(uitzending.grootteMb) || 0),
     0
+  );
+
+  const zoekTerm = zoek.trim().toLowerCase();
+  const zichtbaar = zoekTerm
+    ? meldingen.filter((melding) =>
+        [
+          SOORT_LABEL[melding.soort] ?? melding.soort,
+          melding.plaats,
+          melding.datum,
+          melding.beschrijving,
+          melding.contactEmail,
+          melding.agentNaam,
+          melding.eenheid,
+          melding.voertuig,
+          melding.kentekens,
+          melding.dienstnummers,
+          melding.soortAgent,
+          melding.agentBeschrijving,
+          melding.notitie,
+          melding.status,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(zoekTerm)
+      )
+    : meldingen;
+
+  const kaartpunten = meldingen.flatMap((melding) =>
+    melding.kaartpunt
+      ? [
+          {
+            lat: melding.kaartpunt.lat,
+            lng: melding.kaartpunt.lng,
+            label: `${SOORT_LABEL[melding.soort] ?? melding.soort} · ${
+              melding.plaats || "onbekend"
+            }`,
+          },
+        ]
+      : []
   );
 
   return (
@@ -631,8 +848,20 @@ export function BeheerLijst() {
           {meldingen.length}{" "}
           {meldingen.length === 1 ? "melding" : "meldingen"} (nieuwste eerst,
           max. 200)
+          {zoekTerm ? ` · ${zichtbaar.length} gevonden` : ""}
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <input
+            type="search"
+            value={zoek}
+            onChange={(event) => setZoek(event.target.value)}
+            placeholder="Zoek in meldingen"
+            aria-label="Zoek in meldingen"
+            className="h-10 w-52 rounded-lg border border-line-strong bg-surface px-3 text-sm text-foreground placeholder:text-muted-2 focus:border-accent focus:outline-none"
+          />
+          <button type="button" className={btnGhost} onClick={downloadCsv}>
+            Download CSV
+          </button>
           <button
             type="button"
             className={btnGhost}
@@ -655,18 +884,22 @@ export function BeheerLijst() {
         </p>
       ) : null}
 
-      {meldingen.length === 0 ? (
+      {zichtbaar.length === 0 ? (
         <div className="mt-8 rounded-xl border border-line bg-surface p-8 text-center">
           <p className="font-display text-lg font-semibold tracking-tight">
-            Nog geen meldingen.
+            {meldingen.length === 0
+              ? "Nog geen meldingen."
+              : "Geen meldingen gevonden."}
           </p>
           <p className="mt-2 text-sm text-muted">
-            Nieuwe meldingen verschijnen hier vanzelf, binnen een minuut.
+            {meldingen.length === 0
+              ? "Nieuwe meldingen verschijnen hier vanzelf, binnen een minuut."
+              : "Pas je zoekterm aan om meer te zien."}
           </p>
         </div>
       ) : (
         <div className="mt-6 grid gap-4">
-          {meldingen.map((melding) => (
+          {zichtbaar.map((melding) => (
             <article
               key={melding.id}
               className="rounded-xl border border-line bg-surface p-6"
@@ -683,6 +916,20 @@ export function BeheerLijst() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
+                  <span
+                    className={cn(
+                      "rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em]",
+                      melding.status === "afgehandeld"
+                        ? "border-line-strong text-muted"
+                        : melding.status === "in-behandeling"
+                          ? "border-accent/60 text-accent"
+                          : "border-accent bg-accent-soft"
+                    )}
+                  >
+                    {melding.status === "in-behandeling"
+                      ? "in behandeling"
+                      : melding.status}
+                  </span>
                   {melding.opKaart ? (
                     <span className="rounded-full border border-accent/50 bg-accent-soft px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em]">
                       op de kaart
@@ -747,6 +994,70 @@ export function BeheerLijst() {
                   </a>
                 </p>
               ) : null}
+              <div className="mt-4 grid gap-3 rounded-lg border border-line bg-surface-2 p-4 sm:grid-cols-[200px_1fr]">
+                <div>
+                  <label
+                    htmlFor={`status-${melding.id}`}
+                    className="mb-1.5 block text-xs text-muted-2"
+                  >
+                    Status
+                  </label>
+                  <select
+                    id={`status-${melding.id}`}
+                    className="h-10 w-full rounded-lg border border-line-strong bg-surface px-3 text-sm text-foreground focus:border-accent focus:outline-none"
+                    value={melding.status}
+                    onChange={(event) => zetStatus(melding, event.target.value)}
+                    disabled={statusBezig === melding.id}
+                  >
+                    <option value="nieuw">Nieuw</option>
+                    <option value="in-behandeling">In behandeling</option>
+                    <option value="afgehandeld">Afgehandeld</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor={`notitie-${melding.id}`}
+                    className="mb-1.5 block text-xs text-muted-2"
+                  >
+                    Interne notitie (niet zichtbaar voor de melder)
+                  </label>
+                  <textarea
+                    id={`notitie-${melding.id}`}
+                    className="min-h-20 w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-2 focus:border-accent focus:outline-none"
+                    placeholder="Wat heb je met deze melding gedaan?"
+                    value={notitieConcepten[melding.id] ?? melding.notitie}
+                    onChange={(event) =>
+                      setNotitieConcepten((huidig) => ({
+                        ...huidig,
+                        [melding.id]: event.target.value,
+                      }))
+                    }
+                    maxLength={2000}
+                  />
+                  <div className="mt-2 flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => bewaarNotitie(melding)}
+                      disabled={notitieBezig === melding.id}
+                      className={cn(
+                        btnGhost,
+                        "h-9 px-4 text-xs",
+                        notitieBezig === melding.id && "opacity-60"
+                      )}
+                    >
+                      {notitieBezig === melding.id
+                        ? "Opslaan…"
+                        : "Notitie opslaan"}
+                    </button>
+                    {(notitieConcepten[melding.id] ?? melding.notitie) !==
+                    melding.notitie ? (
+                      <span className="text-xs text-muted-2">
+                        nog niet opgeslagen
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
               <div className="mt-4 flex items-center justify-between">
                 <span className="font-mono text-[11px] text-muted-2">
                   id: {melding.id}
@@ -769,6 +1080,71 @@ export function BeheerLijst() {
           ))}
         </div>
       )}
+
+      {kaartpunten.length > 0 ? (
+        <section
+          aria-label="Meldingen op de kaart"
+          className="mt-10 rounded-xl border border-line bg-surface p-6"
+        >
+          <p className="font-display text-lg font-semibold tracking-tight">
+            Meldingen op de kaart
+          </p>
+          <p className="mt-1 text-sm text-muted">
+            {kaartpunten.length}{" "}
+            {kaartpunten.length === 1 ? "kaartpunt" : "kaartpunten"} van
+            binnengekomen meldingen.
+          </p>
+          <div className="mt-4">
+            <BeheerKaart punten={kaartpunten} />
+          </div>
+        </section>
+      ) : null}
+
+      <section
+        aria-label="Beveiliging"
+        className="mt-10 rounded-xl border border-line bg-surface p-6"
+      >
+        <p className="font-display text-lg font-semibold tracking-tight">
+          Beveiliging
+        </p>
+        <p className="mt-1 max-w-[70ch] text-sm text-muted">
+          Stel hier een eigen beheerwachtwoord in. Het oude standaardwachtwoord
+          blijft daarnaast werken als herstelmogelijkheid. Minimaal 12 tekens.
+        </p>
+        <div className="mt-4 grid max-w-md gap-3">
+          <input
+            type="password"
+            value={pwNieuw}
+            onChange={(event) => setPwNieuw(event.target.value)}
+            placeholder="Nieuw wachtwoord"
+            autoComplete="new-password"
+            className="h-11 w-full rounded-lg border border-line-strong bg-surface px-3.5 text-[15px] text-foreground placeholder:text-muted-2 focus:border-accent focus:outline-none"
+          />
+          <input
+            type="password"
+            value={pwHerhaal}
+            onChange={(event) => setPwHerhaal(event.target.value)}
+            placeholder="Herhaal nieuw wachtwoord"
+            autoComplete="new-password"
+            className="h-11 w-full rounded-lg border border-line-strong bg-surface px-3.5 text-[15px] text-foreground placeholder:text-muted-2 focus:border-accent focus:outline-none"
+          />
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={wijzigWachtwoord}
+              disabled={pwBezig}
+              className={cn(btnGhost, pwBezig && "opacity-60")}
+            >
+              {pwBezig ? "Opslaan…" : "Wachtwoord instellen"}
+            </button>
+            {pwMelding ? (
+              <p aria-live="polite" className="text-sm text-muted">
+                {pwMelding}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

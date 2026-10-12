@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { BeheerLijst } from "@/components/beheer/beheer-lijst";
 
 export const metadata: Metadata = {

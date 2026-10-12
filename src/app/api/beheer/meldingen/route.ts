@@ -1,28 +1,13 @@
 import { NextRequest } from "next/server";
-import { timingSafeEqual } from "crypto";
 import { getAdminDb } from "@/lib/firebase-admin";
+import { heeftToegang } from "@/lib/beheer-auth";
 
 export const maxDuration = 30;
 
-function veiligGelijk(a: string, b: string): boolean {
-  const bufferA = Buffer.from(a);
-  const bufferB = Buffer.from(b);
-  if (bufferA.length !== bufferB.length) return false;
-  return timingSafeEqual(bufferA, bufferB);
-}
-
-function heeftToegang(request: NextRequest): boolean {
-  const verwacht = process.env.ADMIN_TOKEN;
-  if (!verwacht) return false;
-  const meegegeven = request.headers
-    .get("authorization")
-    ?.replace(/^Bearer\s+/i, "");
-  if (!meegegeven) return false;
-  return veiligGelijk(meegegeven, verwacht);
-}
+const STATUSSEN = ["nieuw", "in-behandeling", "afgehandeld"];
 
 export async function GET(request: NextRequest) {
-  if (!heeftToegang(request)) {
+  if (!(await heeftToegang(request))) {
     return Response.json({ fout: "Geen toegang." }, { status: 401 });
   }
 
@@ -71,6 +56,8 @@ export async function GET(request: NextRequest) {
         soortAgent: String(data.soortAgent ?? ""),
         aantalAgenten: String(data.aantalAgenten ?? ""),
         agentBeschrijving: String(data.agentBeschrijving ?? ""),
+        status: String(data.status ?? "nieuw"),
+        notitie: String(data.notitie ?? ""),
         kaartpunt: puntPerMelding.get(document.id) ?? null,
         createdAt:
           typeof data.createdAt?.toDate === "function"
@@ -89,8 +76,49 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export async function PATCH(request: NextRequest) {
+  if (!(await heeftToegang(request))) {
+    return Response.json({ fout: "Geen toegang." }, { status: 401 });
+  }
+
+  let body: { id?: string; status?: string; notitie?: string } = {};
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ fout: "Ongeldige aanvraag." }, { status: 400 });
+  }
+
+  const id = String(body.id ?? "").trim();
+  if (!/^[A-Za-z0-9]{10,30}$/.test(id)) {
+    return Response.json({ fout: "Ongeldig id." }, { status: 400 });
+  }
+
+  const update: Record<string, unknown> = {};
+  if (body.status !== undefined) {
+    const status = String(body.status);
+    if (!STATUSSEN.includes(status)) {
+      return Response.json({ fout: "Onbekende status." }, { status: 400 });
+    }
+    update.status = status;
+  }
+  if (body.notitie !== undefined) {
+    update.notitie = String(body.notitie).trim().slice(0, 2000);
+  }
+  if (Object.keys(update).length === 0) {
+    return Response.json({ fout: "Niets om bij te werken." }, { status: 400 });
+  }
+
+  try {
+    await getAdminDb().collection("meldingen").doc(id).update(update);
+    return Response.json({ ok: true });
+  } catch (fout) {
+    console.error("Melding bijwerken mislukt:", fout);
+    return Response.json({ fout: "Bijwerken mislukt." }, { status: 500 });
+  }
+}
+
 export async function DELETE(request: NextRequest) {
-  if (!heeftToegang(request)) {
+  if (!(await heeftToegang(request))) {
     return Response.json({ fout: "Geen toegang." }, { status: 401 });
   }
 
