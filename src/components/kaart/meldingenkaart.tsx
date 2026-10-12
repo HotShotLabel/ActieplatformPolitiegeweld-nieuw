@@ -106,6 +106,24 @@ const ICOON_GRAF: Icoon = {
     `<path d="${GRAF_STEEN_D}"/><path d="${GRAF_GROND_D}"/><path d="${GRAF_LIJN_D}"/>`,
 };
 
+/* Agent-poppetje: pet met klep, hoofd, lichaam met das en reflectiestrepen.
+   Markeert zaken waarin de agent zelf is vervolgd of veroordeeld. */
+const ICOON_AGENT: Icoon = {
+  viewBox: "0 0 256 256",
+  sw: 14,
+  binnen: () =>
+    `<circle cx="128" cy="78" r="20"/>` +
+    `<path d="M104 56 a24 16 0 0 1 48 0"/>` +
+    `<path d="M104 62 h-14"/>` +
+    `<path d="M92 168 v-50 c0-13 11-24 24-24 h24 c13 0 24 11 24 24 v50"/>` +
+    `<path d="M92 168 h72"/>` +
+    `<path d="M92 124 l-16 34"/>` +
+    `<path d="M164 124 l16 34"/>` +
+    `<path d="M128 112 v22"/>` +
+    `<path d="M108 146 h14"/>` +
+    `<path d="M134 146 h14"/>`,
+};
+
 function tekenIcoon(
   icoon: Icoon,
   kleur: string,
@@ -225,6 +243,7 @@ export function MeldingenKaart() {
   const markersGeweld = useRef<Marker[]>([]);
   const markersAgenten = useRef<Marker[]>([]);
   const markersArchief = useRef<Marker[]>([]);
+  const markersVervolgd = useRef<Marker[]>([]);
   const nieuwsUrls = useRef(new Set<string>());
   const voorzieningen = useRef<Voorzieningen | null>(null);
   const eersteStijlwissel = useRef(true);
@@ -234,6 +253,7 @@ export function MeldingenKaart() {
     geweld: true,
     agenten: true,
     archief: true,
+    vervolgd: true,
     overleden: true,
     nieuws: true,
     politie: true,
@@ -260,6 +280,8 @@ export function MeldingenKaart() {
   const [toonGeweld, setToonGeweld] = useState(true);
   const [toonAgenten, setToonAgenten] = useState(true);
   const [toonArchief, setToonArchief] = useState(true);
+  const [toonVervolgd, setToonVervolgd] = useState(true);
+  const [vervolgdAantal, setVervolgdAantal] = useState<number | null>(null);
   const [toonOverleden, setToonOverleden] = useState(true);
   const [toonNieuws, setToonNieuws] = useState(true);
   const [toonPolitie, setToonPolitie] = useState(true);
@@ -564,6 +586,39 @@ export function MeldingenKaart() {
           setOverledenZonder(
             Array.isArray(data.zonderPlaats) ? data.zonderPlaats : []
           );
+
+          // Agent-poppetjes: zaken waarin de agent zelf vervolgd of
+          // veroordeeld werd; popup vermeldt het incident erbij.
+          const vervolgde = (data.zaken as OverledenZaak[]).filter(
+            (zaak) => zaak.vervolgd === "Ja" || zaak.veroordeeld === "Ja"
+          );
+          setVervolgdAantal(vervolgde.length);
+          markersVervolgd.current = vervolgde.map((zaak) =>
+            new Marker({
+              element: maakBadgeElement(
+                ICOON_AGENT,
+                "#e8eefc",
+                "#2f5bb7",
+                "#1e3a8a",
+                26
+              ),
+            })
+              .setLngLat([zaak.lng + 0.009, zaak.lat + 0.006])
+              .setPopup(
+                new Popup({ offset: 12, maxWidth: "330px" }).setHTML(
+                  `<strong>Agent vervolgd na dit incident</strong><br>` +
+                    `${zaak.naam && zaak.naam !== "Onbekend" ? escapeHtml(zaak.naam) : "Slachtoffer"}${zaak.leeftijd && zaak.leeftijd !== "Onbekend" ? ` (${escapeHtml(zaak.leeftijd)})` : ""} · ` +
+                    `${zaak.datum ? escapeHtml(zaak.datum) : zaak.jaar} · ${escapeHtml(zaak.plaats)}<br>` +
+                    `Vervolgd: ${escapeHtml(zaak.vervolgd)} · Veroordeeld: ${escapeHtml(zaak.veroordeeld)}<br>` +
+                    `${zaak.tekst && zaak.tekst !== "Toedracht onbekend." ? `<span style="opacity:.85">${escapeHtml(zaak.tekst.slice(0, 220))}${zaak.tekst.length > 220 ? "…" : ""}</span><br>` : ""}` +
+                    `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${escapeHtml(zaak.bronLabel)}</a>`
+                )
+              )
+              .addTo(map)
+          );
+          markersVervolgd.current.forEach((marker) => {
+            if (!toonStand.current.vervolgd) marker.remove();
+          });
           return;
         }
         throw new Error("lege lijst");
@@ -572,6 +627,7 @@ export function MeldingenKaart() {
         setOverledenAantal(CAD_ZAKEN.length);
         setOverledenTotaal(CAD_ZAKEN.length);
         setOverledenZonder([]);
+        setVervolgdAantal(0);
       }
     }
     void laadOverleden();
@@ -706,6 +762,7 @@ export function MeldingenKaart() {
       markersGeweld.current = [];
       markersAgenten.current = [];
       markersArchief.current = [];
+      markersVervolgd.current = [];
       markersOverleden.current = [];
       markersNieuws.current = [];
       nieuwsUrls.current.clear();
@@ -756,6 +813,15 @@ export function MeldingenKaart() {
       toonArchief ? marker.addTo(map) : marker.remove()
     );
   }, [toonArchief]);
+
+  useEffect(() => {
+    toonStand.current.vervolgd = toonVervolgd;
+    const map = mapRef.current;
+    if (!map) return;
+    markersVervolgd.current.forEach((marker) =>
+      toonVervolgd ? marker.addTo(map) : marker.remove()
+    );
+  }, [toonVervolgd]);
 
   useEffect(() => {
     toonStand.current.overleden = toonOverleden;
@@ -848,6 +914,10 @@ export function MeldingenKaart() {
         <button type="button" onClick={() => setToonArchief((w) => !w)} aria-pressed={toonArchief} className={chip(toonArchief)}>
           <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#a16207" icoonKleur="#78350f" />
           Archief vóór 2016 ({ARCHIEF_ZAKEN.length})
+        </button>
+        <button type="button" onClick={() => setToonVervolgd((w) => !w)} aria-pressed={toonVervolgd} className={chip(toonVervolgd)}>
+          <IcoonChipBadge icoon={ICOON_AGENT} badgeKleur="#e8eefc" randKleur="#2f5bb7" icoonKleur="#1e3a8a" />
+          Agent vervolgd ({vervolgdAantal ?? "…"})
         </button>
         <button type="button" onClick={() => setToonOverleden((w) => !w)} aria-pressed={toonOverleden} className={chip(toonOverleden)}>
           <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#e5484d" icoonKleur="#c93a3f" />
@@ -986,6 +1056,7 @@ export function MeldingenKaart() {
         rechtbank, hamer = rechterlijke uitspraak, vuist = bekend geweld
         zonder dodelijke afloop, schild = agenten als dader, rode grafsteen =
         overleden na politieoptreden, amber grafsteen = archief vóór 2016,
+        blauw agent-poppetje = agent vervolgd na een dodelijk incident,
         waarschuwingsdriehoek = melding van geweld, krant =
         nieuwsbericht (live nieuws pulseert; alleen berichten waarvan de
         plaats bekend is staan op de kaart). Alleen het huidige jaar (2026)
