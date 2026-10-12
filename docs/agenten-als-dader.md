@@ -75,3 +75,30 @@ in anonieme jaren. Kapellebrug + Spijkenisse (politiecel) + Apeldoorn
 **Bugs gefixt:** stapelende markers in dezelfde stad (Milly/Cardoze in
 Dordrecht; archief Den Haag 4x, Amsterdam 5x; nieuws). Alle lagen krijgen nu
 een kleine spreiding zodat elke zaak apart aanklikbaar is.
+
+## Derde speurronde 12-10-2026 (alleen lokaal gedekt of zonder dekking)
+
+Via rechtspraak.nl (full-text, ~40 zoektermen) en regionale omroepen zijn
+negen nieuwe zaken op de kaart gezet en veertien zaken in de overige lijst,
+waaronder zaken die nooit verder kwamen dan de rechtbank en dus nooit
+landelijk in het nieuws waren:
+
+Kaart (nieuw): Nijverdal 2026 (RBOVE:2026:3504, nep-bekeuringen, 240 uur
+taakstraf), Hattem 2026 (RBGEL:2026:7428, meineed en valse pv's, 12 mnd),
+Hengelo 2022 (RBOVE:2022:835, info voor drugs, 2 jr voorwaardelijk), Tilburg
+2018 (RBZWB:2018:6333, lekken, 70 dagen), Zwolle 2022 (RBOVE:2022:2065,
+30 mnd), Amsterdam 2025 (RBAMS:2025:7434, hoofdagent, 240 uur), Breda 2025
+(RBZWB:2025:2880 reeks, vier agenten, meineed/onjuiste machtigingen),
+Eindhoven 2022 (GHSHE:2022:517, wapenstok 13x, voorwaardelijk 4 mnd),
+Vianen 2020 (corrupte motoragent, 4 jaar, RTV Utrecht).
+
+Overige lijst (nieuw, stil): RBMNE:2025:168, RBNHO:2022:9498, GHDHA:2022:1063,
+RBAMS:2021:5836, RBOVE:2023:2774, GHDHA:2026:1222, GHDHA:2026:2825,
+GHDHA:2024:758 (+HR:2026:675), GHDHA:2022:2037, GHARL:2020:7901,
+OGEABES:2025:139, OGEABES:2024:142, Eindhoven-brigadier 2016 (Omroep
+Brabant), Enschede-stalker 2020 (RTV Oost).
+
+Nog niet doorzocht: DPG/Mediahuis-krantenarchieven (De Stentor, Tubantia,
+BN DeStem, PZC, Dagblad van het Noorden, Leeuwarder Courant); daar kunnen
+extra lokaal-gedekte zaken zitten. Eén zaak met onbekende afloop (Brabantse
+agent 2016, aangehouden voor lekken/witwassen) is bewust niet geplaatst.
