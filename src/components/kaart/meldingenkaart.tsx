@@ -944,7 +944,7 @@ export function MeldingenKaart() {
         </button>
         <button type="button" onClick={() => setToonOverleden((w) => !w)} aria-pressed={toonOverleden} className={chip(toonOverleden)}>
           <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#e5484d" icoonKleur="#c93a3f" />
-          Overleden ({overledenAantal ?? "…"})
+          Overleden ({overledenAantal === null ? "…" : overledenAantal + ARCHIEF_ZAKEN.length + OFFICER_DODEN.length})
         </button>
         <button type="button" onClick={() => setToonNieuws((w) => !w)} aria-pressed={toonNieuws} className={chip(toonNieuws)}>
           <IcoonChipBadge icoon={ICOON_NIEUWS} badgeKleur="#f4f5f6" randKleur="#07090c" icoonKleur="#07090c" />
