@@ -121,3 +121,20 @@ de eerder gevonden Woo-besluiten.
 **Conclusie:** het oude Wob-document "Overleden personen in politiecellen
 2004-2016" is van politie.nl verdwenen en niet in het webarchief te vinden
 (alleen redirect-opnames), maar de INHOUD leeft voort in bovenstaande bronnen.
+
+## Update 12-10-2026 (3): ALLE 197 levende documenten opgehaald
+
+De volledige oogst is gedownload (in 7 blokken via de browsermethode):
+- **178 PDF's, circa 460 MB**, in `docs/woo-bronnen/` (buiten git)
+- Inclusief het volledige Rotterdamse dossier (2025/11274, ~140 stukken), de
+  geweldsaanwendingen-politieambtenaren-set (2023, ~20 stukken), de Rotterdamse
+  rechtbank-set (7 stukken), Landelijke Eenheid politieoptreden 9/10-02-2022 (4
+  stukken), en de Limburg/Oost-Nederland/Zeeland-dossiers
+- Overgeslagen (te groot voor de batch, >15 MB): 5 clouddiensten-stukken
+  (18-19 MB) + 1 stuk van 15 MB — desgewenst los op te halen
+- De 21 oude-pad-PDF's (oude-documenten/woo-oud) zijn dood op de server
+  (linkrot); het webarchief heeft daar alleen redirect-opnames van
+- Controle: alle bewaarde bestanden beginnen met %PDF
+
+Herhaalbaar: blokgewijs downloaden via dezelfde methode; URL-lijst is
+reproduceerbaar uit de 15 eenheidspagina's.
