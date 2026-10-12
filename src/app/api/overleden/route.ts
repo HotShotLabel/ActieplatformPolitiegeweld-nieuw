@@ -2,6 +2,7 @@
    Alt Delete dagelijks automatisch op (met stadscoördinaten uit onze
    plaatsentabel) zodat de kaartlaag vanzelf actueel blijft. */
 
+import { connection } from "next/server";
 import { NL_PLAATSEN } from "@/lib/nl-plaatsen";
 
 export const maxDuration = 60;
@@ -37,6 +38,9 @@ export interface OverledenZaak {
 }
 
 export async function GET() {
+  // Per verzoek uitvoeren (niet bij de build inbakken); de CAD-fetch zelf
+  // blijft een dag gecached, de CDN een uur.
+  await connection();
   try {
     const antwoord = await fetch(BRON, {
       headers: { "User-Agent": UA },
@@ -126,7 +130,7 @@ export async function GET() {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=86400",
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
         },
       }
     );
