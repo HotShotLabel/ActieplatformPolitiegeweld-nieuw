@@ -140,6 +140,21 @@ export function Tools() {
           </Link>
         </Reveal>
 
+        <Reveal delay={0.22}>
+          <Link href="/beelden" className={cellClass}>
+            <div>
+              <h3 className="font-display text-2xl font-semibold tracking-tight">
+                Beelden
+              </h3>
+              <p className="mt-3 leading-relaxed text-muted">
+                Verzamelde video&apos;s van politiegeweld in Nederland, met de
+                bron erbij. Tik er zelf ook een aan.
+              </p>
+            </div>
+            <span className={cellLinkClass}>Bekijk de beelden →</span>
+          </Link>
+        </Reveal>
+
         <Reveal delay={0.25} className="md:col-span-2">
           <Link href="/meedoen" className={cellClass}>
             <div>
