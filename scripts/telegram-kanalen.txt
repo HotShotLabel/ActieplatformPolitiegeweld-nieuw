@@ -1,11 +1,12 @@
 # Telegram-kanalen voor de oogst (één per regel; # = commentaar).
 # Alleen PUBLIEKE kanalen met web-preview (t.me/s/<naam>).
-# Onderzocht en geopend op 15-10-2026:
-#   politiegeweldenintimidatie - "politiegeweld en Intimidatie" (921 leden,
-#     522 video's). Deelt video's van politie-optreden; let op: de politieke
-#     signatuur van het kanaal is rechts/anti-establishment, dus de video's
-#     gaan altijd door onze eigen beoordeling (verborgen wachtrij).
-#   hetkantelpunt - groot videokanaal (8.260 leden); veel ruis, filter pakt
-#     alleen politie/geweld-berichten eruit.
-politiegeweldenintimidatie
-hetkantelpunt
+#
+# Getest 15-10-2026: onderstaande twee kanalen bleken vooral politiek/
+# anti-establishment nieuws te delen, geen politiegeweld-beelden; alle 25
+# opgehaalde berichten zijn door de eigen beoordeling afgewezen en opgeruimd.
+# Daarom staan ze UIT. De motor werkt; we zoeken nog kanalen die wél
+# incidentbeelden delen. Weet jij een kanaalnaam? Zet hem hieronder neer.
+#
+# politiegeweldenintimidatie
+# hetkantelpunt
+
