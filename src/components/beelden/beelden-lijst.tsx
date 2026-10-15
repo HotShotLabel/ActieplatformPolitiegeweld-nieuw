@@ -14,7 +14,7 @@ function Speler({ beeld }: { beeld: Beeld }) {
           src={embed.src}
           title={beeld.titel}
           loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; compute-pressure"
           allowFullScreen
           className="h-full w-full"
         />
