@@ -135,6 +135,16 @@ export function BeheerLijst() {
       const antwoord = await fetch("/api/beheer/meldingen", {
         headers: { Authorization: `Bearer ${token}` },
       });
+      if (antwoord.status === 401) {
+        setToken("");
+        setStatus("login");
+        try {
+          sessionStorage.removeItem("beheer-token");
+        } catch {
+          // niets
+        }
+        return;
+      }
       if (!antwoord.ok) return;
       const data = (await antwoord.json()) as { meldingen: BeheerMelding[] };
       setMeldingen(data.meldingen);
@@ -145,7 +155,9 @@ export function BeheerLijst() {
 
   useEffect(() => {
     if (status !== "klaar") return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     laadLive();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     verversMeldingenStil();
     const timerLive = window.setInterval(laadLive, 15 * 1000);
     const timerMeldingen = window.setInterval(
@@ -167,7 +179,9 @@ export function BeheerLijst() {
       bewaard = "";
     }
     if (!bewaard) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setToken(bewaard);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void laadMeldingen(bewaard);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -236,7 +250,10 @@ export function BeheerLijst() {
     try {
       const tokenAntwoord = await fetch("/api/live/youtube-token", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
         body: JSON.stringify({ id: uitzending.id }),
       });
       const tokenData = await tokenAntwoord.json();
@@ -254,7 +271,10 @@ export function BeheerLijst() {
       if (!videoId) throw new Error("Geen video-id van YouTube.");
       const klaar = await fetch("/api/live/youtube-klaar", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
         body: JSON.stringify({ id: uitzending.id, youtubeId: videoId }),
       });
       if (!klaar.ok) throw new Error("Opslaan van de YouTube-status mislukte.");
@@ -865,7 +885,7 @@ export function BeheerLijst() {
           <button
             type="button"
             className={btnGhost}
-            onClick={() => laadMeldingen(token)}
+            onClick={() => void verversMeldingenStil()}
           >
             Verversen
           </button>

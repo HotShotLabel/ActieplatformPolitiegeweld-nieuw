@@ -16,7 +16,10 @@ export function BeheerKaart({ punten }: { punten: BeheerPunt[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const puntenRef = useRef(punten);
-  puntenRef.current = punten;
+
+  useEffect(() => {
+    puntenRef.current = punten;
+  }, [punten]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;

@@ -153,7 +153,10 @@ export async function POST(request: NextRequest) {
 
     if (opKaart && lat !== undefined && lng !== undefined) {
       const puntRef = db.collection("kaartpunten").doc();
-      const maand = (datum || new Date().toISOString().slice(0, 10)).slice(0, 7);
+      const vandaagNl = new Intl.DateTimeFormat("sv-SE", {
+        timeZone: "Europe/Amsterdam",
+      }).format(new Date());
+      const maand = (datum || vandaagNl).slice(0, 7);
       batch.set(puntRef, {
         lat: rondeCoordinaat(lat),
         lng: rondeCoordinaat(lng),

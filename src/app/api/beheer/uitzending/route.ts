@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const sleutel = String(doc.data()?.sleutel ?? "");
     const url = String(doc.data()?.url ?? "");
     if (sleutel) {
-      await verwijderObject(sleutel).catch(() => {});
+      await verwijderObject(sleutel);
     } else if (url) {
       await verwijderBestand(url);
     }

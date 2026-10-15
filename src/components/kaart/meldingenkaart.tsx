@@ -238,6 +238,10 @@ function IcoonChipBadge({
   );
 }
 
+function veiligeUrl(waarde: string): string {
+  return /^https:\/\//i.test(waarde) ? waarde : "";
+}
+
 function escapeHtml(tekst: string) {
   return tekst
     .replace(/&/g, "&amp;")
@@ -477,10 +481,10 @@ export function MeldingenKaart() {
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
-            `<strong>${zaak.titel}</strong><br>` +
-              `${zaak.jaar} · ${zaak.plaats} · rechtszaak<br>` +
-              `<em>${zaak.uitslag}</em><br>` +
-              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">${zaak.bronLabel}</a>`
+            `<strong>${escapeHtml(zaak.titel)}</strong><br>` +
+              `${escapeHtml(String(zaak.jaar))} · ${escapeHtml(zaak.plaats)} · rechtszaak<br>` +
+              `<em>${escapeHtml(zaak.uitslag)}</em><br>` +
+              `<a href="${veiligeUrl(zaak.bronUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(zaak.bronLabel)}</a>`
           )
         )
         .addTo(map)
@@ -624,7 +628,8 @@ export function MeldingenKaart() {
       bronUrl: string;
       bronLabel: string;
     }
-    const gloeiJaren = ["2025", "2026"];
+    const ditJaar = new Date().getFullYear();
+    const gloeiJaren = [String(ditJaar - 1), String(ditJaar)];
     function maakOverledenMarker(zaak: OverledenZaak) {
       const element = maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28);
       element.classList.add("marker-in");
@@ -633,16 +638,16 @@ export function MeldingenKaart() {
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
           new Popup({ offset: 12, maxWidth: "320px" }).setHTML(
-            `${zaak.foto ? `<img src="${zaak.foto}" alt="" loading="lazy" style="float:right;margin:0 0 8px 10px;width:64px;height:64px;border-radius:10px;object-fit:cover" onerror="this.style.display='none'" />` : ""}` +
+            `${zaak.foto && veiligeUrl(zaak.foto) ? `<img src="${veiligeUrl(zaak.foto)}" alt="" loading="lazy" style="float:right;margin:0 0 8px 10px;width:64px;height:64px;border-radius:10px;object-fit:cover" onerror="this.style.display='none'" />` : ""}` +
               `<strong>${zaak.naam && zaak.naam !== "Onbekend" ? escapeHtml(zaak.naam) : "Overleden na politieoptreden"}${zaak.leeftijd && zaak.leeftijd !== "Onbekend" ? ` (${escapeHtml(zaak.leeftijd)})` : ""}</strong><br>` +
-              `${zaak.datum ? escapeHtml(zaak.datum) + " · " : zaak.jaar + " · "}${zaak.plaats}<br>` +
-              `Politiegeweld: ${zaak.geweld} · Doodgeschoten: ${zaak.geschoten}<br>` +
-              `${zaak.eenheid ? "Eenheid: " + zaak.eenheid + "<br>" : ""}` +
-              `${zaak.vervolgd && zaak.vervolgd !== "Onbekend" ? "Agent vervolgd: " + zaak.vervolgd + "<br>" : ""}` +
-              `${zaak.veroordeeld && zaak.veroordeeld !== "Onbekend" ? "Agent veroordeeld: " + zaak.veroordeeld + "<br>" : ""}` +
-              `${zaak.status && zaak.status !== "Onbekend" ? zaak.status + "<br>" : ""}` +
+              `${zaak.datum ? escapeHtml(zaak.datum) + " · " : escapeHtml(String(zaak.jaar)) + " · "}${escapeHtml(zaak.plaats)}<br>` +
+              `Politiegeweld: ${escapeHtml(zaak.geweld)} · Doodgeschoten: ${escapeHtml(zaak.geschoten)}<br>` +
+              `${zaak.eenheid ? "Eenheid: " + escapeHtml(zaak.eenheid) + "<br>" : ""}` +
+              `${zaak.vervolgd && zaak.vervolgd !== "Onbekend" ? "Agent vervolgd: " + escapeHtml(zaak.vervolgd) + "<br>" : ""}` +
+              `${zaak.veroordeeld && zaak.veroordeeld !== "Onbekend" ? "Agent veroordeeld: " + escapeHtml(zaak.veroordeeld) + "<br>" : ""}` +
+              `${zaak.status && zaak.status !== "Onbekend" ? escapeHtml(zaak.status) + "<br>" : ""}` +
               `${zaak.tekst && zaak.tekst !== "Toedracht onbekend." ? `<span style="opacity:.85">${escapeHtml(zaak.tekst.slice(0, 240))}${zaak.tekst.length > 240 ? "…" : ""}</span><br>` : ""}` +
-              `<a href="${zaak.bronUrl}" target="_blank" rel="noopener noreferrer">Bron: ${zaak.bronLabel}</a>`
+              `${veiligeUrl(zaak.bronUrl) ? `<a href="${veiligeUrl(zaak.bronUrl)}" target="_blank" rel="noopener noreferrer">Bron: ${escapeHtml(zaak.bronLabel)}</a>` : `Bron: ${escapeHtml(zaak.bronLabel)}`}`
           )
         );
       if (toonStand.current.overleden) marker.addTo(map);
@@ -759,10 +764,10 @@ export function MeldingenKaart() {
             "#07090c"
           );
           element.classList.add("marker-in");
-          // Alleen berichten uit 2025 en 2026 gloeien.
+          // Alleen berichten uit dit jaar en vorig jaar gloeien.
           const gloeit =
-            bericht.datum.startsWith("2025") ||
-            bericht.datum.startsWith("2026");
+            bericht.datum.startsWith(String(new Date().getFullYear())) ||
+            bericht.datum.startsWith(String(new Date().getFullYear() - 1));
           if (gloeit) element.classList.add("marker-brand");
           if (bericht.live) element.classList.add("marker-brand-live");
           let platform = "";
@@ -904,6 +909,14 @@ export function MeldingenKaart() {
       toonVervolgd ? marker.addTo(map) : marker.remove()
     );
   }, [toonVervolgd]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    markersAgenten.current.forEach((marker) =>
+      toonAgenten ? marker.addTo(map) : marker.remove()
+    );
+  }, [toonAgenten]);
 
   useEffect(() => {
     toonStand.current.overleden = toonOverleden;
@@ -1128,7 +1141,7 @@ export function MeldingenKaart() {
       <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-2">
         <span>nieuws {nieuwsGepind ?? "…"}</span>
         <span>rechtszaken {OPENBARE_ZAKEN.length}</span>
-        <span>{overledenAantal === null ? "overleden …" : `overleden ${overledenAantal + ARCHIEF_ZAKEN.length + OFFICER_DODEN.length} (incl. archief en agent-dodingen)`}</span>
+        <span>{overledenAantal === null ? "overleden …" : `overleden ${overledenAantal + ARCHIEF_ZAKEN.length + OFFICER_DODEN.length + AANVULLINGEN_DODEN.length} (incl. archief en agent-dodingen)`}</span>
         <span>politiebureaus {aantallen ? aantallen.politie : "…"}</span>
         <span>rechtbanken {aantallen ? aantallen.rechtbank : "…"}</span>
         <span>meldingen {punten === null ? "…" : aantalMeldingen}</span>
@@ -1138,14 +1151,14 @@ export function MeldingenKaart() {
         Elk punt heeft een eigen icoon: politieauto = politiebureau, zuilen =
         rechtbank, hamer = rechterlijke uitspraak, vuist = bekend geweld
         zonder dodelijke afloop, schild = agenten als dader (waaronder
-        dodelijke familiedrama's door agenten), rode grafsteen = overleden na
+        dodelijke familiedrama&apos;s door agenten), rode grafsteen = overleden na
         politieoptreden (2016-nu), amber grafsteen = archief vóór 2016 (samen
         onder de knop Overleden), blauw agent-poppetje = agent vervolgd na een
         dodelijk incident,
         waarschuwingsdriehoek = melding van geweld, krant =
         nieuwsbericht (live nieuws pulseert; alleen berichten waarvan de
-        plaats bekend is staan op de kaart). Alleen het huidige jaar (2026)
-        gloeit. Nieuwe berichten verschijnen
+        plaats bekend is staan op de kaart).         Alleen dit jaar en het jaar ervoor
+        gloeien. Nieuwe berichten verschijnen
         automatisch op de kaart.
         Openbare zaken op stadsniveau; meldingen afgerond op ongeveer een
         kilometer.

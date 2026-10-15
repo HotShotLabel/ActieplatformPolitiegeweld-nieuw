@@ -2,8 +2,9 @@
    daarna verwijdert /api/live hem automatisch. */
 
 import { getAdminDb } from "@/lib/firebase-admin";
-import { bestaatObject, r2Ingesteld, sleutelGeldig } from "@/lib/r2";
+import { bestaatObject, r2Ingesteld, sleutelGeldig, verwijderObject } from "@/lib/r2";
 import { haalYouTubeToken, youtubeIngesteld } from "@/lib/youtube";
+import { heeftToegang } from "@/lib/beheer-auth";
 
 export const maxDuration = 30;
 
@@ -18,6 +19,9 @@ function magRegistreren(): boolean {
 }
 
 export async function POST(request: Request) {
+  if (!(await heeftToegang(request))) {
+    return Response.json({ fout: "Geen toegang." }, { status: 401 });
+  }
   if (!magRegistreren()) {
     return Response.json(
       { fout: "Te veel registraties. Probeer het later opnieuw." },
@@ -52,8 +56,12 @@ export async function POST(request: Request) {
       { status: 409 }
     );
   }
-  const grootteMb =
-    Number(body.grootteMb ?? 0) || Math.round((kop.grootte / (1024 * 1024)) * 10) / 10;
+  const capBytes = 1500 * 1024 * 1024; // maximaal 1,5 GB per opname
+  if (kop.grootte > capBytes) {
+    await verwijderObject(sleutel).catch(() => {});
+    return Response.json({ fout: "De opname is te groot." }, { status: 413 });
+  }
+  const grootteMb = Math.round((kop.grootte / (1024 * 1024)) * 10) / 10;
 
   try {
     const db = getAdminDb();

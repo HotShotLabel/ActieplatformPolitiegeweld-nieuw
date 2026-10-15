@@ -385,5 +385,11 @@ const CURATED: Uitspraak[] = [
 ];
 
 /* Samengevoegd: curated (eigen samenvatting) + bulk (officiële
-   inhoudsindicatie), zie scripts/uitspraken-oogst.py. */
-export const UITSPRAKEN: Uitspraak[] = [...CURATED, ...UITSPRAKEN_BULK];
+   inhoudsindicatie), zie scripts/uitspraken-oogst.py. Dubbelen op ECLI
+   worden eruit gefilterd. */
+const samengevoegd: Uitspraak[] = [...CURATED, ...UITSPRAKEN_BULK];
+export const UITSPRAKEN: Uitspraak[] = samengevoegd.filter(
+  (uitspraak, index) =>
+    samengevoegd.findIndex((andere) => andere.ecli === uitspraak.ecli) ===
+    index
+);

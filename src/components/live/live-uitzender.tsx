@@ -58,6 +58,11 @@ export function LiveUitzender() {
     "" | "bezig" | "klaar" | "mislukt"
   >("");
   const [youtubeVideoId, setYoutubeVideoId] = useState("");
+  const [uitzendToken, setUitzendToken] = useState("");
+  const [wachtwoordInvoer, setWachtwoordInvoer] = useState("");
+  const [gateFout, setGateFout] = useState("");
+  const [gateBezig, setGateBezig] = useState(false);
+  const [heeftOpname, setHeeftOpname] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -75,6 +80,16 @@ export function LiveUitzender() {
   const startTijdRef = useRef(0);
   const faseRef = useRef<Fase>("klaar");
   const wakeLockRef = useRef<{ release: () => Promise<void> } | null>(null);
+
+  useEffect(() => {
+    try {
+      const bewaard = sessionStorage.getItem("uitzend-token") ?? "";
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (bewaard) setUitzendToken(bewaard);
+    } catch {
+      // niets
+    }
+  }, []);
 
   const zetFase = useCallback((nieuw: Fase) => {
     faseRef.current = nieuw;
@@ -196,13 +211,17 @@ export function LiveUitzender() {
       zetFase("uploaden");
       setUploadPct(0);
       blobRef.current = blob;
+      setHeeftOpname(true);
       const extensie = opnameTypeRef.current === "video/mp4" ? "mp4" : "webm";
       try {
         // Tijdelijke uploadlink van onze server; het bestand gaat als
         // ondertekend formulier rechtstreeks naar de opslag (Cloudflare R2).
         const start = await fetch("/api/live/upload", {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${uitzendToken}`,
+          },
           body: JSON.stringify({ extensie }),
         });
         const startData = await start.json();
@@ -240,7 +259,10 @@ export function LiveUitzender() {
         for (let poging = 0; poging < 6; poging += 1) {
           const registratie = await fetch("/api/live/registreer", {
             method: "POST",
-            headers: { "content-type": "application/json" },
+            headers: {
+              "content-type": "application/json",
+              Authorization: `Bearer ${uitzendToken}`,
+            },
             body: JSON.stringify({
               sleutel: String(startData.sleutel),
               titel: titel || "Live-uitzending",
@@ -275,7 +297,10 @@ export function LiveUitzender() {
             if (!videoId) throw new Error("geen video-id");
             await fetch("/api/live/youtube-klaar", {
               method: "POST",
-              headers: { "content-type": "application/json" },
+              headers: {
+                "content-type": "application/json",
+                Authorization: `Bearer ${uitzendToken}`,
+              },
               body: JSON.stringify({
                 id: opnameIdRef.current,
                 youtubeId: videoId,
@@ -296,7 +321,7 @@ export function LiveUitzender() {
         zetFase("fout");
       }
     },
-    [titel, zetFase]
+    [titel, uitzendToken, zetFase]
   );
 
   const naarYouTube = useCallback(async () => {
@@ -307,7 +332,10 @@ export function LiveUitzender() {
     try {
       const antwoord = await fetch("/api/live/youtube-token", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${uitzendToken}`,
+        },
         body: JSON.stringify({ id }),
       });
       const data = await antwoord.json();
@@ -322,7 +350,10 @@ export function LiveUitzender() {
       if (!videoId) throw new Error("geen video-id");
       await fetch("/api/live/youtube-klaar", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${uitzendToken}`,
+        },
         body: JSON.stringify({ id, youtubeId: videoId }),
       });
       setYoutubeVideoId(videoId);
@@ -331,7 +362,7 @@ export function LiveUitzender() {
       console.error("youtube-opnieuw:", fout);
       setYoutubeStand("mislukt");
     }
-  }, [titel]);
+  }, [titel, uitzendToken]);
 
   const stop = useCallback(() => {
     if (faseRef.current !== "live") return;
@@ -407,10 +438,21 @@ export function LiveUitzender() {
       // 2. Toegangsbewijs van de server (één uitzender tegelijk)
       const tokenAntwoord = await fetch("/api/live/token", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${uitzendToken}`,
+        },
         body: JSON.stringify({ rol: "uitzender", naam, titel }),
       });
       const tokenData = await tokenAntwoord.json();
+      if (tokenAntwoord.status === 401) {
+        try {
+          sessionStorage.removeItem("uitzend-token");
+        } catch {
+          // niets
+        }
+        setUitzendToken("");
+      }
       if (!tokenAntwoord.ok) {
         throw new Error(tokenData.fout ?? "De uitzending kon niet starten.");
       }
@@ -548,10 +590,86 @@ export function LiveUitzender() {
       );
       zetFase("fout");
     }
-  }, [allesStoppen, kiesMime, naam, stop, titel, verwerkData, zetFase]);
+  }, [allesStoppen, kiesMime, naam, stop, titel, uitzendToken, verwerkData, zetFase]);
+
+  const ontgrendel = useCallback(
+    async (gebeurtenis: React.FormEvent) => {
+      gebeurtenis.preventDefault();
+      const waarde = wachtwoordInvoer.trim();
+      if (!waarde || gateBezig) return;
+      setGateBezig(true);
+      setGateFout("");
+      try {
+        const controle = await fetch("/api/beheer/meldingen", {
+          headers: { Authorization: `Bearer ${waarde}` },
+        });
+        if (controle.status === 401) {
+          setGateFout("Onjuist wachtwoord.");
+          return;
+        }
+        if (!controle.ok) {
+          setGateFout("Controle mislukte. Probeer het opnieuw.");
+          return;
+        }
+        setUitzendToken(waarde);
+        setWachtwoordInvoer("");
+        try {
+          sessionStorage.setItem("uitzend-token", waarde);
+        } catch {
+          // niets
+        }
+      } catch {
+        setGateFout("Controle mislukte. Probeer het opnieuw.");
+      } finally {
+        setGateBezig(false);
+      }
+    },
+    [gateBezig, wachtwoordInvoer]
+  );
 
   const minuten = Math.floor(seconden / 60);
   const restSeconden = seconden % 60;
+
+  if (!uitzendToken) {
+    return (
+      <div className="rounded-xl border border-line bg-surface p-7 md:p-9">
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+          Alleen voor de beheerder
+        </p>
+        <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight">
+          Uitzenden ontgrendelen
+        </h2>
+        <p className="mt-3 max-w-[56ch] text-sm leading-relaxed text-muted">
+          Vul het beheerderswachtwoord in om te kunnen uitzenden. Zo kan
+          niemand anders de uitzending starten of kapen.
+        </p>
+        <form className="mt-6 grid max-w-sm gap-3" onSubmit={ontgrendel}>
+          <input
+            type="password"
+            value={wachtwoordInvoer}
+            onChange={(gebeurtenis) =>
+              setWachtwoordInvoer(gebeurtenis.target.value)
+            }
+            placeholder="Beheerderswachtwoord"
+            autoComplete="current-password"
+            className="h-11 w-full rounded-lg border border-line-strong bg-surface px-3.5 text-[15px] text-foreground placeholder:text-muted-2 focus:border-accent focus:outline-none"
+          />
+          <button
+            type="submit"
+            className={btnPrimary}
+            disabled={gateBezig || !wachtwoordInvoer.trim()}
+          >
+            {gateBezig ? "Controleren…" : "Ontgrendelen"}
+          </button>
+          {gateFout ? (
+            <p aria-live="polite" className="text-sm text-accent">
+              {gateFout}
+            </p>
+          ) : null}
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -720,7 +838,7 @@ export function LiveUitzender() {
         </div>
       )}
 
-      {fase === "fout" && blobRef.current && (
+      {fase === "fout" && heeftOpname && (
         <button
           type="button"
           onClick={() => {

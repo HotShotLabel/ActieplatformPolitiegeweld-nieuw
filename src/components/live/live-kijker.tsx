@@ -37,6 +37,7 @@ export function LiveKijker({
   // Naam onthouden tussen bezoeken.
   useEffect(() => {
     try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNaam(window.localStorage.getItem("live-naam") ?? "");
     } catch {
       setNaam("");
@@ -66,7 +67,7 @@ export function LiveKijker({
   }, []);
 
   const verwerkData = useCallback(
-    (payload: Uint8Array) => {
+    (payload: Uint8Array, afzender: string) => {
       try {
         const data = JSON.parse(new TextDecoder().decode(payload));
         if (data?.soort === "chat" && typeof data.tekst === "string") {
@@ -80,7 +81,10 @@ export function LiveKijker({
           ]);
         } else if (data?.soort === "hart") {
           voegHartToe();
-        } else if (data?.soort === "einde") {
+        } else if (
+          data?.soort === "einde" &&
+          afzender.startsWith("uitzender")
+        ) {
           setAfgelopen(true);
           kamerRef.current?.disconnect().catch(() => {});
           onEinde();
@@ -144,8 +148,8 @@ export function LiveKijker({
           });
         }
       });
-      kamer.on(RoomEvent.DataReceived, (payload: Uint8Array) =>
-        verwerkData(payload)
+      kamer.on(RoomEvent.DataReceived, (payload: Uint8Array, deelnemer) =>
+        verwerkData(payload, deelnemer?.identity ?? "")
       );
       kamer.on(RoomEvent.Disconnected, () => onEinde());
       await kamer.connect(data.url, data.token);
@@ -170,8 +174,8 @@ export function LiveKijker({
           De uitzending is afgelopen
         </h2>
         <p className="mt-3 max-w-[58ch] text-sm leading-relaxed text-muted">
-          Dank voor het kijken. De opname verschijnt zo bij "Om terug te
-          kijken" en blijft 30 dagen online.
+          Dank voor het kijken. De opname verschijnt zo bij
+          &quot;Om terug te kijken&quot; en blijft 30 dagen online.
         </p>
       </div>
     );

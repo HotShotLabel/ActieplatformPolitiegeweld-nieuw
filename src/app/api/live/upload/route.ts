@@ -3,6 +3,7 @@
    opslag, niet via onze server. */
 
 import { maakSleutel, maakUploadUrl, r2Ingesteld } from "@/lib/r2";
+import { heeftToegang } from "@/lib/beheer-auth";
 
 export const maxDuration = 30;
 
@@ -12,6 +13,9 @@ const TOEGESTANE_TYPES: Record<string, string> = {
 };
 
 export async function POST(request: Request) {
+  if (!(await heeftToegang(request))) {
+    return Response.json({ fout: "Geen toegang." }, { status: 401 });
+  }
   if (!r2Ingesteld()) {
     return Response.json(
       { fout: "De opslag is nog niet ingesteld." },

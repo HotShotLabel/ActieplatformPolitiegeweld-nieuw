@@ -3,7 +3,10 @@
 
 Wat het doet:
   1. Brandt het platform-logo in de video (rechtsonder) en schaalt naar 720p.
-  2. Zet de opname op de publieke opslag (Vercel Blob).
+  2. LET OP: dit script is verouderd. De site gebruikt nu Cloudflare R2 met
+     ondertekende uploadlinks via /api/live/upload en /api/live/registreer
+     (met het beheerderswachtwoord). Upload via het formulier op /live/start,
+     of werk dit script bij naar de R2-flow vóór gebruik.
   3. Registreert hem 30 dagen in de database; daarna verwijdert de site
      hem automatisch (document en bestand).
 

@@ -32,7 +32,7 @@ pnpm check      # typecheck + lint + build
 
 Fase 1 klaar: nieuwe basis en homepage.
 Fase 2 klaar: echt meldformulier met opslag (Firebase Firestore, servers in
-de EU) en een eigen meldingenkaart (Leaflet, vrije kaarttegels).
+de EU) en een eigen meldingenkaart (MapLibre GL, vrije kaarttegels).
 Fase 3 klaar: vraagbaak met een gratis AI-model (Google Gemini, gratis
 tier). De sleutel staat als `GEMINI_API_KEY` in Vercel (alle omgevingen) en
 lokaal in `.env.local`; die twee bestanden zijn geen onderdeel van git. De
@@ -48,11 +48,11 @@ Wetboek van Strafvordering (art. 12-12l), Wet open overheid (art. 4.1 en
 4.4), politie.nl/Uitvoeringsregeling klachtbehandeling en de Nationale
 ombudsman. Zie `src/lib/modelbrieven.ts`.
 
-Fase 4b klaar: /uitspraken met een doorzoekbare databank van 175 uitspraken
+Fase 4b klaar: /uitspraken met een doorzoekbare databank van 259 uitspraken
 over politiebetrokkenheid, in beide richtingen: politie als verdachte
 (agent vervolgd, beklag artikel 12 Sv, civiele zaken) en politie als
-slachtoffer (geweld tegen politie). De curated kern (15 uitspraken met
-eigen samenvatting) staat in `src/lib/uitspraken.ts`; de bulk (160
+slachtoffer (geweld tegen politie). De curated kern (29 uitspraken met
+eigen samenvatting) staat in `src/lib/uitspraken.ts`; de bulk (230
 uitspraken met de officiële inhoudsindicatie) wordt gegenereerd door
 `scripts/uitspraken-oogst.py` in `src/lib/uitspraken-bulk.ts`.
 

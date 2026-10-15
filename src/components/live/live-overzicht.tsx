@@ -98,6 +98,7 @@ export function LiveOverzicht() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     laad();
     const timer = window.setInterval(laad, 20 * 1000);
     return () => window.clearInterval(timer);

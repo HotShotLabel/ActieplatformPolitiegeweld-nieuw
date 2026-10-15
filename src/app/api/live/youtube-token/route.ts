@@ -3,6 +3,7 @@
 
 import { getAdminDb } from "@/lib/firebase-admin";
 import { haalYouTubeToken, youtubeIngesteld } from "@/lib/youtube";
+import { heeftToegang } from "@/lib/beheer-auth";
 
 export const maxDuration = 30;
 
@@ -17,6 +18,9 @@ function mag(): boolean {
 }
 
 export async function POST(request: Request) {
+  if (!(await heeftToegang(request))) {
+    return Response.json({ fout: "Geen toegang." }, { status: 401 });
+  }
   if (!youtubeIngesteld()) {
     return Response.json(
       { fout: "De YouTube-koppeling is nog niet ingesteld." },

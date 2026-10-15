@@ -203,7 +203,7 @@ def classificeer(samenvatting):
     ):
         return "geweld-tegen-politie"
     if re.search(
-        rf"{p}[^.]{{0,80}}(mishandel\w*|geslagen|bedreig\w*|gestoken|geschop\w*"
+        rf"(?:{p})[^.]{{0,80}}(mishandel\w*|geslagen|bedreig\w*|gestoken|geschop\w*"
         r"|geschoten|verzet|tegengewerkt|aangereden|gespoten)",
         t,
     ):

@@ -8,6 +8,7 @@ import {
   maakToken,
   zetRuimteKlaar,
 } from "@/lib/livekit";
+import { heeftToegang } from "@/lib/beheer-auth";
 
 export const maxDuration = 30;
 
@@ -32,6 +33,14 @@ export async function POST(request: Request) {
   }
 
   const naam = String(body.naam ?? "").trim().slice(0, 60) || "Anoniem";
+
+  // Alleen de beheerder mag uitzenden; kijken blijft voor iedereen open.
+  if (uitzender && !(await heeftToegang(request))) {
+    return Response.json(
+      { fout: "Uitzenden kan alleen met het uitzendwachtwoord." },
+      { status: 401 }
+    );
+  }
 
   try {
     if (uitzender) {

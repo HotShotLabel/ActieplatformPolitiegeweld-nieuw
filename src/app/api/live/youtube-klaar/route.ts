@@ -2,10 +2,14 @@
    uitzending, zodat het beheer hem terugziet. */
 
 import { getAdminDb } from "@/lib/firebase-admin";
+import { heeftToegang } from "@/lib/beheer-auth";
 
 export const maxDuration = 30;
 
 export async function POST(request: Request) {
+  if (!(await heeftToegang(request))) {
+    return Response.json({ fout: "Geen toegang." }, { status: 401 });
+  }
   let body: { id?: string; youtubeId?: string } = {};
   try {
     body = await request.json();
