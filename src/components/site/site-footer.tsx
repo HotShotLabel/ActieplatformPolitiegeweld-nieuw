@@ -7,6 +7,7 @@ const PLATFORM_LINKS = [
   { href: "/overleden", label: "Overleden na politieoptreden" },
   { href: "/cijfers", label: "Politiegeweld in cijfers" },
   { href: "/nieuws", label: "Nieuws" },
+  { href: "/beelden", label: "Beelden (video's)" },
   { href: "/live", label: "Live-uitzendingen" },
   { href: "/agenten", label: "Agenten als dader" },
   { href: "/juridisch", label: "Juridische hulp" },

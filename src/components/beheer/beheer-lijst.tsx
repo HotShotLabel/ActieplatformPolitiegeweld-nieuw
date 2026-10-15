@@ -64,6 +64,22 @@ interface BeheerLink {
   naam: string;
 }
 
+interface BeheerBeeld {
+  id: string;
+  url: string;
+  platform: string;
+  titel: string;
+  toelichting: string;
+  plaats: string;
+  datum: string;
+  bron: string;
+  zichtbaar: boolean;
+  toegevoegdOp: string;
+}
+
+const beeldInput =
+  "h-10 w-full rounded-lg border border-line-strong bg-surface px-3 text-sm text-foreground placeholder:text-muted-2 focus:border-accent focus:outline-none";
+
 const datumFormatter = new Intl.DateTimeFormat("nl-NL", {
   dateStyle: "long",
   timeStyle: "short",
@@ -110,6 +126,15 @@ export function BeheerLijst() {
   const [pwHerhaal, setPwHerhaal] = useState("");
   const [pwBezig, setPwBezig] = useState(false);
   const [pwMelding, setPwMelding] = useState("");
+  const [beelden, setBeelden] = useState<BeheerBeeld[] | null>(null);
+  const [beeldBezig, setBeeldBezig] = useState("");
+  const [beeldMelding, setBeeldMelding] = useState("");
+  const [nieuwBeeld, setNieuwBeeld] = useState({
+    url: "",
+    titel: "",
+    plaats: "",
+  });
+  const [nieuwBeeldBezig, setNieuwBeeldBezig] = useState(false);
 
   const laadLive = useCallback(async () => {
     try {
@@ -153,22 +178,37 @@ export function BeheerLijst() {
     }
   }, [token]);
 
+  const laadBeeldenStil = useCallback(async () => {
+    try {
+      const antwoord = await fetch("/api/beheer/beelden", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!antwoord.ok) return;
+      const data = (await antwoord.json()) as { beelden: BeheerBeeld[] };
+      setBeelden(data.beelden);
+    } catch {
+      // stil; proberen we later opnieuw
+    }
+  }, [token]);
+
   useEffect(() => {
     if (status !== "klaar") return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     laadLive();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     verversMeldingenStil();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    laadBeeldenStil();
     const timerLive = window.setInterval(laadLive, 15 * 1000);
-    const timerMeldingen = window.setInterval(
-      verversMeldingenStil,
-      60 * 1000
-    );
+    const timerMeldingen = window.setInterval(() => {
+      void verversMeldingenStil();
+      void laadBeeldenStil();
+    }, 60 * 1000);
     return () => {
       window.clearInterval(timerLive);
       window.clearInterval(timerMeldingen);
     };
-  }, [status, laadLive, verversMeldingenStil]);
+  }, [status, laadLive, verversMeldingenStil, laadBeeldenStil]);
 
   // Na verversen: het bewaarde wachtwoord opnieuw gebruiken (zelfde tab).
   useEffect(() => {
@@ -546,6 +586,86 @@ export function BeheerLijst() {
       setPwMelding("Opslaan mislukte. Probeer het opnieuw.");
     } finally {
       setPwBezig(false);
+    }
+  }
+
+  async function keurBeeld(id: string, zichtbaar: boolean) {
+    setBeeldBezig(id);
+    setBeeldMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/beelden", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ id, zichtbaar }),
+      });
+      if (!antwoord.ok) throw new Error();
+      setBeelden((huidig) =>
+        huidig
+          ? huidig.map((beeld) =>
+              beeld.id === id ? { ...beeld, zichtbaar } : beeld
+            )
+          : huidig
+      );
+    } catch {
+      setBeeldMelding("Bijwerken mislukte.");
+    } finally {
+      setBeeldBezig("");
+    }
+  }
+
+  async function verwijderBeeld(id: string) {
+    if (!window.confirm("Dit beeld definitief verwijderen?")) return;
+    setBeeldBezig(id);
+    setBeeldMelding("");
+    try {
+      const antwoord = await fetch(
+        `/api/beheer/beelden?id=${encodeURIComponent(id)}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!antwoord.ok) throw new Error();
+      setBeelden((huidig) =>
+        huidig ? huidig.filter((beeld) => beeld.id !== id) : huidig
+      );
+    } catch {
+      setBeeldMelding("Verwijderen mislukte.");
+    } finally {
+      setBeeldBezig("");
+    }
+  }
+
+  async function voegBeeldToe() {
+    if (!nieuwBeeld.url.trim() || nieuwBeeld.titel.trim().length < 3) {
+      setBeeldMelding("Vul een link en een titel in.");
+      return;
+    }
+    setNieuwBeeldBezig(true);
+    setBeeldMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/beelden", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(nieuwBeeld),
+      });
+      const data = await antwoord.json().catch(() => ({}));
+      if (!antwoord.ok) {
+        throw new Error(data.fout ?? "mislukt");
+      }
+      setNieuwBeeld({ url: "", titel: "", plaats: "" });
+      setBeeldMelding("Toegevoegd (nog verborgen; zet hem hieronder zichtbaar).");
+      await laadBeeldenStil();
+    } catch {
+      setBeeldMelding("Toevoegen mislukte.");
+    } finally {
+      setNieuwBeeldBezig(false);
     }
   }
 
@@ -1100,6 +1220,139 @@ export function BeheerLijst() {
           ))}
         </div>
       )}
+
+      <section
+        aria-label="Beelden"
+        className="mt-10 rounded-xl border border-line bg-surface p-6"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="font-display text-lg font-semibold tracking-tight">
+            Beelden (video&apos;s)
+          </p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-2">
+            {beelden
+              ? `${beelden.filter((beeld) => !beeld.zichtbaar).length} te controleren · ${beelden.filter((beeld) => beeld.zichtbaar).length} zichtbaar`
+              : "laden…"}
+          </p>
+        </div>
+        <p className="mt-1 max-w-[70ch] text-sm text-muted">
+          Tips en de YouTube-oogst komen hier verborgen binnen. Zet ze
+          zichtbaar na controle; dan verschijnen ze op /beelden.
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-[1.4fr_1fr_0.8fr_auto]">
+          <input
+            value={nieuwBeeld.url}
+            onChange={(gebeurtenis) =>
+              setNieuwBeeld((huidig) => ({
+                ...huidig,
+                url: gebeurtenis.target.value,
+              }))
+            }
+            placeholder="Link (https://…)"
+            aria-label="Link naar het beeld"
+            className={beeldInput}
+          />
+          <input
+            value={nieuwBeeld.titel}
+            onChange={(gebeurtenis) =>
+              setNieuwBeeld((huidig) => ({
+                ...huidig,
+                titel: gebeurtenis.target.value,
+              }))
+            }
+            placeholder="Titel"
+            aria-label="Titel van het beeld"
+            className={beeldInput}
+          />
+          <input
+            value={nieuwBeeld.plaats}
+            onChange={(gebeurtenis) =>
+              setNieuwBeeld((huidig) => ({
+                ...huidig,
+                plaats: gebeurtenis.target.value,
+              }))
+            }
+            placeholder="Plaats"
+            aria-label="Plaats van het beeld"
+            className={beeldInput}
+          />
+          <button
+            type="button"
+            onClick={voegBeeldToe}
+            disabled={nieuwBeeldBezig}
+            className={cn(
+              btnGhost,
+              "h-10 px-4 text-sm",
+              nieuwBeeldBezig && "opacity-60"
+            )}
+          >
+            {nieuwBeeldBezig ? "Bezig…" : "Toevoegen"}
+          </button>
+        </div>
+        {beeldMelding ? (
+          <p aria-live="polite" className="mt-2 text-sm">
+            {beeldMelding}
+          </p>
+        ) : null}
+        {beelden && beelden.length > 0 ? (
+          <ul className="mt-4 space-y-2">
+            {beelden.map((beeld) => (
+              <li
+                key={beeld.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">
+                    {beeld.titel}
+                    {!beeld.zichtbaar ? " (verborgen)" : ""}
+                  </p>
+                  <p className="mt-0.5 truncate text-xs text-muted-2">
+                    {beeld.platform} · {beeld.plaats || "plaats onbekend"} ·{" "}
+                    {beeld.bron} · {beeld.toegevoegdOp.slice(0, 10)}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={beeld.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={cn(btnGhost, "h-9 px-3 text-xs")}
+                  >
+                    Open
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => keurBeeld(beeld.id, !beeld.zichtbaar)}
+                    disabled={beeldBezig === beeld.id}
+                    className={cn(
+                      btnGhost,
+                      "h-9 px-3 text-xs",
+                      !beeld.zichtbaar && "text-accent"
+                    )}
+                  >
+                    {beeld.zichtbaar ? "Verbergen" : "Zichtbaar maken"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => verwijderBeeld(beeld.id)}
+                    disabled={beeldBezig === beeld.id}
+                    className={cn(
+                      btnGhost,
+                      "h-9 px-3 text-xs text-accent hover:text-accent"
+                    )}
+                  >
+                    Verwijder
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-sm text-muted">
+            Nog geen beelden binnengekomen.
+          </p>
+        )}
+      </section>
 
       {kaartpunten.length > 0 ? (
         <section

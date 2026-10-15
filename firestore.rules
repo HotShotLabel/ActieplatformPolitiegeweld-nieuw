@@ -34,6 +34,11 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Beelden (video's): volledig server-side beheerd.
+    match /beelden/{document} {
+      allow read, write: if false;
+    }
+
     match /instellingen/{document} {
       allow read, write: if false;
     }
