@@ -1,7 +1,92 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { platformVan, youtubeId, type Beeld } from "@/lib/beelden";
+import { embedVan, platformVan, type Beeld } from "@/lib/beelden";
+
+function Speler({ beeld }: { beeld: Beeld }) {
+  const embed = embedVan(beeld.url);
+  const [laden, setLaden] = useState(false);
+
+  if (embed.soort === "youtube") {
+    return (
+      <div className="aspect-video w-full bg-black">
+        <iframe
+          src={embed.src}
+          title={beeld.titel}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="h-full w-full"
+        />
+      </div>
+    );
+  }
+
+  if (embed.soort === "tiktok" || embed.soort === "instagram") {
+    if (laden) {
+      return (
+        <div className="flex justify-center bg-black py-2">
+          <iframe
+            src={embed.src}
+            title={beeld.titel}
+            loading="lazy"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            className="h-[540px] w-[320px] max-w-full"
+          />
+        </div>
+      );
+    }
+    return (
+      <button
+        type="button"
+        onClick={() => setLaden(true)}
+        aria-label={`Video laden: ${beeld.titel}`}
+        className="flex aspect-video w-full items-center justify-center bg-surface-2 transition-colors hover:bg-surface"
+      >
+        <span className="rounded-full border border-line-strong bg-background/80 px-5 py-2.5 text-sm font-medium">
+          Bekijk de video
+        </span>
+      </button>
+    );
+  }
+
+  if (embed.soort === "facebook") {
+    if (laden) {
+      return (
+        <div className="aspect-video w-full bg-black">
+          <iframe
+            src={embed.src}
+            title={beeld.titel}
+            loading="lazy"
+            allowFullScreen
+            className="h-full w-full"
+          />
+        </div>
+      );
+    }
+    return (
+      <button
+        type="button"
+        onClick={() => setLaden(true)}
+        aria-label={`Video laden: ${beeld.titel}`}
+        className="flex aspect-video w-full items-center justify-center bg-surface-2 transition-colors hover:bg-surface"
+      >
+        <span className="rounded-full border border-line-strong bg-background/80 px-5 py-2.5 text-sm font-medium">
+          Bekijk de video
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex aspect-video w-full items-center justify-center bg-surface-2">
+      <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+        {platformVan(beeld.url)}
+      </span>
+    </div>
+  );
+}
 
 export function BeeldenLijst() {
   const [beelden, setBeelden] = useState<Beeld[] | null>(null);
@@ -65,51 +150,41 @@ export function BeeldenLijst() {
         </div>
       ) : (
         <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {beelden.map((beeld) => {
-            const ytId = youtubeId(beeld.url);
-            return (
-              <a
-                key={beeld.id}
-                href={beeld.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface transition-colors hover:border-accent/60"
-              >
-                {ytId ? (
-                  // Omslagfoto van YouTube zelf; wij hosten geen bestanden.
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={`https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`}
-                    alt=""
-                    loading="lazy"
-                    className="aspect-video w-full object-cover"
-                  />
+          {beelden.map((beeld) => (
+            <article
+              key={beeld.id}
+              className="flex flex-col overflow-hidden rounded-xl border border-line bg-surface"
+            >
+              <Speler beeld={beeld} />
+              <div className="flex flex-1 flex-col p-5">
+                <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+                  {beeld.platform || platformVan(beeld.url)}
+                  {beeld.bron && beeld.bron !== "tip" ? ` · ${beeld.bron}` : ""}
+                </p>
+                <h2 className="mt-2 font-medium leading-snug">
+                  {beeld.titel}
+                </h2>
+                {beeld.plaats || beeld.datum ? (
+                  <p className="mt-1.5 text-xs text-muted-2">
+                    {[beeld.plaats, beeld.datum].filter(Boolean).join(" · ")}
+                  </p>
                 ) : null}
-                <div className="flex flex-1 flex-col p-5">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
-                    {beeld.platform || platformVan(beeld.url)}
-                    {beeld.bron && beeld.bron !== "tip" ? ` · ${beeld.bron}` : ""}
+                {beeld.toelichting ? (
+                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted">
+                    {beeld.toelichting}
                   </p>
-                  <h2 className="mt-2 font-medium leading-snug">
-                    {beeld.titel}
-                  </h2>
-                  {beeld.plaats || beeld.datum ? (
-                    <p className="mt-1.5 text-xs text-muted-2">
-                      {[beeld.plaats, beeld.datum].filter(Boolean).join(" · ")}
-                    </p>
-                  ) : null}
-                  {beeld.toelichting ? (
-                    <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
-                      {beeld.toelichting}
-                    </p>
-                  ) : null}
-                  <p className="mt-auto pt-3 text-xs text-muted-2 underline underline-offset-4 group-hover:text-foreground">
-                    Bekijk bij de bron
-                  </p>
-                </div>
-              </a>
-            );
-          })}
+                ) : null}
+                <a
+                  href={beeld.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto pt-3 text-xs text-muted-2 underline underline-offset-4 hover:text-foreground"
+                >
+                  Bekijk bij de bron: {beeld.platform || platformVan(beeld.url)}
+                </a>
+              </div>
+            </article>
+          ))}
         </div>
       )}
     </div>
