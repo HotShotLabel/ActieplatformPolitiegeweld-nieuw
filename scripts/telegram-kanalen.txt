@@ -1,0 +1,5 @@
+# Telegram-kanalen voor de oogst (één per regel; # = commentaar).
+# Alleen PUBLIEKE kanalen met web-preview (t.me/s/<naam>).
+# Vul hier de kanalen aan die jij wilt volgen; de oogst controleert ze met:
+#   python3 scripts/telegram-oogst.py
+nederlandnieuws

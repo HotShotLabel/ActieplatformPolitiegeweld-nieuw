@@ -1,0 +1,4 @@
+# TikTok-accounts voor de live-watcher (één @naam per regel; # = commentaar).
+# Zodra een van deze accounts live gaat, komt er een verborgen tip in het
+# beheer. Vul aan met 112-accounts, activisten of lokale media die jij volgt.
+# Draaien: ~/ai_firefox_agent/venv/bin/python scripts/tiktok-live-watcher.py
