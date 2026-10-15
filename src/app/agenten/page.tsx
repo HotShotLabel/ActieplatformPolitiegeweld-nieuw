@@ -7,9 +7,9 @@ import {
 } from "@/lib/agent-zaken";
 
 export const metadata: Metadata = {
-  title: "Agenten als dader",
+  title: "Politie en justitie als dader",
   description:
-    "Inventaris van politieambtenaren als verdachte of dader: moord, doodslag, verkrachting en geweld tijdens de dienst. Met bron per zaak.",
+    "Inventaris van politieambtenaren én personeel van OM en rechterlijke macht als verdachte of dader: levensdelicten, zeden, geweld, corruptie en lekken. Met bron per zaak.",
 };
 
 export default function AgentenPage() {
@@ -18,6 +18,7 @@ export default function AgentenPage() {
     "zeden",
     "dienstgeweld",
     "ambtsmisbruik",
+    "justitie",
   ];
 
   return (
@@ -27,14 +28,15 @@ export default function AgentenPage() {
           Inventaris
         </p>
         <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-          Agenten als dader
+          Politie en justitie als dader
         </h1>
         <p className="mt-6 max-w-[66ch] text-lg leading-relaxed text-muted">
-          Zaken waarin een politieambtenaar als verdachte of dader figureert:
-          moord en doodslag, zedendelicten en geweld tijdens de dienst. Alles
-          uit openbare bronnen (rechtszaken, OM, Rijksrecherche, nieuws) met de
-          bron per zaak. Een volledige overheidslijst bestaat niet, dus deze
-          inventaris kan onvolledig zijn.
+          Zaken waarin een politieambtenaar of iemand van het Openbaar
+          Ministerie, de rechterlijke macht of justitie als verdachte of dader
+          figureert: moord en doodslag, zedendelicten, geweld, corruptie en
+          lekken. Alles uit openbare bronnen (rechtszaken, OM, Rijksrecherche,
+          nieuws) met de bron per zaak. Een volledige overheidslijst bestaat
+          niet, dus deze inventaris kan onvolledig zijn.
         </p>
 
         {categorieen.map((categorie) => (
@@ -97,14 +99,18 @@ export default function AgentenPage() {
                 <p className="mt-1.5 text-sm leading-relaxed">{zaak.omschrijving}</p>
                 <p className="mt-2 text-xs text-muted-2">
                   Bron:{" "}
-                  <a
-                    href={`https://uitspraken.rechtspraak.nl/details?id=${encodeURIComponent(zaak.ecli)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-4 hover:text-muted"
-                  >
-                    {zaak.ecli}
-                  </a>
+                  {zaak.ecli.startsWith("ECLI:") ? (
+                    <a
+                      href={`https://uitspraken.rechtspraak.nl/details?id=${encodeURIComponent(zaak.ecli)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-4 hover:text-muted"
+                    >
+                      {zaak.ecli}
+                    </a>
+                  ) : (
+                    <span>{zaak.ecli.replace(/^nieuws:/, "")}</span>
+                  )}
                 </p>
               </li>
             ))}
@@ -112,7 +118,7 @@ export default function AgentenPage() {
         </section>
 
         <p className="mt-14 max-w-[70ch] text-sm leading-relaxed text-muted-2">
-          Methode: zoekactie in de rechtspraak-databank (ruim dertig
+          Methode: zoekactie in de rechtspraak-databank (ruim veertig
           zoektermen), nieuws- en persarchieven en de Woo-kanalen van politie
           en OM (oktober 2026). Namen staan er alleen als media of uitspraken
           ze openbaar maakten; veel agenten in rechterlijke uitspraken zijn

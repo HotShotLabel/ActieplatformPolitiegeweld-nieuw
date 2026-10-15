@@ -140,4 +140,18 @@ export const AANVULLINGEN_DODEN: AanvullingDood[] = [
     bronUrl:
       "https://web.archive.org/web/20151027181004/http://www.destentor.nl/algemeen/binnenland/arrestant-den-haag-overleden-na-hartinfarct-1.5086206",
   },
+  {
+    id: "winterswijk-2025",
+    datum: "3 maart 2025",
+    jaar: "2025",
+    plaats: "Winterswijk",
+    lat: 51.9726,
+    lng: 6.7194,
+    titel: "Vrouw (circa 80) uit Bocholt overleed na een botsing met een politieauto",
+    toelichting:
+      "Op de Kottenseweg (N319) botste een politieauto, zonder spoedrit en zonder licht of geluid, met een scootmobiel. De bestuurster overleed ter plaatse; de Rijksrecherche deed onderzoek. Voor zover vaststelbaar niet in de CAD-database (4 anonieme 2025-records maken 100% uitsluitsel onmogelijk; gecontroleerd 15-10-2026).",
+    bronLabel: "Omroep Gelderland",
+    bronUrl:
+      "https://www.gld.nl/nieuws/8278951/ouder-vrouw-overleden-na-aanrijding-met-politie",
+  },
 ];

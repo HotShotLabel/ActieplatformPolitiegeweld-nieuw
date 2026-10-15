@@ -1150,7 +1150,7 @@ export function MeldingenKaart() {
       <p className="mt-3 text-xs leading-relaxed text-muted-2">
         Elk punt heeft een eigen icoon: politieauto = politiebureau, zuilen =
         rechtbank, hamer = rechterlijke uitspraak, vuist = bekend geweld
-        zonder dodelijke afloop, schild = agenten als dader (waaronder
+        zonder dodelijke afloop, schild = politie en OM als dader (waaronder
         dodelijke familiedrama&apos;s door agenten), rode grafsteen = overleden na
         politieoptreden (2016-nu), amber grafsteen = archief vóór 2016 (samen
         onder de knop Overleden), blauw agent-poppetje = agent vervolgd na een

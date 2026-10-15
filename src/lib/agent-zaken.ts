@@ -7,7 +7,8 @@ export type AgentZaakCategorie =
   | "levensdelict"
   | "zeden"
   | "dienstgeweld"
-  | "ambtsmisbruik";
+  | "ambtsmisbruik"
+  | "justitie";
 
 export interface AgentZaak {
   id: string;
@@ -28,6 +29,7 @@ export const CATEGORIE_TITEL: Record<AgentZaakCategorie, string> = {
   zeden: "Zedendelicten",
   dienstgeweld: "Geweld tijdens de dienst",
   ambtsmisbruik: "Ambtsmisbruik, lekken en meineed",
+  justitie: "OM en justitie (personeel als dader)",
 };
 
 export const AGENT_ZAKEN: AgentZaak[] = [
@@ -284,6 +286,25 @@ export const AGENT_ZAKEN: AgentZaak[] = [
     titel: "Politieagente (37) verdacht van het lekken van informatie en computervredebreuk",
     uitkomst: "Zaak loopt; zat langer vast",
     bronLabel: "Dagblad van het Noorden", bronUrl: "https://dvhn.nl/regio/drenthe/coevorden/politieagente-uit-coevorden-blijft-langer-vastzitten-voor-lekken-informatie/155099411.html" },
+
+  // OM en justitie: personeel van het Openbaar Ministerie en de rechterlijke
+  // macht als dader (speurronde 15-10-2026).
+  { id: "rotterdam-beslagfraude-2016", jaar: "2016", plaats: "Rotterdam", eenheid: "Parket Rotterdam (OM)", lat: 51.9225, lng: 4.4865, categorie: "justitie",
+    titel: "Beslagmedewerker van het OM: dertig valse opdrachten, ruim 489.000 euro naar katvangers",
+    uitkomst: "24 maanden gevangenisstraf",
+    bronLabel: "ECLI:NL:RBDHA:2016:3369", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBDHA%3A2016%3A3369" },
+  { id: "denhaag-iap-2021", jaar: "2021", plaats: "Den Haag", eenheid: "ex-officier van justitie / advocaat-generaal", lat: 52.0721, lng: 4.293, categorie: "justitie",
+    titel: "Oud-officier van justitie en advocaat-generaal (71): verduisterde privé-uitgaven van de internationale aanklagersorganisatie",
+    uitkomst: "160 uur taakstraf",
+    bronLabel: "ECLI:NL:RBOBR:2021:5608", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBOBR%3A2021%3A5608" },
+  { id: "amsterdam-leenders-2021", jaar: "2021", plaats: "Amsterdam", eenheid: "Functioneel Parket (OM)", lat: 52.3734, lng: 4.9045, categorie: "justitie",
+    titel: "Oud-plaatsvervangend hoofdofficier van justitie (Vincent L.): ontucht met een 16-jarige jongen",
+    uitkomst: "5 maanden gevangenisstraf",
+    bronLabel: "ECLI:NL:RBDHA:2021:5431", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBDHA%3A2021%3A5431" },
+  { id: "amsterdam-balie-2026", jaar: "2026", plaats: "Amsterdam", eenheid: "Rechtbank Amsterdam (baliemedewerkster)", lat: 52.3724, lng: 4.8998, categorie: "justitie",
+    titel: "Baliemedewerkster van de rechtbank verkocht persoonsgegevens aan criminelen en perste een kennis af",
+    uitkomst: "4 jaar cel (1 voorwaardelijk) + beroepsverbod van 7 jaar",
+    bronLabel: "ECLI:NL:RBOVE:2026:2805", bronUrl: "https://uitspraken.rechtspraak.nl/details?id=ECLI%3ANL%3ARBOVE%3A2026%3A2805" },
 ];
 
 /* Overige zaken uit het uitputtende rechtspraak-onderzoek (geen kaartpunt:
@@ -320,6 +341,19 @@ export const OVERIGE_AGENT_ZAKEN: { ecli: string; datum: string; omschrijving: s
   { ecli: "nieuws:wijkbijduurstede-2016", datum: "2016", omschrijving: "Politieman (36) op non-actief; het OM verdacht hem van chantage en afpersing van bezoekers van een homoparkeerplaats via brieven (De Stentor)." },
   { ecli: "nieuws:drenthe-2026", datum: "2026", omschrijving: "Ex-politieagent (32) uit Emmen aangehouden op verdenking van het omkopen van een collega; de Rijksrecherche onderzoekt (Dagblad van het Noorden)." },
   { ecli: "nieuws:hoogezand-2026", datum: "2026", omschrijving: "Politieman uit Hoogezand drie jaar gestalkt door een voormalige vrouwelijke collega; het OM eiste celstraf tegen haar (Dagblad van het Noorden)." },
+  { ecli: "ECLI:NL:RBROT:2023:4683", datum: "2023-06-06", omschrijving: "Politieagent (45) reed surveillerend te hard op de N217 bij Maasdam en botste op een scooter; Esmeralda (29) overleed ter plaatse. Taakstraf 240 uur + voorwaardelijke rijontzegging." },
+  { ecli: "ECLI:NL:RBOBR:2023:5518", datum: "2023-11-28", omschrijving: "Politieagent (26) reed 129 km/u (max 50) op weg naar een lokfiets in Eindhoven en schepte een motorrijder (31), die overleed. Taakstraf 200 uur + rijontzegging." },
+  { ecli: "ECLI:NL:RBOBR:2025:492", datum: "2025-01-30", omschrijving: "Politieagent (SIV) reed 209 km/u op de A67 bij Ommel; een automobiliste raakte zwaargewond. Taakstraf 60 uur + voorwaardelijke rijontzegging." },
+  { ecli: "ECLI:NL:RBAMS:2025:10878", datum: "2025-01-01", omschrijving: "Politieagent keerde onveilig op de Troelstralaan in Amsterdam; een motorscooterrijder raakte zwaargewond. 80 uur voorwaardelijke taakstraf." },
+  { ecli: "nieuws:koers-2010", datum: "2010", omschrijving: "Advocaat-generaal en plaatsvervangend officier van justitie (Arnhem): ambtelijke corruptie, oplichting en valsheid in geschrifte; 200 uur werkstraf en 6 maanden voorwaardelijk (Trouw / Transparency International NL)." },
+  { ecli: "nieuws:wijchen-2017", datum: "2017", omschrijving: "Medewerker van de Dienst Vervoer en Ondersteuning van het OM richtte bij een verkeersruzie op de A326 bij Wijchen zijn dienstwapen op een automobilist; 150 uur taakstraf (De Gelderlander)." },
+  { ecli: "nieuws:gertv-2019", datum: "2019", omschrijving: "Plaatsvervangend hoofdofficier van justitie Noord-Nederland reed met beslagen voorruit een fietser aan (zwaar letsel); 120 uur taakstraf (60 voorwaardelijk) en rijontzegging (NRC)." },
+  { ecli: "nieuws:om-medewerkster-2026", datum: "2026", omschrijving: "Administratief medewerkster van het parket Den Haag: met haar partner vervolgd voor bezit en handel in verdovende middelen; 150 uur taakstraf (50 voorwaardelijk) (OM.nl)." },
+  { ecli: "nieuws:griffier-rotterdam-2024", datum: "2024", omschrijving: "Griffier van de rechtbank Rotterdam aangehouden op verdenking van schending van het ambtsgeheim en computervredebreuk; zaak liep nog (Kamerbrief, juli 2024)." },
+  { ecli: "nieuws:schiedam-viktor-2015", datum: "2015", omschrijving: "Ex-rechercheur (Schiedam, 2013): poging tot doodslag en meineed; in hoger beroep 12 maanden cel en 240 uur werkstraf (RTL Nieuws)." },
+  { ecli: "nieuws:chipshol-2013", datum: "2013", omschrijving: "Twee oud-rechters (Den Haag) vervolgd wegens meineed in de Chipshol-affaire; vrijgesproken door de rechtbank en het hof (NRC / Trouw)." },
+  { ecli: "nieuws:degraaff-2012", datum: "2012", omschrijving: "Oud-strafrechter (Den Haag): het hof beval vervolging wegens valsheid in geschrifte; het OM vroeg daarna vrijspraak (NRC / Trouw)." },
+  { ecli: "nieuws:lucasvand-2016", datum: "2016", omschrijving: "Officier van justitie (parket Zeeland-West-Brabant) meldde onder valse naam een liquidatiedreiging tegen zichzelf; niet strafrechtelijk vervolgd (sepot), wel disciplinair gestraft (NRC / OM.nl)." },
   { ecli: "ECLI:NL:GHDHA:2014:49", datum: "2014-01-21", omschrijving: "Twee politieambtenaren: wederrechtelijke vrijheidsberoving en misbruik van gezag tijdens dienst." },
   { ecli: "ECLI:NL:RBSGR:2004:AO9348", datum: "2004-05-12", omschrijving: "Verduistering van politiedocumenten, omkoping van politieambtenaren, schending ambtsgeheim." },
   { ecli: "ECLI:NL:RBHAA:2010:BM8272", datum: "2010-06-17", omschrijving: "Dodelijk ongeval met gepantserd politievoertuig (90 km/u waar 50 gold); artikel 6 WVW." },
