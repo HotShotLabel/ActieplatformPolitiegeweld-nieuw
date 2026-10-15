@@ -1,7 +1,7 @@
 # Telegram-kanalen voor de oogst (één per regel; # = commentaar).
 # Alleen PUBLIEKE kanalen met web-preview (t.me/s/<naam>).
 #
-# Getest 15-10-2026: onderstaande twee kanalen bleken vooral politiek/
+# Getest 15-10-2026: onderstaande kanalen bleken vooral politiek/
 # anti-establishment nieuws te delen, geen politiegeweld-beelden; alle 25
 # opgehaalde berichten zijn door de eigen beoordeling afgewezen en opgeruimd.
 # Daarom staan ze UIT. De motor werkt; we zoeken nog kanalen die wél
@@ -9,4 +9,10 @@
 #
 # politiegeweldenintimidatie
 # hetkantelpunt
+#
+# Ook gecheckt en afgewezen (15-10-2026):
+#   jolandavlaskamp   - complottheorie/anti-agenda-content, geen incidenten
+#   nederlandsegroepen - spam-directory die andere kanalen doorverkoopt
+#   defendnetherlands - door NOS gemarkeerd als platform voor racistische
+#                       content; komt niet in aanmerking
 

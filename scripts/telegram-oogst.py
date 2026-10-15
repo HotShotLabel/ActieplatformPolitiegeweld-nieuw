@@ -75,6 +75,11 @@ def haal_berichten(kanaal: str) -> list[dict]:
         heeft_media = ("tgme_widget_message_video" in blok) or ("<video" in blok)
         if len(tekst) < 15:
             continue
+        laag = tekst.lower()
+        if "channel name was changed" in laag or "kanaalnaam is gewijzigd" in laag:
+            continue
+        if tekst.startswith("http") and len(tekst) < 100:
+            continue
         post_id = post.split("/")[-1]
         berichten.append(
             {

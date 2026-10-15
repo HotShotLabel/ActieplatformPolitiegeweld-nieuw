@@ -1,0 +1,10 @@
+# Instagram-profielen voor de oogst (één per regel; # = commentaar).
+# Alleen publieke profielen; instaloader zonder login. Hashtag-zoeken kan
+# niet meer (Instagram blokkeert dat anoniem), daarom per profiel.
+#
+# Bron-geverifieerd 15-10-2026:
+#   controle_alt_delete - Controle Alt Delete (9.120 volgers): etnisch
+#                         profileren en buitenproportioneel politiegeweld
+#   112_today           - 112Today (incidenten)
+controle_alt_delete
+112_today

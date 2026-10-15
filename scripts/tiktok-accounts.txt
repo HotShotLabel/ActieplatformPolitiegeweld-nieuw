@@ -5,8 +5,12 @@
 # Bron-geverifieerd op 15-10-2026 (via hun eigen linktrees):
 #   112_today               - 112Today (incidenten; ook Instagram: 112_today)
 #   112.fotografie.nederland - "112 Incidenten Foto's"
+#   politiegeweldnl          - "StopPolitieGeweld": verzamelt expliciet
+#                              politiegeweld-clips en vraagt zelf om beeld
+#                              (geverifieerd via urlebird-mirror, 343 volgers)
 #
 # Officiële politie-accounts (bron: politie.nl/contact/social-media/tiktok.html)
 # staan hier bewust NIET bij: die zenden geen politiegeweld uit.
 112_today
 112.fotografie.nederland
+politiegeweldnl
