@@ -104,6 +104,7 @@ def importeer(items: list[dict], token: str) -> None:
 def main() -> None:
     proef = "--proef" in sys.argv
     alles = "--alles" in sys.argv
+    media = "--media" in sys.argv
     kanalen = kanalen_uit_argumenten()
     if not kanalen:
         print("Geen kanalen opgegeven. Gebruik --kanalen naam1,naam2 of scripts/telegram-kanalen.txt.")
@@ -119,7 +120,11 @@ def main() -> None:
         treffers = 0
         for bericht in berichten:
             laag = bericht["tekst"].lower()
-            if alles or any(woord in laag for woord in TREFWOORDEN):
+            if (
+                alles
+                or any(woord in laag for woord in TREFWOORDEN)
+                or (media and bericht["media"])
+            ):
                 kandidaten.append(
                     {
                         "url": bericht["url"],

@@ -1,4 +1,12 @@
 # TikTok-accounts voor de live-watcher (één @naam per regel; # = commentaar).
 # Zodra een van deze accounts live gaat, komt er een verborgen tip in het
-# beheer. Vul aan met 112-accounts, activisten of lokale media die jij volgt.
-# Draaien: ~/ai_firefox_agent/venv/bin/python scripts/tiktok-live-watcher.py
+# beheer. Draaien: ~/ai_firefox_agent/venv/bin/python scripts/tiktok-live-watcher.py
+#
+# Bron-geverifieerd op 15-10-2026 (via hun eigen linktrees):
+#   112_today               - 112Today (incidenten; ook Instagram: 112_today)
+#   112.fotografie.nederland - "112 Incidenten Foto's"
+#
+# Officiële politie-accounts (bron: politie.nl/contact/social-media/tiktok.html)
+# staan hier bewust NIET bij: die zenden geen politiegeweld uit.
+112_today
+112.fotografie.nederland
