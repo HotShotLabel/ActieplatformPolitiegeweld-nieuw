@@ -78,6 +78,19 @@ interface BeheerBeeld {
   toegevoegdOp: string;
 }
 
+interface BeheerProfiel {
+  id: string;
+  label: string;
+  kenmerk: string;
+  eenheid: string;
+  notities: string;
+  bronnen: { label: string; url: string }[];
+  items: { url: string; titel: string }[];
+  status: string;
+  zichtbaar: boolean;
+  aangemaaktOp: string;
+}
+
 const beeldInput =
   "h-10 w-full rounded-lg border border-line-strong bg-surface px-3 text-sm text-foreground placeholder:text-muted-2 focus:border-accent focus:outline-none";
 
@@ -168,6 +181,20 @@ export function BeheerLijst() {
     }[];
     overige: { ecli: string; datum: string; omschrijving: string }[];
   } | null>(null);
+  const [profielen, setProfielen] = useState<BeheerProfiel[] | null>(null);
+  const [profielBezig, setProfielBezig] = useState("");
+  const [profielZichtBezig, setProfielZichtBezig] = useState("");
+  const [profielMelding, setProfielMelding] = useState("");
+  const [nieuwProfielBezig, setNieuwProfielBezig] = useState(false);
+  const [nieuwProfiel, setNieuwProfiel] = useState({
+    label: "",
+    kenmerk: "",
+    eenheid: "",
+    notities: "",
+    status: "mogelijk",
+    bronRegels: "",
+    itemRegels: "",
+  });
 
   const laadLive = useCallback(async () => {
     try {
@@ -224,14 +251,29 @@ export function BeheerLijst() {
     }
   }, [token]);
 
+  const laadProfielenStil = useCallback(async () => {
+    try {
+      const antwoord = await fetch("/api/beheer/profielen", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!antwoord.ok) return;
+      const data = (await antwoord.json()) as { profielen: BeheerProfiel[] };
+      setProfielen(data.profielen);
+    } catch {
+      // stil; proberen we later opnieuw
+    }
+  }, [token]);
+
   useEffect(() => {
     if (status !== "klaar") return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     laadLive();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     verversMeldingenStil();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     laadBeeldenStil();
+     
+    laadProfielenStil();
     const timerLive = window.setInterval(laadLive, 15 * 1000);
     const timerMeldingen = window.setInterval(() => {
       void verversMeldingenStil();
@@ -241,7 +283,7 @@ export function BeheerLijst() {
       window.clearInterval(timerLive);
       window.clearInterval(timerMeldingen);
     };
-  }, [status, laadLive, verversMeldingenStil, laadBeeldenStil]);
+  }, [status, laadLive, verversMeldingenStil, laadBeeldenStil, laadProfielenStil]);
 
   // Na verversen: het bewaarde wachtwoord opnieuw gebruiken (zelfde tab).
   useEffect(() => {
@@ -254,9 +296,9 @@ export function BeheerLijst() {
     if (!bewaard) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setToken(bewaard);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     void laadMeldingen(bewaard);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   async function stopUitzending() {
@@ -758,6 +800,130 @@ export function BeheerLijst() {
       setKoppelFout("Zoeken mislukte.");
     } finally {
       setKoppelBezig(false);
+    }
+  }
+
+  function parseProfielRegels(tekst: string): { label: string; url: string }[] {
+    return tekst
+      .split(/\r?\n/)
+      .map((regel) => regel.trim())
+      .filter(Boolean)
+      .map((regel) => {
+        const delen = regel.split("|");
+        return { url: delen[0].trim(), label: delen.slice(1).join("|").trim() };
+      })
+      .filter((bron) => bron.url.startsWith("http"))
+      .slice(0, 20);
+  }
+
+  function parseProfielItems(tekst: string): { url: string; titel: string }[] {
+    return tekst
+      .split(/\r?\n/)
+      .map((regel) => regel.trim())
+      .filter(Boolean)
+      .map((regel) => {
+        const delen = regel.split("|");
+        return { url: delen[0].trim(), titel: delen.slice(1).join("|").trim() };
+      })
+      .filter((item) => item.url.startsWith("http"))
+      .slice(0, 50);
+  }
+
+  async function maakProfiel() {
+    if (nieuwProfiel.label.trim().length < 3) {
+      setProfielMelding("Geef het profiel een titel van minimaal drie tekens.");
+      return;
+    }
+    setNieuwProfielBezig(true);
+    setProfielMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/profielen", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          label: nieuwProfiel.label.trim(),
+          kenmerk: nieuwProfiel.kenmerk.trim(),
+          eenheid: nieuwProfiel.eenheid.trim(),
+          notities: nieuwProfiel.notities.trim(),
+          status: nieuwProfiel.status,
+          bronnen: parseProfielRegels(nieuwProfiel.bronRegels),
+          items: parseProfielItems(nieuwProfiel.itemRegels),
+        }),
+      });
+      const data = await antwoord.json().catch(() => ({}));
+      if (!antwoord.ok) {
+        setProfielMelding(data.fout ?? "Opslaan mislukte.");
+        return;
+      }
+      setNieuwProfiel({
+        label: "",
+        kenmerk: "",
+        eenheid: "",
+        notities: "",
+        status: "mogelijk",
+        bronRegels: "",
+        itemRegels: "",
+      });
+      setProfielMelding(
+        "Profiel opgeslagen. Het staat nog verborgen tot je het zichtbaar maakt."
+      );
+      await laadProfielenStil();
+    } catch {
+      setProfielMelding("Opslaan mislukte.");
+    } finally {
+      setNieuwProfielBezig(false);
+    }
+  }
+
+  async function zetProfielZichtbaar(profiel: BeheerProfiel, zichtbaar: boolean) {
+    setProfielZichtBezig(profiel.id);
+    setProfielMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/profielen", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ id: profiel.id, zichtbaar }),
+      });
+      if (!antwoord.ok) throw new Error();
+      setProfielen((huidig) =>
+        huidig
+          ? huidig.map((item) =>
+              item.id === profiel.id ? { ...item, zichtbaar } : item
+            )
+          : huidig
+      );
+    } catch {
+      setProfielMelding("Zichtbaarheid aanpassen mislukte.");
+    } finally {
+      setProfielZichtBezig("");
+    }
+  }
+
+  async function verwijderProfiel(profiel: BeheerProfiel) {
+    if (!window.confirm(`Profiel "${profiel.label}" definitief verwijderen?`)) {
+      return;
+    }
+    setProfielBezig(profiel.id);
+    setProfielMelding("");
+    try {
+      const antwoord = await fetch(
+        `/api/beheer/profielen?id=${encodeURIComponent(profiel.id)}`,
+        { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (!antwoord.ok) throw new Error();
+      setProfielen((huidig) =>
+        huidig ? huidig.filter((item) => item.id !== profiel.id) : huidig
+      );
+    } catch {
+      setProfielMelding("Verwijderen mislukte.");
+    } finally {
+      setProfielBezig("");
     }
   }
 
@@ -1589,6 +1755,182 @@ export function BeheerLijst() {
             </div>
           </div>
         ) : null}
+      </section>
+
+      <section
+        aria-label="Agent-profielen"
+        className="mt-10 rounded-xl border border-line bg-surface p-6"
+      >
+        <p className="font-display text-lg font-semibold tracking-tight">
+          Agent-profielen (openbaar register)
+        </p>
+        <p className="mt-1 max-w-[75ch] text-sm text-muted">
+          Bundel één agent — op openbare kenmerken (dienstnummer, eenheid,
+          signalement) — met de zaken waarin hij terugkomt. Een profiel is pas
+          openbaar als jij het zichtbaar maakt; tot die tijd staat het
+          verborgen. Koppelen met bron erbij, geen biometrie.
+        </p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <input
+            value={nieuwProfiel.label}
+            onChange={(gebeurtenis) =>
+              setNieuwProfiel((huidig) => ({
+                ...huidig,
+                label: gebeurtenis.target.value,
+              }))
+            }
+            placeholder="Titel, bijv. Agent met dienstnummer 12345"
+            aria-label="Titel van het profiel"
+            className={beeldInput}
+          />
+          <input
+            value={nieuwProfiel.kenmerk}
+            onChange={(gebeurtenis) =>
+              setNieuwProfiel((huidig) => ({
+                ...huidig,
+                kenmerk: gebeurtenis.target.value,
+              }))
+            }
+            placeholder="Kenmerk, bijv. dienstnummer of signalement"
+            aria-label="Kenmerk van het profiel"
+            className={beeldInput}
+          />
+          <input
+            value={nieuwProfiel.eenheid}
+            onChange={(gebeurtenis) =>
+              setNieuwProfiel((huidig) => ({
+                ...huidig,
+                eenheid: gebeurtenis.target.value,
+              }))
+            }
+            placeholder="Eenheid, bijv. Rotterdam"
+            aria-label="Eenheid van het profiel"
+            className={beeldInput}
+          />
+          <select
+            value={nieuwProfiel.status}
+            onChange={(gebeurtenis) =>
+              setNieuwProfiel((huidig) => ({
+                ...huidig,
+                status: gebeurtenis.target.value,
+              }))
+            }
+            aria-label="Status van het profiel"
+            className={beeldInput}
+          >
+            <option value="mogelijk">Mogelijk dezelfde (niet bevestigd)</option>
+            <option value="bevestigd">Bevestigd met bron</option>
+          </select>
+        </div>
+        <textarea
+          value={nieuwProfiel.notities}
+          onChange={(gebeurtenis) =>
+            setNieuwProfiel((huidig) => ({
+              ...huidig,
+              notities: gebeurtenis.target.value,
+            }))
+          }
+          placeholder="Wat zie je steeds terug? (bijv. zelfde werkwijze, zelfde eenheid, opvallende uitspraak)"
+          aria-label="Notities bij het profiel"
+          className={cn(beeldInput, "mt-3 h-auto min-h-[84px] py-2")}
+        />
+        <textarea
+          value={nieuwProfiel.bronRegels}
+          onChange={(gebeurtenis) =>
+            setNieuwProfiel((huidig) => ({
+              ...huidig,
+              bronRegels: gebeurtenis.target.value,
+            }))
+          }
+          placeholder={"Bronnen, één per regel: URL | korte omschrijving"}
+          aria-label="Bronnen bij het profiel"
+          className={cn(beeldInput, "mt-3 h-auto min-h-[84px] py-2")}
+        />
+        <textarea
+          value={nieuwProfiel.itemRegels}
+          onChange={(gebeurtenis) =>
+            setNieuwProfiel((huidig) => ({
+              ...huidig,
+              itemRegels: gebeurtenis.target.value,
+            }))
+          }
+          placeholder={"Terugkerend in, één per regel: URL | titel"}
+          aria-label="Gekoppelde items bij het profiel"
+          className={cn(beeldInput, "mt-3 h-auto min-h-[84px] py-2")}
+        />
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={maakProfiel}
+            disabled={nieuwProfielBezig}
+            className={cn(
+              btnPrimary,
+              "h-10 px-4 text-sm",
+              nieuwProfielBezig && "opacity-60"
+            )}
+          >
+            {nieuwProfielBezig ? "Bezig…" : "Profiel opslaan"}
+          </button>
+          {profielMelding ? (
+            <p aria-live="polite" className="text-sm">
+              {profielMelding}
+            </p>
+          ) : null}
+        </div>
+        {profielen && profielen.length > 0 ? (
+          <ul className="mt-4 space-y-2">
+            {profielen.map((profiel) => (
+              <li
+                key={profiel.id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line px-4 py-3"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">
+                    {profiel.label}
+                    {profiel.zichtbaar ? " (openbaar)" : " (verborgen)"}
+                  </p>
+                  <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-2">
+                    {profiel.status === "bevestigd"
+                      ? "bevestigd met bron"
+                      : "mogelijk dezelfde"}{" "}
+                    · {profiel.items.length} items · {profiel.bronnen.length}{" "}
+                    bronnen
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      zetProfielZichtbaar(profiel, !profiel.zichtbaar)
+                    }
+                    disabled={profielZichtBezig === profiel.id}
+                    className={cn(
+                      btnGhost,
+                      "h-9 px-4 text-xs",
+                      profielZichtBezig === profiel.id && "opacity-60"
+                    )}
+                  >
+                    {profiel.zichtbaar ? "Verbergen" : "Zichtbaar maken"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => verwijderProfiel(profiel)}
+                    disabled={profielBezig === profiel.id}
+                    className={cn(
+                      btnGhost,
+                      "h-9 px-4 text-xs text-accent",
+                      profielBezig === profiel.id && "opacity-60"
+                    )}
+                  >
+                    {profielBezig === profiel.id ? "Bezig…" : "Verwijderen"}
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-sm text-muted">Nog geen profielen.</p>
+        )}
       </section>
 
       {kaartpunten.length > 0 ? (

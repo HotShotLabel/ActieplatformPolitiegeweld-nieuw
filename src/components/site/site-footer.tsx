@@ -10,6 +10,7 @@ const PLATFORM_LINKS = [
   { href: "/beelden", label: "Beelden (video's)" },
   { href: "/live", label: "Live-uitzendingen" },
   { href: "/agenten", label: "Agenten als dader" },
+  { href: "/profielen", label: "Agent-profielen" },
   { href: "/juridisch", label: "Juridische hulp" },
 ];
 
