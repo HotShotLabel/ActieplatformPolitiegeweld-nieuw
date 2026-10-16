@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
         datum: String(data.datum ?? ""),
         bron: String(data.bron ?? ""),
         agentKenmerk: String(data.agentKenmerk ?? ""),
+        analyse: String(data.analyse ?? ""),
         zichtbaar: data.zichtbaar === true,
         toegevoegdOp:
           typeof data.toegevoegdOp?.toDate === "function"
@@ -56,7 +57,12 @@ export async function PATCH(request: NextRequest) {
     return Response.json({ fout: "Geen toegang." }, { status: 401 });
   }
 
-  let body: { id?: string; zichtbaar?: boolean; agentKenmerk?: string } = {};
+  let body: {
+    id?: string;
+    zichtbaar?: boolean;
+    agentKenmerk?: string;
+    analyse?: string;
+  } = {};
   try {
     body = await request.json();
   } catch {
@@ -74,6 +80,9 @@ export async function PATCH(request: NextRequest) {
   }
   if (body.agentKenmerk !== undefined) {
     update.agentKenmerk = String(body.agentKenmerk).trim().slice(0, 300);
+  }
+  if (body.analyse !== undefined) {
+    update.analyse = String(body.analyse).trim().slice(0, 600);
   }
   if (Object.keys(update).length === 0) {
     return Response.json({ fout: "Niets om bij te werken." }, { status: 400 });

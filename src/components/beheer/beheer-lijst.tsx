@@ -74,6 +74,7 @@ interface BeheerBeeld {
   datum: string;
   bron: string;
   agentKenmerk: string;
+  analyse: string;
   zichtbaar: boolean;
   toegevoegdOp: string;
 }
@@ -1568,6 +1569,26 @@ export function BeheerLijst() {
                     {beeld.platform} · {beeld.plaats || "plaats onbekend"} ·{" "}
                     {beeld.bron} · {beeld.toegevoegdOp.slice(0, 10)}
                   </p>
+                  {beeld.analyse ? (
+                    <p className="mt-1 max-w-xl text-xs text-muted">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-2">
+                        transcriptie-suggestie:
+                      </span>{" "}
+                      {beeld.analyse}{" "}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setKenmerkConcepten((huidig) => ({
+                            ...huidig,
+                            [beeld.id]: beeld.analyse,
+                          }))
+                        }
+                        className="underline underline-offset-4 hover:text-foreground"
+                      >
+                        neem over in kenmerk
+                      </button>
+                    </p>
+                  ) : null}
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <input
                       value={kenmerkConcepten[beeld.id] ?? beeld.agentKenmerk}
