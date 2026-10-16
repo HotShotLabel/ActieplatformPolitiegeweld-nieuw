@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
         plaats: String(data.plaats ?? ""),
         datum: String(data.datum ?? ""),
         bron: String(data.bron ?? ""),
+        agentKenmerk: String(data.agentKenmerk ?? ""),
         zichtbaar: data.zichtbaar === true,
         toegevoegdOp:
           typeof data.toegevoegdOp?.toDate === "function"
@@ -55,7 +56,7 @@ export async function PATCH(request: NextRequest) {
     return Response.json({ fout: "Geen toegang." }, { status: 401 });
   }
 
-  let body: { id?: string; zichtbaar?: boolean } = {};
+  let body: { id?: string; zichtbaar?: boolean; agentKenmerk?: string } = {};
   try {
     body = await request.json();
   } catch {
@@ -67,11 +68,19 @@ export async function PATCH(request: NextRequest) {
     return Response.json({ fout: "Ongeldig id." }, { status: 400 });
   }
 
+  const update: Record<string, unknown> = {};
+  if (body.zichtbaar !== undefined) {
+    update.zichtbaar = body.zichtbaar === true;
+  }
+  if (body.agentKenmerk !== undefined) {
+    update.agentKenmerk = String(body.agentKenmerk).trim().slice(0, 300);
+  }
+  if (Object.keys(update).length === 0) {
+    return Response.json({ fout: "Niets om bij te werken." }, { status: 400 });
+  }
+
   try {
-    await getAdminDb()
-      .collection("beelden")
-      .doc(id)
-      .update({ zichtbaar: body.zichtbaar === true });
+    await getAdminDb().collection("beelden").doc(id).update(update);
     return Response.json({ ok: true });
   } catch (fout) {
     console.error("beeld bijwerken:", fout);

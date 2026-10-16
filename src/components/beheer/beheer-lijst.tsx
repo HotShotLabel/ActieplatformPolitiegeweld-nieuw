@@ -73,6 +73,7 @@ interface BeheerBeeld {
   plaats: string;
   datum: string;
   bron: string;
+  agentKenmerk: string;
   zichtbaar: boolean;
   toegevoegdOp: string;
 }
@@ -135,6 +136,38 @@ export function BeheerLijst() {
     plaats: "",
   });
   const [nieuwBeeldBezig, setNieuwBeeldBezig] = useState(false);
+  const [kenmerkConcepten, setKenmerkConcepten] = useState<
+    Record<string, string>
+  >({});
+  const [kenmerkBezig, setKenmerkBezig] = useState("");
+  const [koppelZoek, setKoppelZoek] = useState("");
+  const [koppelBezig, setKoppelBezig] = useState(false);
+  const [koppelFout, setKoppelFout] = useState("");
+  const [koppelResultaat, setKoppelResultaat] = useState<{
+    meldingen: {
+      id: string;
+      plaats: string;
+      datum: string;
+      beschrijving: string;
+      agent: string;
+      eenheid: string;
+    }[];
+    beelden: {
+      id: string;
+      titel: string;
+      bron: string;
+      url: string;
+      agentKenmerk: string;
+    }[];
+    zaken: {
+      id: string;
+      titel: string;
+      plaats: string;
+      jaar: string;
+      uitkomst: string;
+    }[];
+    overige: { ecli: string; datum: string; omschrijving: string }[];
+  } | null>(null);
 
   const laadLive = useCallback(async () => {
     try {
@@ -666,6 +699,65 @@ export function BeheerLijst() {
       setBeeldMelding("Toevoegen mislukte.");
     } finally {
       setNieuwBeeldBezig(false);
+    }
+  }
+
+  async function bewaarKenmerk(beeld: BeheerBeeld) {
+    const waarde = kenmerkConcepten[beeld.id] ?? beeld.agentKenmerk;
+    setKenmerkBezig(beeld.id);
+    setBeeldMelding("");
+    try {
+      const antwoord = await fetch("/api/beheer/beelden", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ id: beeld.id, agentKenmerk: waarde }),
+      });
+      if (!antwoord.ok) throw new Error();
+      setBeelden((huidig) =>
+        huidig
+          ? huidig.map((item) =>
+              item.id === beeld.id ? { ...item, agentKenmerk: waarde } : item
+            )
+          : huidig
+      );
+      setKenmerkConcepten((huidig) => {
+        const kopie = { ...huidig };
+        delete kopie[beeld.id];
+        return kopie;
+      });
+    } catch {
+      setBeeldMelding("Kenmerk opslaan mislukte.");
+    } finally {
+      setKenmerkBezig("");
+    }
+  }
+
+  async function zoekKoppelingen() {
+    const term = koppelZoek.trim();
+    if (term.length < 2) {
+      setKoppelFout("Vul minimaal twee tekens in.");
+      return;
+    }
+    setKoppelBezig(true);
+    setKoppelFout("");
+    try {
+      const antwoord = await fetch(
+        `/api/beheer/koppelingen?zoek=${encodeURIComponent(term)}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await antwoord.json().catch(() => ({}));
+      if (!antwoord.ok) {
+        setKoppelFout(data.fout ?? "Zoeken mislukte.");
+        return;
+      }
+      setKoppelResultaat(data);
+    } catch {
+      setKoppelFout("Zoeken mislukte.");
+    } finally {
+      setKoppelBezig(false);
     }
   }
 
@@ -1310,6 +1402,37 @@ export function BeheerLijst() {
                     {beeld.platform} · {beeld.plaats || "plaats onbekend"} ·{" "}
                     {beeld.bron} · {beeld.toegevoegdOp.slice(0, 10)}
                   </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <input
+                      value={kenmerkConcepten[beeld.id] ?? beeld.agentKenmerk}
+                      onChange={(gebeurtenis) =>
+                        setKenmerkConcepten((huidig) => ({
+                          ...huidig,
+                          [beeld.id]: gebeurtenis.target.value,
+                        }))
+                      }
+                      placeholder="Agent-kenmerk (dienstnummer, opvallend detail)"
+                      aria-label={`Agent-kenmerk voor ${beeld.titel}`}
+                      className={cn(beeldInput, "h-9 max-w-xs text-xs")}
+                    />
+                    {(kenmerkConcepten[beeld.id] ?? beeld.agentKenmerk) !==
+                    beeld.agentKenmerk ? (
+                      <button
+                        type="button"
+                        onClick={() => bewaarKenmerk(beeld)}
+                        disabled={kenmerkBezig === beeld.id}
+                        className={cn(
+                          btnGhost,
+                          "h-9 px-3 text-xs",
+                          kenmerkBezig === beeld.id && "opacity-60"
+                        )}
+                      >
+                        {kenmerkBezig === beeld.id
+                          ? "Opslaan…"
+                          : "Kenmerk opslaan"}
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <a
@@ -1352,6 +1475,120 @@ export function BeheerLijst() {
             Nog geen beelden binnengekomen.
           </p>
         )}
+      </section>
+
+      <section
+        aria-label="Koppelingen zoeken"
+        className="mt-10 rounded-xl border border-line bg-surface p-6"
+      >
+        <p className="font-display text-lg font-semibold tracking-tight">
+          Koppelingen zoeken
+        </p>
+        <p className="mt-1 max-w-[75ch] text-sm text-muted">
+          Zoek op een dienstnummer, naam, kenteken, eenheid of plaats en zie of
+          hetzelfde kenmerk in meerdere meldingen, video&apos;s of rechtszaken
+          terugkomt. Bevestig een koppeling altijd zelf, met de bron erbij;
+          koppelen op openbare kenmerken, geen biometrie.
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <input
+            value={koppelZoek}
+            onChange={(gebeurtenis) => setKoppelZoek(gebeurtenis.target.value)}
+            onKeyDown={(gebeurtenis) => {
+              if (gebeurtenis.key === "Enter") void zoekKoppelingen();
+            }}
+            placeholder="Bijv. dienstnummer, naam of eenheid"
+            aria-label="Zoekterm voor koppelingen"
+            className={cn(beeldInput, "max-w-sm")}
+          />
+          <button
+            type="button"
+            onClick={zoekKoppelingen}
+            disabled={koppelBezig}
+            className={cn(btnGhost, koppelBezig && "opacity-60")}
+          >
+            {koppelBezig ? "Zoeken…" : "Zoeken"}
+          </button>
+          {koppelFout ? (
+            <p className="text-sm text-accent">{koppelFout}</p>
+          ) : null}
+        </div>
+        {koppelResultaat ? (
+          <div className="mt-5 grid gap-4">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+                Meldingen ({koppelResultaat.meldingen.length})
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-muted">
+                {koppelResultaat.meldingen.map((melding) => (
+                  <li key={melding.id}>
+                    {melding.plaats} · {melding.datum || "datum onbekend"} ·{" "}
+                    {melding.agent || "geen agentgegeven"} —{" "}
+                    {melding.beschrijving}
+                  </li>
+                ))}
+                {koppelResultaat.meldingen.length === 0 ? (
+                  <li className="text-muted-2">geen</li>
+                ) : null}
+              </ul>
+            </div>
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+                Beelden ({koppelResultaat.beelden.length})
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-muted">
+                {koppelResultaat.beelden.map((beeld) => (
+                  <li key={beeld.id} className="truncate">
+                    {beeld.titel}
+                    {beeld.agentKenmerk ? ` · kenmerk: ${beeld.agentKenmerk}` : ""}{" "}
+                    ·{" "}
+                    <a
+                      href={beeld.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline underline-offset-4 hover:text-foreground"
+                    >
+                      bron
+                    </a>
+                  </li>
+                ))}
+                {koppelResultaat.beelden.length === 0 ? (
+                  <li className="text-muted-2">geen</li>
+                ) : null}
+              </ul>
+            </div>
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+                Rechtszaken op de kaart ({koppelResultaat.zaken.length})
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-muted">
+                {koppelResultaat.zaken.map((zaak) => (
+                  <li key={zaak.id}>
+                    {zaak.jaar} · {zaak.plaats} — {zaak.titel} ({zaak.uitkomst})
+                  </li>
+                ))}
+                {koppelResultaat.zaken.length === 0 ? (
+                  <li className="text-muted-2">geen</li>
+                ) : null}
+              </ul>
+            </div>
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
+                Overige rechtspraak ({koppelResultaat.overige.length})
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-muted">
+                {koppelResultaat.overige.map((zaak) => (
+                  <li key={zaak.ecli}>
+                    {zaak.datum} · {zaak.omschrijving}
+                  </li>
+                ))}
+                {koppelResultaat.overige.length === 0 ? (
+                  <li className="text-muted-2">geen</li>
+                ) : null}
+              </ul>
+            </div>
+          </div>
+        ) : null}
       </section>
 
       {kaartpunten.length > 0 ? (

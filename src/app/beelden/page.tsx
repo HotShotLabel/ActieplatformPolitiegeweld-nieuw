@@ -37,9 +37,10 @@ export default function BeeldenPage() {
           </h2>
           <p className="mt-2 max-w-[66ch] text-sm leading-relaxed text-muted">
             Zag je ergens een filmpje van politiegeweld in Nederland (TikTok,
-            Instagram, YouTube, Telegram, X)? Plak de link hier. Ook
-            TikTok- en Instagram-lives kun je melden via het link-formulier op
-            de{" "}
+            Instagram, YouTube, Telegram, X)? Plak de link hier. Ook filmpjes
+            waarin mensen door de politie worden lastiggevallen of vernederd
+            horen erbij. Ook TikTok- en Instagram-lives kun je melden via het
+            link-formulier op de{" "}
             <a
               href="/live"
               className="underline underline-offset-4 hover:text-foreground"
