@@ -10,7 +10,7 @@ export async function GET() {
     const snapshot = await getAdminDb()
       .collection("beelden")
       .orderBy("toegevoegdOp", "desc")
-      .limit(300)
+      .limit(1000)
       .get();
 
     const beelden = snapshot.docs

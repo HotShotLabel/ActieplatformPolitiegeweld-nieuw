@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const snapshot = await getAdminDb()
       .collection("beelden")
       .orderBy("toegevoegdOp", "desc")
-      .limit(500)
+      .limit(1000)
       .get();
 
     const beelden = snapshot.docs.map((document) => {
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
     const bestaand = await db
       .collection("beelden")
       .orderBy("toegevoegdOp", "desc")
-      .limit(500)
+      .limit(1000)
       .get();
     const bestaandeUrls = new Set(
       bestaand.docs.map((document) => String(document.data().url ?? ""))
