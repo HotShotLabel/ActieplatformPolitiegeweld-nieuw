@@ -93,6 +93,13 @@ export function isPolitiegeweldNieuws(tekst: string): boolean {
   ) {
     return false;
   }
+  if (
+    /(frankrijk|belgië|duitsland|verenigd koninkrijk|spanje|italië|verenigde staten|antwerpen|brussel|parijs|vlaanderen|wallonië)/.test(
+      t
+    )
+  ) {
+    return false;
+  }
   // Politie als slachtoffer is geen politiegeweld: iemand anders rijdt in op
   // de politie, of alleen agenten raken gewond. Uitsluiten, tenzij de politie
   // duidelijk zélf iemand aanrijdt.

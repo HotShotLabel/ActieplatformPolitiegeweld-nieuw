@@ -206,7 +206,7 @@ export async function GET() {
       if (typeof data.lat === "number") bericht.lat = data.lat;
       if (typeof data.lng === "number") bericht.lng = data.lng;
       return bericht;
-    });
+    }).filter((bericht) => isPolitiegeweldNieuws(bericht.titel));
 
     const bekend = new Set(opgeslagen.map((bericht) => bericht.url));
     const nieuwe = zoekBerichten.filter((bericht) => !bekend.has(bericht.url));

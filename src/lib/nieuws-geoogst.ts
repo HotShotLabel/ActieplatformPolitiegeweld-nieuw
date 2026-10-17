@@ -5,13 +5,6 @@ import type { NieuwsBericht } from "./nieuws-archief";
 // alleen van bekende nieuwsbronnen. Alleen koppen en links.
 export const NIEUWS_GEOOGST: NieuwsBericht[] = [
   {
-    titel: "14-jarige opgepakt na oproep om politieagenten te mishandelen in Antwerpen",
-    bron: "nieuwsblad.be",
-    url: "https://www.nieuwsblad.be/regio/antwerpen/regio-antwerpen/antwerpen/borgerhout/14-jarige-opgepakt-na-oproep-om-politieagenten-te-mishandelen-in-antwerpen/163156581.html",
-    datum: "2026-10-16",
-    soort: "geweld",
-  },
-  {
     titel: "Maaltijdbezorger gewond bij botsing met politieauto in Zaandam - De Orkaan",
     bron: "deorkaan.nl",
     url: "https://www.deorkaan.nl/maaltijdbezorger-gewond-bij-botsing-met-politieauto-in-zaandam/",
@@ -56,13 +49,6 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     datum: "2026-10-13",
     soort: "overleden",
     auteur: "Buitenlandredactie",
-  },
-  {
-    titel: "Politieagent (41) doodgeschoten in België, mogelijk bij achtervolging",
-    bron: "RTL Nieuws",
-    url: "https://www.rtl.nl/nieuws/buitenland/artikel/5658768/politieagent-doodgeschoten-belgie-achtervolging-brussel",
-    datum: "2026-10-13",
-    soort: "overleden",
   },
   {
     titel: "Agenten niet vervolgd na dodelijk schietincident in Rozenburg | Rijksrecherche.nl",
@@ -129,13 +115,6 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     lng: 5.0952,
   },
   {
-    titel: "Politiegeweld bij protesten in Frankrijk: 'Ongelofelijk' | NOS Stories",
-    bron: "NOS",
-    url: "https://stories.nos.nl/video/2634173",
-    datum: "2026-10-08",
-    soort: "geweld",
-  },
-  {
     titel: "Agent die verwarde gewapende man in Rozenburg doodschoot wordt niet vervolgd | Crime Nieuws | Actueel crimineel misdaadnieuws",
     bron: "Crime Nieuws",
     url: "https://crime-nieuws.nl/agent-die-verwarde-gewapende-man-in-rozenburg-doodschoot-wordt-niet-vervolgd/",
@@ -164,13 +143,6 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     datum: "2026-09-20",
     soort: "overig",
     auteur: "Florine Nesselaar",
-  },
-  {
-    titel: "Protesten in Frankrijk tegen wetsvoorstel dat politiegeweld sneller rechtvaardigt",
-    bron: "NOS",
-    url: "https://nos.nl/artikel/2631840-protesten-in-frankrijk-tegen-wetsvoorstel-dat-politiegeweld-sneller-rechtvaardigt",
-    datum: "2026-09-20",
-    soort: "geweld",
   },
   {
     titel: "Een oude wond: etnisch profileren en politiegeweld | VPRO",
@@ -3235,13 +3207,6 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     titel: "politiegeweld -  ANW (Algemeen Nederlands Woordenboek)",
     bron: "anw.ivdnt.org",
     url: "https://anw.ivdnt.org/article/politiegeweld",
-    datum: "",
-    soort: "geweld",
-  },
-  {
-    titel: "Liga voor Mensenrechten | Dossier politiegeweld in België",
-    bron: "mensenrechten.be",
-    url: "https://mensenrechten.be/pagina/nota-politiegeweld",
     datum: "",
     soort: "geweld",
   },

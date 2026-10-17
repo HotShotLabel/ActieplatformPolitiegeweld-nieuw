@@ -253,6 +253,11 @@ def is_politiegeweld(tekst):
         t,
     ):
         return False
+    if re.search(
+        r"(frankrijk|belgië|duitsland|verenigd koninkrijk|spanje|italië|verenigde staten|antwerpen|brussel|parijs|vlaanderen|wallonië)",
+        t,
+    ):
+        return False
     if re.search(AGENT_GEWOND, t) and not re.search(POLITIE_ACTOR_PERSOON, t):
         return False
     for patroon in SLACHTOFFER_PATRONEN:
