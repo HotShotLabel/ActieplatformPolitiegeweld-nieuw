@@ -162,7 +162,7 @@ export async function GET() {
         live: { live: false, titel: "", kijkers: 0, gestartOp: "" },
         bewaardagen: BEWAAR_DAGEN,
       },
-      { status: 502 }
+      { status: 200 }
     );
   }
 }

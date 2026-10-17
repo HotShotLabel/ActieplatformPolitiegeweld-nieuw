@@ -211,7 +211,7 @@ export async function GET() {
   try {
     const db = getAdminDb();
     const verzameling = db.collection("nieuws");
-    const snapshot = await verzameling.orderBy("datum", "desc").limit(600).get();
+    const snapshot = await verzameling.orderBy("datum", "desc").limit(200).get();
     opgeslagen = snapshot.docs.map((document) => {
       const data = document.data();
       const bericht: Bericht = {
