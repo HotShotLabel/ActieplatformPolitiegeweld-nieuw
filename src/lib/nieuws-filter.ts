@@ -84,6 +84,15 @@ const PATRONEN: RegExp[] = [
 export function isPolitiegeweldNieuws(tekst: string): boolean {
   const t = tekst.toLowerCase();
   if (!/politie|agent|verbalisant|marechaussee/.test(t)) return false;
+  // Buitenlandse politie valt buiten dit platform (tenzij het over de
+  // Nederlandse politie gaat, dan staat er geen land bij de actor).
+  if (
+    /(belgische|duitse|franse|amerikaanse|britse|vlaamse|waalse|spaanse|italiaanse)\s+(agent|agenten|politie|politieagent|politieagenten)\b/.test(
+      t
+    )
+  ) {
+    return false;
+  }
   // Politie als slachtoffer is geen politiegeweld: iemand anders rijdt in op
   // de politie, of alleen agenten raken gewond. Uitsluiten, tenzij de politie
   // duidelijk zélf iemand aanrijdt.

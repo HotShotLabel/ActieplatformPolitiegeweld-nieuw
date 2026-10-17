@@ -247,6 +247,12 @@ def is_politiegeweld(tekst):
     t = tekst.lower()
     if not re.search(r"politie|agent|verbalisant|marechaussee", t):
         return False
+    # Buitenlandse politie valt buiten dit platform.
+    if re.search(
+        r"(belgische|duitse|franse|amerikaanse|britse|vlaamse|waalse|spaanse|italiaanse)\s+(agent|agenten|politie|politieagent|politieagenten)\b",
+        t,
+    ):
+        return False
     if re.search(AGENT_GEWOND, t) and not re.search(POLITIE_ACTOR_PERSOON, t):
         return False
     for patroon in SLACHTOFFER_PATRONEN:
