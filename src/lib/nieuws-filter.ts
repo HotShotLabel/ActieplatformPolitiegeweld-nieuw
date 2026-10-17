@@ -18,6 +18,20 @@ const P =
   "(politie|politieagent|politieambtenaar|agent|agenten|verbalisant|wetshandhaver)";
 const A = "(politieagent|politieambtenaar|agent|agenten|verbalisant)";
 
+/* Politie als slachtoffer (geen politiegeweld): een ander rijdt in op de
+   politie, of alleen agenten raken gewond zonder dat zij iemand aanreden.
+   De agent-gewond-check is bewust nauw: "gewonde" (het slachtoffer in de
+   zin) mag niet als "agent gewond" tellen. */
+const AGENT_GEWOND =
+  /\b(agent|agente|politieagent|politieagente)(en|s|es)?\b(?:\s+\w+){0,2}\s+(gewond|letsel|ziekenhuis|opgenomen)\b|\b(gewonde|zwaargewonde|ernstig gewonde)\s+(agent|agente|politieagent|politieagente)(en|s)?\b/;
+const POLITIE_ACTOR_PERSOON =
+  /(politie|politieagent|agente|agent|politieauto|politiebus|politiebusje|politievoertuig|politiewagen|dienstauto|politiemotor|marechaussee)[^.]{0,60}(schept|schepte|rijdt[^.]{0,30}\baan\b|reed[^.]{0,30}\baan\b|overrijdt|overreed|ramt|ramde|raakt|raakte|schiet|schoot|schoten)[^.]{0,60}(fietser|voetganger|scooter|brommer|motorrijder|skateboarder|kind|jongen|meisje|man|vrouw|persoon|inwoner|omstander|passant|slachtoffer|menigte|demonstranten|betogers)/;
+const SLACHTOFFER_PATRONEN: RegExp[] = [
+  /(bestuurder|automobilist|man|vrouw|jongen|meisje|kind|persoon|busje|lijnbus|bestelbus|scooter|fietser|verdachte|inwoner|bewoner|vrachtwagen|bus)\b[^.]{0,60}(rijdt[^.]{0,30}in op|reed[^.]{0,30}in op|inrijdt[^.]{0,20}op|inreed[^.]{0,20}op|botst op|botste op|klapt op|klapte op|ramt|ramde|rijdt tegen|reed tegen)[^.]{0,40}(politie|marechaussee)/,
+  /\bauto\b[^.]{0,60}(rijdt[^.]{0,30}in op|reed[^.]{0,30}in op|inrijdt[^.]{0,20}op|inreed[^.]{0,20}op)[^.]{0,30}(politie|marechaussee)/,
+  /(busje|lijnbus|bestelbus|bus|auto|vrachtwagen|man|vrouw|bestuurder|automobilist|verdachte)\b[^.]{0,50}\bop (de |een )?(politie|politieauto|politiebus|politiebusje|politiewagen|politievoertuig|dienstauto|politiemotor|marechaussee)[^.]{0,30}\b(inrijdt|inreed|rijdt in|reed in|klapt|klapte|botst|botste|ramt|ramde)/,
+];
+
 const PATRONEN: RegExp[] = [
   /(doodgeschoten|neergeschoten) door (de |een )?(politie|agent|politieagent|politieambtenaar)|door (de |een )?(politie|agent|politieagent|politieambtenaar)[a-zèé']* (doodgeschoten|neergeschoten)|politiekogel|dodelijk schietincident met de politie|dodelijk politieoptreden|dodelijk politie-ingrijpen/,
   /(overleed|overleden|om het leven gekomen|omgekomen|doodgeschoten|neergeschoten)[^.]{0,60}(aanhouding|arrestatie|politiecel|politie-?cel|vervoer|politieoptreden|politie-?ingrijpen|achtervolging|nekklem|taser|pepperspray|politiegeweld)/,
@@ -57,6 +71,13 @@ const PATRONEN: RegExp[] = [
 export function isPolitiegeweldNieuws(tekst: string): boolean {
   const t = tekst.toLowerCase();
   if (!/politie|agent|verbalisant|marechaussee/.test(t)) return false;
+  // Politie als slachtoffer is geen politiegeweld: iemand anders rijdt in op
+  // de politie, of alleen agenten raken gewond. Uitsluiten, tenzij de politie
+  // duidelijk zélf iemand aanrijdt.
+  if (AGENT_GEWOND.test(t) && !POLITIE_ACTOR_PERSOON.test(t)) return false;
+  for (const patroon of SLACHTOFFER_PATRONEN) {
+    if (patroon.test(t)) return false;
+  }
   for (const patroon of PATRONEN) {
     const treffer = patroon.exec(t);
     if (!treffer) continue;

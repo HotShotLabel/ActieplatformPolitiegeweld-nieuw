@@ -90,6 +90,8 @@ BUITENSLUIT = (
     "tweedekamer.nl",
     "open.overheid.nl",
     "headliner.nl",
+    "qoshe.com",
+    "oozo.nl",
     "exa.ai",
     "research.vu.nl",
     "stadindex.nl",
@@ -206,10 +208,33 @@ PATRONEN = [
 ]
 
 
+# Politie als slachtoffer (geen politiegeweld): een ander rijdt in op de
+# politie, of alleen agenten raken gewond zonder dat zij iemand aanreden.
+# De agent-gewond-check is bewust nauw: "gewonde" (het slachtoffer in de
+# zin) mag niet als "agent gewond" tellen.
+AGENT_GEWOND = (
+    r"\b(agent|agente|politieagent|politieagente)(en|s|es)?\b(?:\s+\w+){0,2}\s+(gewond|letsel|ziekenhuis|opgenomen)\b"
+    r"|\b(gewonde|zwaargewonde|ernstig gewonde)\s+(agent|agente|politieagent|politieagente)(en|s)?\b"
+)
+POLITIE_ACTOR_PERSOON = (
+    r"(politie|politieagent|agente|agent|politieauto|politiebus|politiebusje|politievoertuig|politiewagen|dienstauto|politiemotor|marechaussee)[^.]{0,60}(schept|schepte|rijdt[^.]{0,30}\baan\b|reed[^.]{0,30}\baan\b|overrijdt|overreed|ramt|ramde|raakt|raakte|schiet|schoot|schoten)[^.]{0,60}(fietser|voetganger|scooter|brommer|motorrijder|skateboarder|kind|jongen|meisje|man|vrouw|persoon|inwoner|omstander|passant|slachtoffer|menigte|demonstranten|betogers)"
+)
+SLACHTOFFER_PATRONEN = [
+    r"(bestuurder|automobilist|man|vrouw|jongen|meisje|kind|persoon|busje|lijnbus|bestelbus|scooter|fietser|verdachte|inwoner|bewoner|vrachtwagen|bus)\b[^.]{0,60}(rijdt[^.]{0,30}in op|reed[^.]{0,30}in op|inrijdt[^.]{0,20}op|inreed[^.]{0,20}op|botst op|botste op|klapt op|klapte op|ramt|ramde|rijdt tegen|reed tegen)[^.]{0,40}(politie|marechaussee)",
+    r"\bauto\b[^.]{0,60}(rijdt[^.]{0,30}in op|reed[^.]{0,30}in op|inrijdt[^.]{0,20}op|inreed[^.]{0,20}op)[^.]{0,30}(politie|marechaussee)",
+    r"(busje|lijnbus|bestelbus|bus|auto|vrachtwagen|man|vrouw|bestuurder|automobilist|verdachte)\b[^.]{0,50}\bop (de |een )?(politie|politieauto|politiebus|politiebusje|politiewagen|politievoertuig|dienstauto|politiemotor|marechaussee)[^.]{0,30}\b(inrijdt|inreed|rijdt in|reed in|klapt|klapte|botst|botste|ramt|ramde)",
+]
+
+
 def is_politiegeweld(tekst):
     t = tekst.lower()
     if not re.search(r"politie|agent|verbalisant|marechaussee", t):
         return False
+    if re.search(AGENT_GEWOND, t) and not re.search(POLITIE_ACTOR_PERSOON, t):
+        return False
+    for patroon in SLACHTOFFER_PATRONEN:
+        if re.search(patroon, t):
+            return False
     for patroon in PATRONEN:
         treffer = re.search(patroon, t)
         if not treffer:
@@ -306,10 +331,6 @@ def bron_voor(url):
 
 PLAATS_CACHE = WORTEL / "scripts/nieuws-plaatsen.json"
 CAD_CACHE = WORTEL / "scripts/cad-plaatsen.json"
-# Eerdere vondsten bewaren: het script schrijft het TS-bestand opnieuw, dus
-# zonder deze cache zouden artikelen die deze ronde niet opnieuw gevonden
-# worden uit de site verdwijnen.
-ITEMS_CACHE = WORTEL / "scripts/nieuws-geoogst-cache.json"
 
 # Extra bekende plaatsnamen naast de CAD-lijst.
 EXTRA_PLAATSEN = [
