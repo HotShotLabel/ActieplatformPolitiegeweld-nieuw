@@ -90,6 +90,17 @@ ZOEKTERMEN = [
     "politiegeweld Nijmegen",
     "politie geweld 112",
     "politieoptreden geweld wijk",
+    # Stille lokale zaken per stad/regio
+    "politie geweld Amsterdam",
+    "politie geweld Rotterdam",
+    "politie geweld Utrecht",
+    "politie geweld Den Haag",
+    "politie geweld Eindhoven",
+    "politie geweld Groningen",
+    "politie geweld Tilburg",
+    "politie geweld Breda",
+    "politie geweld Arnhem",
+    "politie geweld Nijmegen",
 ]
 
 PER_ZOEKTERM = 50
