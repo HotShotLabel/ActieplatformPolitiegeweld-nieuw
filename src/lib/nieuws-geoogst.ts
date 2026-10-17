@@ -84,7 +84,7 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
   },
   {
     titel: "Politieauto botst tegen verkeerslicht na aanrijding in Utrecht",
-    bron: "112nederland.nl",
+    bron: "112 Nederland",
     url: "https://112nederland.nl/2026/10/08/politieauto-botst-tegen-verkeerslicht-na-aanrijding/",
     datum: "2026-10-08",
     soort: "gevaar",
@@ -281,7 +281,7 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
   },
   {
     titel: "Fatbikebestuurder overlijdt tijdens politieaanhouding in Rotterdam, Rijksrecherche doet onderzoek | 112 Nieuws Nederland",
-    bron: "112nieuws.net",
+    bron: "112 Nieuws",
     url: "https://112nieuws.net/2026/09/13/fatbikebestuurder-overlijdt-tijdens-politieaanhouding-in-rotterdam-rijksrecherche-doet-onderzoek/",
     datum: "2026-09-12",
     soort: "overig",
@@ -390,7 +390,7 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
   },
   {
     titel: "Politie schiet bij aanhouding, verdachte gewond naar ziekenhuis - 112 Nederland",
-    bron: "112nederland.nl",
+    bron: "112 Nederland",
     url: "https://112nederland.nl/2026/09/02/politie-schiet-bij-aanhouding-verdachte-gewond-naar-ziekenhuis/",
     datum: "2026-09-02",
     soort: "geweld",
@@ -457,7 +457,7 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
   },
   {
     titel: "Politie schiet bij incident voor politiebureau; verdachte (34) gewond aan been | 112 Nieuws Nederland",
-    bron: "112nieuws.net",
+    bron: "112 Nieuws",
     url: "https://112nieuws.net/2026/08/21/politie-schiet-bij-incident-voor-politiebureau-verdachte-34-gewond-aan-been/",
     datum: "2026-08-21",
     soort: "geweld",
@@ -843,6 +843,13 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     auteur: "André Oerlemans",
   },
   {
+    titel: "Agent slaat dronken man op rug met wapenstok",
+    bron: "AD",
+    url: "https://www.ad.nl/video/productie/agent-slaat-pool-met-wapenstok-13511311",
+    datum: "2026-06-18",
+    soort: "geweld",
+  },
+  {
     titel: "Agent niet vervolgd voor dodelijk schietincident na fatbikeroof Capelle aan den IJssel | Rijksrecherche.nl",
     bron: "Rijksrecherche",
     url: "https://www.rijksrecherche.nl/actueel/nieuws/2026/06/11/agent-niet-vervolgd-voor-dodelijk-schietincident-na-fatbikeroof-capelle-aan-den-ijssel",
@@ -997,6 +1004,13 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     plaats: "Erp",
     lat: 51.5896,
     lng: 5.6098,
+  },
+  {
+    titel: "Politiegeweld: wanneer mag de politie geweld gebruiken?",
+    bron: "lawandmore.nl",
+    url: "https://lawandmore.nl/politiegeweld-voor-de-rechter-wanneer-mag-de-politie-geweld-gebruiken-en-wat-als-het-misgaat/",
+    datum: "2026-06-02",
+    soort: "geweld",
   },
   {
     titel: "Politie pakt hard aan na Carl Cox in Puurs: drugs, vechtpartijen en hagelstenen",
@@ -1633,7 +1647,7 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     lng: 5.0453,
   },
   {
-    titel: "Hulp na politiegeweld en machtsmisbruik  | Slachtofferwijzer",
+    titel: "Hulp na politiegeweld en machtsmisbruik",
     bron: "slachtofferwijzer.nl",
     url: "https://slachtofferwijzer.nl/artikelen/hulp-na-politiegeweld-en-machtsmisbruik",
     datum: "2025-06-11",
@@ -1649,7 +1663,7 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
   },
   {
     titel: "Politieauto schept fietser, slachtoffer belandt tientallen meters verderop - 112 Nederland",
-    bron: "112nederland.nl",
+    bron: "112 Nederland",
     url: "https://112nederland.nl/2025/05/31/video/politieauto-schept-fietser-slachtoffer-belandt-tientallen-meters-verderop/",
     datum: "2025-05-31",
     soort: "gevaar",
@@ -2033,6 +2047,13 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     lng: 5.4585,
   },
   {
+    titel: "Agent schopt en slaat in op man bij aanhouding op vliegveld ...",
+    bron: "NOS",
+    url: "https://nos.nl/video/2530195-agent-schopt-en-slaat-in-op-man-bij-aanhouding-op-vliegveld-in-manchester",
+    datum: "2024-07-25",
+    soort: "geweld",
+  },
+  {
     titel: "Geen vervolging agenten die met geweld Dordtenaar arresteerden | Openbaar Ministerie",
     bron: "Openbaar Ministerie",
     url: "https://www.om.nl/actueel/nieuws/2024/07/04/geen-vervolging-agenten-die-met-geweld-dordtenaar-arresteerden",
@@ -2355,6 +2376,17 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     auteur: "Elmer van Hest",
   },
   {
+    titel: "Demonstratie tegen politiegeweld na dood Remon Kalloe (42): ‘Dit mag niet in doofpot’ | Rotterdam | NU.nl",
+    bron: "NU.nl",
+    url: "https://www.nu.nl/rotterdam/6226158/demonstratie-tegen-politiegeweld-na-dood-remon-kalloe-42-dit-mag-niet-in-doofpot.html",
+    datum: "2022-09-26",
+    soort: "overleden",
+    auteur: "Door AD Rotterdams Dagblad",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
+  },
+  {
     titel: "Man na arrestatie in Borne overleden, Rijksrecherche onderzoekt optreden politie | de Volkskrant",
     bron: "de Volkskrant",
     url: "https://www.volkskrant.nl/nieuws-achtergrond/man-na-arrestatie-in-borne-overleden-rijksrecherche-onderzoekt-optreden-politie~b1ddbb54/",
@@ -2674,6 +2706,14 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     lng: 5.4585,
   },
   {
+    titel: "Vrouw die aangifte deed van politiegeweld, moet binnenkort zelf voor de rechter verschijnen | Regio | AD.nl",
+    bron: "AD",
+    url: "https://www.ad.nl/rotterdam/vrouw-die-aangifte-deed-van-politiegeweld-moet-binnenkort-zelf-voor-de-rechter-verschijnen~a428ee6b/",
+    datum: "2020-08-20",
+    soort: "geweld",
+    auteur: "Sander Sonnemans",
+  },
+  {
     titel: "'Door politie doodgeschoten man in Amsterdam was bekende influencer'",
     bron: "NOS",
     url: "https://nos.nl/artikel/2344435-door-politie-doodgeschoten-man-in-amsterdam-was-bekende-influencer",
@@ -2707,6 +2747,16 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     datum: "2020-06-15",
     soort: "geweld",
     auteur: "Rick van de Lustgraaf",
+  },
+  {
+    titel: "Politiegeweld in Rotterdam",
+    bron: "Controle Alt Delete",
+    url: "https://controlealtdelete.nl/articles/politiegeweld-in-rotterdam",
+    datum: "2020-06-03",
+    soort: "geweld",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
   },
   {
     titel: "Schadevergoeding na inval politie eisen via Meld.nl",
@@ -2769,6 +2819,17 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     url: "https://nos.nl/artikel/2305382-verdachte-aangehouden-voor-mishandelen-van-agent-in-trouwstoet",
     datum: "2019-10-09",
     soort: "geweld",
+  },
+  {
+    titel: "Politie deelt beelden van verdachte die agent mishandelde bij trouwstoet | Rotterdam | NU.nl",
+    bron: "NU.nl",
+    url: "https://www.nu.nl/rotterdam/6001249/politie-deelt-beelden-van-verdachte-die-agent-mishandelde-bij-trouwstoet.html",
+    datum: "2019-10-01",
+    soort: "geweld",
+    auteur: "Door NU.nl",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
   },
   {
     titel: "Agenten voor rechter om valse verklaringen en mishandeling | Openbaar Ministerie",
@@ -2873,6 +2934,16 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     auteur: "Michiel Satink",
   },
   {
+    titel: "Video: kind slachtoffer buitensporig politiegeweld Rotterdam - Joop - BNNVARA",
+    bron: "bnnvara.nl",
+    url: "https://www.bnnvara.nl/joop/artikelen/video-kind-slachtoffer-buitensporig-politiegeweld-rotterdam",
+    datum: "2019-01-02",
+    soort: "geweld",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
+  },
+  {
     titel: "Wat ik geleerd heb van ons onderzoek naar politiegeweld",
     bron: "Pointer",
     url: "https://pointer.kro-ncrv.nl/wat-ik-geleerd-heb-van-ons-onderzoek-naar-politiegeweld",
@@ -2943,6 +3014,16 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     url: "https://www.ed.nl/eindhoven/politiewagen-veroorzaakt-ongeluk~a4501618/",
     datum: "2017-03-23",
     soort: "gevaar",
+  },
+  {
+    titel: "OM: politiegeweld intocht Sinterklaas Rotterdam was rechtmatig",
+    bron: "NOS",
+    url: "https://nos.nl/artikel/2158069-om-politiegeweld-intocht-sinterklaas-rotterdam-was-rechtmatig",
+    datum: "2017-02-13",
+    soort: "geweld",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
   },
   {
     titel: "Politie past training nekklem aan | Marokko Nieuws",
@@ -3118,6 +3199,16 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     soort: "geweld",
   },
   {
+    titel: "Zorgen over excessief politiegeweld in Rotterdam - Joop - BNNVARA",
+    bron: "bnnvara.nl",
+    url: "https://www.bnnvara.nl/joop/artikelen/zorgen-over-excessief-politiegeweld-in-rotterdam",
+    datum: "2013-09-23",
+    soort: "geweld",
+    plaats: "Rotterdam",
+    lat: 51.9225,
+    lng: 4.4865,
+  },
+  {
     titel: "Agent opgepakt voor mishandeling",
     bron: "NOS",
     url: "https://nos.nl/artikel/534298-agent-opgepakt-voor-mishandeling",
@@ -3144,6 +3235,14 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     url: "https://www.parool.nl/nieuws/agent-veroorzaakt-verkeersongeval~b168315e/",
     datum: "2012-07-27",
     soort: "gevaar",
+  },
+  {
+    titel: "'Slachtoffer politiegeweld niet agressief' | Algemeen | NU.nl",
+    bron: "NU.nl",
+    url: "https://www.nu.nl/algemeen/2839519/slachtoffer-politiegeweld-niet-agressief.html",
+    datum: "2012-06-19",
+    soort: "geweld",
+    auteur: "Door ANP",
   },
   {
     titel: "Agent mishandeld tijdens aanhouding",
@@ -3174,13 +3273,6 @@ export const NIEUWS_GEOOGST: NieuwsBericht[] = [
     url: "https://lawandmore.nl/politie-fouten-en-schadevergoeding-uw-rechten-bij-onrechtmatig-politieoptreden/",
     datum: "",
     soort: "overig",
-  },
-  {
-    titel: "Politiegeweld: wanneer mag de politie geweld gebruiken?",
-    bron: "lawandmore.nl",
-    url: "https://lawandmore.nl/politiegeweld-voor-de-rechter-wanneer-mag-de-politie-geweld-gebruiken-en-wat-als-het-misgaat/",
-    datum: "",
-    soort: "geweld",
   },
   {
     titel: "Politiegeweld - Pointer - KRO-NCRV",
