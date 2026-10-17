@@ -93,7 +93,7 @@ export function NieuwsLijst() {
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        {(["alles", "overleden", "agent-vervolgd", "burger-vervolgd"] as const).map(
+        {(["alles", "overleden", "gevaar", "agent-vervolgd", "burger-vervolgd"] as const).map(
           (optie) => (
             <button
               key={optie}

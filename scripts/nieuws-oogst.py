@@ -55,6 +55,17 @@ ZOEKTERMEN = [
     "schadevergoeding politiegeweld rechter",
     "artikel 12 Sv politiegeweld",
     "commissie geweldsaanwending oordeel",
+    # Aanrijdingen en gevaar op de weg door politie
+    "politieauto aanrijding",
+    "politieauto schept voetganger",
+    "politie rijdt fietser aan",
+    "aanrijding door politieauto",
+    "politieauto overrijdt",
+    "politie veroorzaakt ongeluk",
+    "fietser aangereden door politie",
+    "agent rijdt kind aan",
+    "politiebus ongeluk gewonden",
+    "politie rijdt in op menigte",
 ]
 
 PER_ZOEKTERM = 50
@@ -175,7 +186,21 @@ PATRONEN = [
     r"rijksrecherche",
     r"artikel 12|12-procedure|12 sv|klaagschrift",
     r"(aansprakelijk|schadevergoeding|onrechtmatige daad|onrechtmatig)[^.]{0,80}(politie|politieoptreden|aanhouding|schietincident|achtervolging)",
-    r"(politie|politieauto|politiebus|dienstauto)[^.]{0,80}(achtervolging|reed in|rijdt in|aanrijding|crash|ongeval)[^.]{0,80}(gewond|dodelijk|overleed|overleden|omgekomen)",
+    r"(politie|politieauto|politiebus|dienstauto)(?!\s*(onderzoekt|onderzocht|doet|zoekt)\b)[^.]{0,80}(achtervolging|reed in|rijdt in|aanrijding|crash|ongeval)[^.]{0,80}(gewond|gewonden|letsel|dodelijk|overleed|overleden|omgekomen|bekneld|zwaargewond)",
+    # Politie als veroorzaker van een aanrijding of ongeval (actor-route,
+    # slachtoffer-eerst, en politievoertuig als botser). Lookaheads blokkeren
+    # "politie onderzoekt ongeval" (dan is de politie geen actor).
+    r"(politieauto|politieauto's|politiebus|politiebusje|politievoertuig|politiewagen|dienstauto|politiemotor|politiemotoren)(?![^.]{0,20}\bonderz(oekt|ocht)\b)[^.]{0,60}(botst|botste|crash|crasht|crashte|schept|schepte|schampt|schampte|overrijdt|overreed|overreden|rijdt in|reed in|ramt|ramde|klapt|klapte|veroorzaakt|veroorzaakte|gewond|letsel)",
+    r"(aanrijding|botsing|ongeval|ongeluk|crash)[^.]{0,40}(met (de |een )?(politieauto|politiebus|politiebusje|politievoertuig|politiewagen|dienstauto|politiemotor)|door (de |een )?(politie|politieagent|politieauto|politiebus|politievoertuig|marechaussee))",
+    r"(politieauto|politieauto's|politiebus|politiebusje|politievoertuig|politiewagen|dienstauto|politiemotor)(?![^.]{0,20}\bonderz(oekt|ocht)\b)[^.]{0,40}(in botsing|in aanrijding|in een botsing|in een aanrijding|botst met|aanrijding met|botsing met)",
+    r"(fietser|voetganger|scooter|brommer|motorrijder|skateboarder|hardloper|kind|jongen|meisje|man|vrouw|persoon|inwoner|omstander|passant|slachtoffer)(?![^.]{0,20}\bonderz(oekt|ocht)\b)[^.]{0,80}(aangereden|geschept|overreden|geraakt|gewond|letsel|omgekomen|overleden)[^.]{0,60}door (de |een )?(politie|politieagent|agent|politieauto|politiebus|politievoertuig|dienstauto|politiemotor|marechaussee)",
+    r"(politie|politieagent|agent|politieauto|politiebus|politievoertuig|politiewagen|dienstauto|politiemotor|marechaussee)(?!\s*(onderzoekt|onderzocht|doet|zoekt)\b)[^.]{0,60}(schept|schepte|rijdt aan|reed aan|rijdt in op|reed in op|overrijdt|overreed|ramt|ramde|raakt|raakte|botst|botste)[^.]{0,60}(fietser|voetganger|scooter|brommer|motorrijder|kind|jongen|meisje|man|vrouw|persoon|inwoner|omstander|passant|slachtoffer|menigte|demonstranten|betogers)",
+    r"(politie|politieagent|agent|politieauto|politiebus|dienstauto|marechaussee)(?!\s*(onderzoekt|onderzocht|zoekt)\b)[^.]{0,80}(veroorzaakt|veroorzaakte)[^.]{0,80}(ongeval|ongeluk|aanrijding|botsing|crash|letsel|gewond)",
+    r"(politie|politieagent|agent|politieauto|politiebus|politievoertuig|politiewagen|dienstauto|politiemotor|marechaussee)(?!\s*(onderzoekt|onderzocht|doet|zoekt)\b)[^.]{0,60}(rijdt|reed|rijden|reden)[^.]{0,40}(fietser|voetganger|scooter|brommer|motorrijder|skateboarder|kind|jongen|meisje|man|vrouw|persoon|inwoner|omstander|passant|slachtoffer|menigte|demonstranten|betogers)\s+aan\b",
+    r"(politieauto|politiebus|politievoertuig|politiewagen|dienstauto|politiemotor)(?![^.]{0,20}\bonderz(oekt|ocht)\b)[^.]{0,50}(door rood|spookreed|spookrijdt|te hard|te snel|roekeloos|gevaarlijk rijgedrag)[^.]{0,80}(gewond|letsel|ongeval|ongeluk|aanrijding|botsing|crash|overleden|dodelijk|omgekomen)",
+    r"(gewond|letsel|overleden|omgekomen)[^.]{0,60}(nadat|toen|doordat|omdat)[^.]{0,40}(politieauto|politiebus|politievoertuig|politiewagen|dienstauto|politiemotor|marechaussee)",
+    r"(politie|politieagent|agent|politieauto|politiebus|dienstauto|marechaussee)[^.]{0,80}(in gevaar gebracht|in gevaar bracht|in gevaar brengt|in gevaar brengen|levensgevaar)",
+    r"(achtervolging|achtervolgd|achtervolgde)[^.]{0,80}(politie|politieauto|politiebus)[^.]{0,80}(ongeval|ongeluk|aanrijding|botsing|crash|gewond|letsel|dodelijk|overleed|overleden|omgekomen|geschept|aangereden|overreden)",
     rf"{_P}[^.]{{0,60}}(schoot|schiet|schoten|vuurwapen)[^.]{{0,60}}(man|vrouw|jongen|meisje|slachtoffer|verdachte|inwoner|persoon|omstander)",
     rf"{_P}[^.]{{0,50}}(nekklem|klemgreep|verwurg)",
 ]
@@ -183,9 +208,17 @@ PATRONEN = [
 
 def is_politiegeweld(tekst):
     t = tekst.lower()
-    if not re.search(r"politie|agent|verbalisant", t):
+    if not re.search(r"politie|agent|verbalisant|marechaussee", t):
         return False
-    return any(re.search(patroon, t) for patroon in PATRONEN)
+    for patroon in PATRONEN:
+        treffer = re.search(patroon, t)
+        if not treffer:
+            continue
+        begin = max(0, treffer.start() - 150)
+        eind = min(len(t), treffer.end() + 150)
+        if re.search(r"politie|agent|verbalisant|marechaussee", t[begin:eind]):
+            return True
+    return False
 
 
 def mcp_sessie():
@@ -273,6 +306,10 @@ def bron_voor(url):
 
 PLAATS_CACHE = WORTEL / "scripts/nieuws-plaatsen.json"
 CAD_CACHE = WORTEL / "scripts/cad-plaatsen.json"
+# Eerdere vondsten bewaren: het script schrijft het TS-bestand opnieuw, dus
+# zonder deze cache zouden artikelen die deze ronde niet opnieuw gevonden
+# worden uit de site verdwijnen.
+ITEMS_CACHE = WORTEL / "scripts/nieuws-geoogst-cache.json"
 
 # Extra bekende plaatsnamen naast de CAD-lijst.
 EXTRA_PLAATSEN = [
@@ -347,7 +384,38 @@ def soort_voor(titel):
         return "overleden"
     if re.search(r"agent[^.]{0,60}(veroordeeld|vervolgd)|politieagent[^.]{0,60}(veroordeeld|vervolgd)", titel, re.I):
         return "agent-vervolgd"
+    if re.search(
+        r"politieauto|politiebus|politievoertuig|politiewagen|dienstauto|politiemotor"
+        r"|aanrijding|geschept|aangereden|overreden|ongeval|ongeluk|botsing|schepte"
+        r"|achtervolging",
+        titel,
+        re.I,
+    ):
+        return "gevaar"
     return "overig"
+
+
+def lees_bestaande_items():
+    """Lees de al geoogste items uit het TS-bestand zodat een nieuwe
+    oogstronde niets laat verdwijnen (het bestand wordt herschreven)."""
+    if not UIT.exists():
+        return {}
+    tekst = UIT.read_text(encoding="utf-8")
+    items = {}
+    for blok in re.finditer(r"\n  \{(.*?)\n  \},", tekst, re.S):
+        item = {}
+        for regel in blok.group(1).splitlines():
+            m = re.match(r'\s*(\w+): (".*"|[\d.\-]+),?\s*$', regel)
+            if not m:
+                continue
+            try:
+                item[m.group(1)] = json.loads(m.group(2).rstrip(","))
+            except json.JSONDecodeError:
+                continue
+        url = item.get("url", "")
+        if url:
+            items[url.rstrip("/")] = item
+    return items
 
 
 def main():
@@ -385,6 +453,7 @@ def main():
     cache = {}
     if PLAATS_CACHE.exists():
         cache = json.loads(PLAATS_CACHE.read_text())
+    vorige = lees_bestaande_items()
     for item in gevonden.values():
         entry = {
             "titel": item["titel"],
@@ -402,8 +471,9 @@ def main():
                 entry["plaats"] = kandidaat
                 entry["lat"] = coord[0]
                 entry["lng"] = coord[1]
-        items.append(entry)
+        vorige[item["url"].rstrip("/")] = entry
     PLAATS_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
+    items = list(vorige.values())
     items.sort(key=lambda b: b["datum"], reverse=True)
     met_plaats = sum(1 for b in items if "lat" in b)
     print(f"plekken gevonden voor {met_plaats}/{len(items)} artikelen")

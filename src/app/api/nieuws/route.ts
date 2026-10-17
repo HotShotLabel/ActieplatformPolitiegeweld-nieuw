@@ -94,6 +94,13 @@ function soortVoorLive(titel: string): NieuwsSoort {
   if (/(politie|agent)[^.]{0,60}(vervolgd|veroordeeld)|vervolging/i.test(titel)) {
     return "agent-vervolgd";
   }
+  if (
+    /(politieauto|politiebus|politievoertuig|politiewagen|dienstauto|politiemotor|aanrijding|geschept|aangereden|overreden|ongeval|ongeluk|botsing|schepte|achtervolging)/i.test(
+      titel
+    )
+  ) {
+    return "gevaar";
+  }
   return "overig";
 }
 

@@ -37,6 +37,17 @@ const ZOEKTERMEN = [
   "taser politie slachtoffer letsel",
   "buitenproportioneel politiegeweld zaak",
   "schadevergoeding politiegeweld rechter",
+  // Aanrijdingen en gevaar op de weg door politie
+  "politieauto aanrijding",
+  "politieauto schept voetganger",
+  "politie rijdt fietser aan",
+  "aanrijding door politieauto",
+  "politieauto overrijdt",
+  "politie veroorzaakt ongeluk",
+  "fietser aangereden door politie",
+  "agent rijdt kind aan",
+  "politiebus ongeluk gewonden",
+  "politie rijdt in op menigte",
 ];
 
 const PER_RONDE = 4;
