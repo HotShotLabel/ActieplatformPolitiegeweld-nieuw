@@ -6,6 +6,7 @@
 
 export type NieuwsSoort =
   | "overleden"
+  | "geweld"
   | "agent-vervolgd"
   | "burger-vervolgd"
   | "gevaar"
@@ -25,6 +26,7 @@ export interface NieuwsBericht {
 
 export const SOORT_LABEL: Record<NieuwsSoort, string> = {
   overleden: "Overleden na politieoptreden",
+  geweld: "Politiegeweld",
   "agent-vervolgd": "Agent vervolgd",
   "burger-vervolgd": "Burger vervolgd",
   gevaar: "Gevaarlijk rijden of ongeval",

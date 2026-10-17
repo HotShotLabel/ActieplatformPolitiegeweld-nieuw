@@ -429,6 +429,15 @@ def soort_voor(titel):
     if re.search(r"agent[^.]{0,60}(veroordeeld|vervolgd)|politieagent[^.]{0,60}(veroordeeld|vervolgd)", titel, re.I):
         return "agent-vervolgd"
     if re.search(
+        r"politiegeweld|geweldsexces|mishandel|geslagen|slaat|sloeg|schopt|schopte"
+        r"|trapt|trapte|duwt|duwde|sleurt|sleurde|wurgt|verwurgt|nekklem"
+        r"|klemgreep|taser|pepperspray|wapenstok|vuurwapen|schiet|schoot"
+        r"|schoten|neergeschoten|doodgeschoten",
+        titel,
+        re.I,
+    ):
+        return "geweld"
+    if re.search(
         r"politieauto|politiebus|politievoertuig|politiewagen|dienstauto|politiemotor"
         r"|aanrijding|geschept|aangereden|overreden|ongeval|ongeluk|botsing|schepte"
         r"|achtervolging",

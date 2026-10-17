@@ -95,6 +95,13 @@ function soortVoorLive(titel: string): NieuwsSoort {
     return "agent-vervolgd";
   }
   if (
+    /(politiegeweld|geweldsexces|mishandel|geslagen|slaat|sloeg|schopt|schopte|trapt|trapte|duwt|duwde|sleurt|sleurde|wurgt|verwurgt|nekklem|klemgreep|taser|pepperspray|wapenstok|vuurwapen|schiet|schoot|schoten|neergeschoten|doodgeschoten)/i.test(
+      titel
+    )
+  ) {
+    return "geweld";
+  }
+  if (
     /(politieauto|politiebus|politievoertuig|politiewagen|dienstauto|politiemotor|aanrijding|geschept|aangereden|overreden|ongeval|ongeluk|botsing|schepte|achtervolging)/i.test(
       titel
     )
@@ -190,7 +197,9 @@ export async function GET() {
         url: String(data.url ?? ""),
         datum: String(data.datum ?? ""),
         live: false,
-        soort: (data.soort ?? "overig") as NieuwsSoort,
+        // Classificatie dynamisch uit de titel, zodat opgeslagen berichten
+        // meegaan met verbeterde categorieën (geweld/gevaar).
+        soort: soortVoorLive(String(data.titel ?? "")),
       };
       if (data.auteur) bericht.auteur = String(data.auteur);
       if (data.plaats) bericht.plaats = String(data.plaats);
