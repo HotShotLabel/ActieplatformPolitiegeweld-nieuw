@@ -48,6 +48,17 @@ const ZOEKTERMEN = [
   "agent rijdt kind aan",
   "politiebus ongeluk gewonden",
   "politie rijdt in op menigte",
+  // Geweld: slaan, schoppen, trappen, wapenstok, pepperspray
+  "politie slaat man",
+  "politie slaat vrouw",
+  "politie schopt",
+  "politie trapt",
+  "agent gebruikt geweld",
+  "politie gebruikt geweld",
+  "politie hardhandig optreden",
+  "politie pakt hard aan",
+  "wapenstok politie",
+  "pepperspray politie geweld",
 ];
 
 const PER_RONDE = 4;

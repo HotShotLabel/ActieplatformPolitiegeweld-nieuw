@@ -66,6 +66,19 @@ const PATRONEN: RegExp[] = [
     `${P}[^.]{0,60}(schoot|schiet|schoten|vuurwapen)[^.]{0,60}(man|vrouw|jongen|meisje|slachtoffer|verdachte|inwoner|persoon|omstander)`
   ),
   new RegExp(`${P}[^.]{0,50}(nekklem|klemgreep|verwurg)`),
+  // Fysiek geweld door de politie zelf: losse werkwoorden (slaan, schoppen,
+  // trappen, duwen, sleuren, wurgen), wapenstok/pepperspray en "met geweld"/
+  // "hardhandig optreden". De slachtoffer-uitsluiting hierboven voorkomt dat
+  // berichten waarin de politie zélf gewond raakt meekomen.
+  new RegExp(
+    `${P}[^.]{0,60}(slaat|sloeg|sloegen|schopt|schopte|schopten|trapt|trapte|trapten|duwt|duwde|duwden|sleurt|sleurde|sleurden|knijpt|kneep|wurgt|wurgde|verwurgt|neerslaat|sloeg neer|neergeslagen|tackelt|tackelde)[^.]{0,80}(man|vrouw|jongen|meisje|kind|persoon|burger|omstander|passant|slachtoffer|arrestant|verdachte|demonstrant|betoger|journalist|fotograaf|verslaggever)`
+  ),
+  new RegExp(
+    `${P}[^.]{0,50}(met geweld|geweld gebruikt|geweld gebruikte|gebruikt geweld|hardhandig|treedt hard op|trad hard op|pakt hard aan|pakte hard aan)`
+  ),
+  new RegExp(
+    `${P}[^.]{0,50}(wapenstok|pepperspray|matrak|knuppel)[^.]{0,60}(gebruikt|gebruikte|ingezet|slaat|sloeg|raakt|raakte|tegen)`
+  ),
 ];
 
 export function isPolitiegeweldNieuws(tekst: string): boolean {

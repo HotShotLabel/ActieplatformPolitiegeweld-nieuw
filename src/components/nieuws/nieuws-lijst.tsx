@@ -73,6 +73,15 @@ export function NieuwsLijst() {
     });
   }, [berichten, zoek, soort]);
 
+  const tellingen = useMemo(() => {
+    if (!berichten) return null;
+    const perSoort: Record<string, number> = { alles: berichten.length };
+    for (const bericht of berichten) {
+      perSoort[bericht.soort] = (perSoort[bericht.soort] ?? 0) + 1;
+    }
+    return perSoort;
+  }, [berichten]);
+
   return (
     <div>
       <div className="w-full md:max-w-sm">
@@ -111,6 +120,7 @@ export function NieuwsLijst() {
               )}
             >
               {optie === "alles" ? "Alles" : SOORT_LABEL[optie]}
+              {tellingen ? ` (${tellingen[optie] ?? 0})` : ""}
             </button>
           )
         )}
