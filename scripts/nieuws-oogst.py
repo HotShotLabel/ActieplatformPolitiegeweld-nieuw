@@ -101,6 +101,17 @@ ZOEKTERMEN = [
     "politie geweld Breda",
     "politie geweld Arnhem",
     "politie geweld Nijmegen",
+    # Spreektaal van mensen die het meemaken/delen
+    "politie slaat mij",
+    "politie heeft mij geslagen",
+    "politie gebruikte geweld",
+    "politie viel mij aan",
+    "politie pakte mij",
+    "politie mishandelde mij",
+    "staande gehouden politie",
+    "fouilleren politie",
+    "klacht politie ingediend",
+    "aangifte politie gedaan",
 ]
 
 PER_ZOEKTERM = 50
