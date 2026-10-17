@@ -59,9 +59,22 @@ const ZOEKTERMEN = [
   "politie pakt hard aan",
   "wapenstok politie",
   "pepperspray politie geweld",
+  // Lokaal en regionaal: steden en 112
+  "politiegeweld Amsterdam",
+  "politiegeweld Rotterdam",
+  "politiegeweld Utrecht",
+  "politiegeweld Den Haag",
+  "politiegeweld Eindhoven",
+  "politiegeweld Groningen",
+  "politiegeweld Tilburg",
+  "politiegeweld Breda",
+  "politiegeweld Arnhem",
+  "politiegeweld Nijmegen",
+  "politie geweld 112",
+  "politieoptreden geweld wijk",
 ];
 
-const PER_RONDE = 4;
+const PER_RONDE = 6;
 
 export interface ExaBericht {
   titel: string;

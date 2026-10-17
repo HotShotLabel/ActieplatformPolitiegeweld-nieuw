@@ -77,6 +77,19 @@ ZOEKTERMEN = [
     "politie pakt hard aan",
     "wapenstok politie",
     "pepperspray politie geweld",
+    # Lokaal en regionaal: steden en 112
+    "politiegeweld Amsterdam",
+    "politiegeweld Rotterdam",
+    "politiegeweld Utrecht",
+    "politiegeweld Den Haag",
+    "politiegeweld Eindhoven",
+    "politiegeweld Groningen",
+    "politiegeweld Tilburg",
+    "politiegeweld Breda",
+    "politiegeweld Arnhem",
+    "politiegeweld Nijmegen",
+    "politie geweld 112",
+    "politieoptreden geweld wijk",
 ]
 
 PER_ZOEKTERM = 50
@@ -184,6 +197,14 @@ BRON_PER_DOMEIN = {
     "frontpage.fok.nl": "FOK",
     "limburger.nl": "De Limburger",
     "duic.nl": "DUIC",
+    "bndestem.nl": "BN DeStem",
+    "sleutelstad.nl": "Sleutelstad",
+    "deorkaan.nl": "De Orkaan",
+    "112nederland.nl": "112 Nederland",
+    "112fryslan.nl": "112 Fryslân",
+    "fryn.nl": "Fryn",
+    "112nieuws.net": "112 Nieuws",
+    "112drachten.nl": "112 Drachten",
 }
 
 # Strikte relevantie: alleen politiegeweld en agenten buiten de regels.

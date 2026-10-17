@@ -56,6 +56,14 @@ export const BRON_PER_DOMEIN: Record<string, string> = {
   "rd.nl": "Reformatorisch Dagblad",
   "frontpage.fok.nl": "FOK",
   "duic.nl": "DUIC",
+  "bndestem.nl": "BN DeStem",
+  "sleutelstad.nl": "Sleutelstad",
+  "deorkaan.nl": "De Orkaan",
+  "112nederland.nl": "112 Nederland",
+  "112fryslan.nl": "112 Fryslân",
+  "fryn.nl": "Fryn",
+  "112nieuws.net": "112 Nieuws",
+  "112drachten.nl": "112 Drachten",
 };
 
 /* Geeft de bronnaam, of null als het domein niet bekend is. */

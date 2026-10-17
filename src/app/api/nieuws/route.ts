@@ -31,6 +31,29 @@ const FEEDS = [
   { bron: "Omroep Zeeland", url: "https://www.omroepzeeland.nl/rss/nieuws" },
   { bron: "L1", url: "https://www.l1.nl/rss/nieuws" },
   { bron: "Blik op Nieuws", url: "https://www.blikopnieuws.nl/feeds/1841/rss.xml" },
+  // DPG-regiokranten en AD (stedelijke berichtgeving)
+  { bron: "AD", url: "https://www.ad.nl/nieuws/rss.xml" },
+  { bron: "De Gelderlander", url: "https://www.gelderlander.nl/nieuws/rss.xml" },
+  { bron: "De Stentor", url: "https://www.destentor.nl/nieuws/rss.xml" },
+  { bron: "Tubantia", url: "https://www.tubantia.nl/nieuws/rss.xml" },
+  { bron: "Brabants Dagblad", url: "https://www.bd.nl/nieuws/rss.xml" },
+  { bron: "Eindhovens Dagblad", url: "https://www.ed.nl/nieuws/rss.xml" },
+  { bron: "PZC", url: "https://www.pzc.nl/nieuws/rss.xml" },
+  { bron: "BN DeStem", url: "https://www.bndestem.nl/nieuws/rss.xml" },
+  // Lokale en stedelijke nieuws- en burgerjournalistieksites
+  { bron: "Sleutelstad", url: "https://www.sleutelstad.nl/feed" },
+  { bron: "De Orkaan", url: "https://www.deorkaan.nl/feed" },
+  { bron: "OPEN Rotterdam", url: "https://www.openrotterdam.nl/feed" },
+  { bron: "DUIC", url: "https://www.duic.nl/rss" },
+  { bron: "Oost", url: "https://www.oost.nl/rss" },
+  // 112- en misdaadnieuws
+  { bron: "112 Nederland", url: "https://www.112nederland.nl/rss" },
+  { bron: "112 Vandaag", url: "https://www.112vdg.nl/rss" },
+  { bron: "Crime Nieuws", url: "https://www.crime-nieuws.nl/feed" },
+  { bron: "112 Fryslân", url: "https://www.112fryslan.nl/rss" },
+  { bron: "Fryn", url: "https://www.fryn.nl/rss" },
+  { bron: "112 Nieuws", url: "https://www.112nieuws.net/rss" },
+  { bron: "112 Drachten", url: "https://www.112drachten.nl/rss" },
 ];
 
 /* Alleen berichten die echt over politiegeweld of grensoverschrijdend
