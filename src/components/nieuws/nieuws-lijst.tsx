@@ -31,7 +31,6 @@ export function NieuwsLijst() {
   const [mislukt, setMislukt] = useState(false);
   const [zoek, setZoek] = useState("");
   const [soort, setSoort] = useState<NieuwsSoort | "alles">("alles");
-  const [zichtbaar, setZichtbaar] = useState(60);
   const [bijgewerktOp, setBijgewerktOp] = useState("");
 
   useEffect(() => {
@@ -96,7 +95,6 @@ export function NieuwsLijst() {
           value={zoek}
           onChange={(event) => {
             setZoek(event.target.value);
-            setZichtbaar(60);
           }}
         />
       </div>
@@ -109,8 +107,7 @@ export function NieuwsLijst() {
               type="button"
               onClick={() => {
                 setSoort(optie);
-                setZichtbaar(60);
-              }}
+                  }}
               aria-pressed={soort === optie}
               className={cn(
                 "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
@@ -158,14 +155,12 @@ export function NieuwsLijst() {
       {resultaten && resultaten.length > 0 ? (
         <>
           <p className="mt-5 text-sm text-muted-2">
-            {resultaten.length > zichtbaar
-              ? `${zichtbaar} van ${resultaten.length} berichten`
-              : `${resultaten.length} ${resultaten.length === 1 ? "bericht" : "berichten"}`}
+            {`${resultaten.length} ${resultaten.length === 1 ? "bericht" : "berichten"}`}
             {zoek.trim() ? ` voor “${zoek.trim()}”` : ""}
             {bijgewerktOp ? ` · bijgewerkt om ${bijgewerktOp}` : ""}
           </p>
           <ul className="mt-4 divide-y divide-line border-t border-line">
-            {resultaten.slice(0, zichtbaar).map((bericht) => (
+            {resultaten.map((bericht) => (
               <li key={bericht.url} className="py-5">
                 <a
                   href={bericht.url}
@@ -209,17 +204,7 @@ export function NieuwsLijst() {
               </li>
             ))}
           </ul>
-          {resultaten.length > zichtbaar ? (
-            <div className="mt-6 flex justify-center">
-              <button
-                type="button"
-                onClick={() => setZichtbaar((waarde) => waarde + 60)}
-                className="rounded-lg border border-line-strong px-5 py-2.5 text-sm text-muted transition-colors hover:border-muted-2 hover:text-foreground"
-              >
-                Meer laden ({resultaten.length - zichtbaar} over)
-              </button>
-            </div>
-          ) : null}
+
         </>
       ) : null}
     </div>
