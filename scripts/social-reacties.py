@@ -18,13 +18,41 @@ import glob
 import json
 import os
 import re
+import sqlite3
 import sys
 import time
 
 BASIS = os.path.expanduser("~/actieplatform-analyse")
 KANDIDATEN = os.path.join(BASIS, "social-kandidaten.json")
 UIT = os.path.join(BASIS, "social-reacties.json")
-DB = glob.glob(os.path.expanduser("~/.config/mozilla/firefox/*/cookies.sqlite"))
+def _kies_cookie_db():
+    """Kies het Firefox-profiel met de meeste geldige cookies voor de
+    drie platforms. Firefox houdt de DB op slot; lees een tijdelijke kopie."""
+    import shutil
+    import tempfile
+
+    paden = glob.glob(os.path.expanduser("~/.config/mozilla/firefox/*/cookies.sqlite"))
+    beste, score = None, -1
+    for pad in paden:
+        try:
+            tmp = os.path.join(tempfile.gettempdir(), "ff-cookies-" + str(abs(hash(pad))) + ".sqlite")
+            shutil.copy2(pad, tmp)
+            for ext in ("-wal", "-shm"):
+                if os.path.exists(pad + ext):
+                    shutil.copy2(pad + ext, tmp + ext)
+            con = sqlite3.connect(tmp)
+            n = con.execute(
+                "select count(*) from moz_cookies where host like '%tiktok.com%' "
+                "or host like '%instagram.com%' or host like '%facebook.com%'"
+            ).fetchone()[0]
+            con.close()
+        except Exception:
+            continue
+        if n > score:
+            beste, score = tmp, n
+    return beste or (paden[0] if paden else "")
+
+DB = _kies_cookie_db()
 CHROME = os.path.expanduser(
     "~/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome"
 )
@@ -43,7 +71,7 @@ RUIS = (
 def koekjes(domein):
     import browser_cookie3
 
-    jar = browser_cookie3.firefox(cookie_file=DB[0], domain_name=domein)
+    jar = browser_cookie3.firefox(cookie_file=DB, domain_name=domein)
     uit = []
     for c in jar:
         try:
@@ -88,7 +116,7 @@ async def tiktok_reacties(urls, aantal=10):
 
     try:
         import browser_cookie3
-        jar = browser_cookie3.firefox(cookie_file=DB[0], domain_name="tiktok.com")
+        jar = browser_cookie3.firefox(cookie_file=DB, domain_name="tiktok.com")
         ms = next((c.value for c in jar if c.name == "msToken"), None)
     except Exception:
         ms = None

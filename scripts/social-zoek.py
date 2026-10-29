@@ -19,12 +19,40 @@ import glob
 import json
 import os
 import re
+import sqlite3
 import sys
 import time
 
 BASIS = os.path.expanduser("~/actieplatform-analyse")
 UIT = os.path.join(BASIS, "social-kandidaten.json")
-DB = glob.glob(os.path.expanduser("~/.config/mozilla/firefox/*/cookies.sqlite"))
+def _kies_cookie_db():
+    """Kies het Firefox-profiel met de meeste geldige cookies voor de
+    drie platforms. Firefox houdt de DB op slot; lees een tijdelijke kopie."""
+    import shutil
+    import tempfile
+
+    paden = glob.glob(os.path.expanduser("~/.config/mozilla/firefox/*/cookies.sqlite"))
+    beste, score = None, -1
+    for pad in paden:
+        try:
+            tmp = os.path.join(tempfile.gettempdir(), "ff-cookies-" + str(abs(hash(pad))) + ".sqlite")
+            shutil.copy2(pad, tmp)
+            for ext in ("-wal", "-shm"):
+                if os.path.exists(pad + ext):
+                    shutil.copy2(pad + ext, tmp + ext)
+            con = sqlite3.connect(tmp)
+            n = con.execute(
+                "select count(*) from moz_cookies where host like '%tiktok.com%' "
+                "or host like '%instagram.com%' or host like '%facebook.com%'"
+            ).fetchone()[0]
+            con.close()
+        except Exception:
+            continue
+        if n > score:
+            beste, score = tmp, n
+    return beste or (paden[0] if paden else "")
+
+DB = _kies_cookie_db()
 CHROME = os.path.expanduser(
     "~/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome"
 )
@@ -94,7 +122,7 @@ def bewaar(kandidaten):
 def koekjes(domein):
     import browser_cookie3
 
-    jar = browser_cookie3.firefox(cookie_file=DB[0], domain_name=domein)
+    jar = browser_cookie3.firefox(cookie_file=DB, domain_name=domein)
     uit = []
     for c in jar:
         try:
@@ -215,7 +243,7 @@ def instagram_hashtags(tags, aantal=12, kandidaten=None):
     )
     cookies = {
         c.name: c.value
-        for c in browser_cookie3.firefox(cookie_file=DB[0])
+        for c in browser_cookie3.firefox(cookie_file=DB)
         if "instagram" in c.domain
     }
     if not cookies.get("sessionid"):
@@ -483,7 +511,7 @@ def instagram_profielen(profielen, aantal=8, kandidaten=None):
     )
     cookies = {
         c.name: c.value
-        for c in browser_cookie3.firefox(cookie_file=DB[0])
+        for c in browser_cookie3.firefox(cookie_file=DB)
         if "instagram" in c.domain
     }
     if not cookies.get("sessionid"):
