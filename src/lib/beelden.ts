@@ -71,7 +71,7 @@ export function embedVan(url: string): BeeldEmbed {
         soort: "facebook",
         src: `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(
           u.href
-        )}&show_text=false&width=560`,
+        )}&show_text=false&width=560&locale=nl_NL`,
       };
     }
   } catch {
