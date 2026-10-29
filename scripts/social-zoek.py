@@ -125,6 +125,7 @@ def tiktok_zoek(termen, scrolls=3, kandidaten=None):
     from playwright.async_api import async_playwright
 
     async def run():
+        post_videos = []
         async with async_playwright() as p:
             browser = await p.chromium.launch(
                 executable_path=CHROME, headless=True,
@@ -184,6 +185,18 @@ def tiktok_zoek(termen, scrolls=3, kandidaten=None):
                     print(f"[TikTok] {term!r} faalde: {str(fout)[:100]}")
                 time.sleep(2.0)
             await browser.close()
+        if post_videos:
+            doel = os.path.expanduser("~/actieplatform-analyse/facebook-post-videos.json")
+            bestaand = []
+            if os.path.exists(doel):
+                try:
+                    bestaand = json.load(open(doel))
+                except Exception:  # noqa: BLE001
+                    bestaand = []
+            bekend = {x["url"] for x in bestaand}
+            bestaand += [x for x in post_videos if x["url"] not in bekend]
+            json.dump(bestaand, open(doel, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+            print(f"[Facebook-post] {len(post_videos)} post-video's -> facebook-post-videos.json")
 
     asyncio.run(run())
     return kandidaten
@@ -257,6 +270,7 @@ def facebook_zoek(termen, scrolls=3, kandidaten=None):
     from playwright.async_api import async_playwright
 
     async def run():
+        post_videos = []
         async with async_playwright() as p:
             browser = await p.chromium.launch(
                 executable_path=CHROME, headless=True,
@@ -322,12 +336,28 @@ def facebook_zoek(termen, scrolls=3, kandidaten=None):
                     print(f"[Facebook] {term!r} faalde: {str(fout)[:100]}")
                 time.sleep(2.0)
             await browser.close()
+        if post_videos:
+            doel = os.path.expanduser("~/actieplatform-analyse/facebook-post-videos.json")
+            bestaand = []
+            if os.path.exists(doel):
+                try:
+                    bestaand = json.load(open(doel))
+                except Exception:  # noqa: BLE001
+                    bestaand = []
+            bekend = {x["url"] for x in bestaand}
+            bestaand += [x for x in post_videos if x["url"] not in bekend]
+            json.dump(bestaand, open(doel, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+            print(f"[Facebook-post] {len(post_videos)} post-video's -> facebook-post-videos.json")
 
     asyncio.run(run())
     return kandidaten
 
 
-FACEBOOK_STANDAARD = ["politiegeweld", "politie slaat", "politie mishandelt"]
+FACEBOOK_STANDAARD = [
+    "politiegeweld", "politie slaat", "politie mishandelt", "politie geweld",
+    "politie schopt", "politie trapt", "politie duwt", "politie sleurt",
+    "agent slaat", "agent mishandelt", "politie aanhouding geweld",
+]
 IG_PROFIELEN_STANDAARD = ["112_today"]
 
 # Alleen incidenten in Nederland. Buitenlandse media mogen berichten, maar
@@ -505,6 +535,7 @@ def facebook_pagina_zoek(termen, max_paginas=2, kandidaten=None):
     from playwright.async_api import async_playwright
 
     async def run():
+        post_videos = []
         async with async_playwright() as p:
             browser = await p.chromium.launch(
                 executable_path=CHROME, headless=True,
@@ -568,6 +599,144 @@ def facebook_pagina_zoek(termen, max_paginas=2, kandidaten=None):
                     print(f"[Facebook-pagina] {term!r} faalde: {str(fout)[:100]}")
                 time.sleep(2.0)
             await browser.close()
+        if post_videos:
+            doel = os.path.expanduser("~/actieplatform-analyse/facebook-post-videos.json")
+            bestaand = []
+            if os.path.exists(doel):
+                try:
+                    bestaand = json.load(open(doel))
+                except Exception:  # noqa: BLE001
+                    bestaand = []
+            bekend = {x["url"] for x in bestaand}
+            bestaand += [x for x in post_videos if x["url"] not in bekend]
+            json.dump(bestaand, open(doel, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+            print(f"[Facebook-post] {len(post_videos)} post-video's -> facebook-post-videos.json")
+
+    asyncio.run(run())
+    return kandidaten
+
+
+def facebook_posts_zoek(termen, max_posts=4, kandidaten=None):
+    """Zoek openbare Facebook-posts (gewone mensen), bezoek de post en het
+    auteurprofiel en oogst video-links. Alleen wat openbaar is."""
+    if kandidaten is None:
+        kandidaten = {}
+    import asyncio
+    from playwright.async_api import async_playwright
+
+    async def run():
+        post_videos = []
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(
+                executable_path=CHROME, headless=False, args=["--no-sandbox"],
+            )
+            context = await browser.new_context(
+                user_agent=UA, locale="nl-NL",
+                viewport={"width": 1280, "height": 900},
+            )
+            await context.add_cookies(koekjes("facebook.com"))
+            pagina = await context.new_page()
+
+            async def oogst_videos(ouder, bron_label):
+                videos = await pagina.eval_on_selector_all(
+                    'a[href*="/videos/"], a[href*="/reel/"]',
+                    """els => [...new Map(els.map(e => [e.href.split('?')[0], {
+                        href: e.href.split('?')[0],
+                        aria: e.getAttribute('aria-label') || ''
+                    }])).values()]""",
+                )
+                nieuw = 0
+                for rij in videos:
+                    url = rij["href"]
+                    if not re.search(r"/videos/\d+|/reel/\d+", url):
+                        continue
+                    if url in kandidaten:
+                        continue
+                    titel = (rij.get("aria") or "").split("\n")[0].strip()
+                    tekst = await pagina.inner_text("body")
+                    if not is_nederlands(titel + " " + tekst[:400] + " " + ouder):
+                        continue
+                    kandidaten[url] = {
+                        "url": url,
+                        "titel": titel[:150] or f"Facebook: {bron_label}",
+                        "toelichting": f"Facebook openbaar profiel/post: {bron_label}",
+                        "plaats": "",
+                        "datum": "",
+                        "bron": "Facebook-oogst",
+                    }
+                    nieuw += 1
+                print(f"[Facebook-post] {bron_label[:60]}: {nieuw} video's")
+                return nieuw
+
+            for term in termen:
+                try:
+                    await pagina.goto(
+                        f"https://www.facebook.com/search/posts/?q={term}",
+                        wait_until="domcontentloaded", timeout=60000,
+                    )
+                    await pagina.wait_for_timeout(7000)
+                    for _ in range(2):
+                        await pagina.mouse.wheel(0, 1500)
+                        await pagina.wait_for_timeout(1500)
+                    posts = await pagina.eval_on_selector_all(
+                        'a[href*="/posts/"], a[href*="/permalink/"]',
+                        "els => [...new Set(els.map(e => e.href.split('?')[0]))].slice(0, 8)",
+                    )
+                    print(f"[Facebook-post] {term!r}: {len(posts)} posts")
+                    for post_url in posts[:max_posts]:
+                        m = re.match(r"https://www\.facebook\.com/([^/]+)/(?:posts|permalink)/", post_url)
+                        if not m:
+                            continue
+                        profiel_url = f"https://www.facebook.com/{m.group(1)}/"
+                        # post zelf openen
+                        try:
+                            await pagina.goto(post_url, wait_until="domcontentloaded", timeout=45000)
+                            await pagina.wait_for_timeout(5000)
+                            for _ in range(2):
+                                await pagina.mouse.wheel(0, 1300)
+                                await pagina.wait_for_timeout(1200)
+                            await oogst_videos(post_url, post_url)
+                            heeft_video = await pagina.evaluate(
+                                "() => document.querySelectorAll('video').length > 0"
+                            )
+                            if heeft_video:
+                                body = await pagina.inner_text("body")
+                                titel = next((r.strip() for r in body.splitlines() if len(r.strip()) > 40), "")
+                                post_videos.append({
+                                    "url": post_url,
+                                    "titel": titel[:160],
+                                    "auteur": profiel_url,
+                                })
+                                print(f"[Facebook-post] post met video: {post_url[-45:]}")
+                        except Exception as fout:  # noqa: BLE001
+                            print(f"[Facebook-post] post faalde: {str(fout)[:70]}")
+                        # auteurprofiel openen
+                        try:
+                            await pagina.goto(profiel_url, wait_until="domcontentloaded", timeout=45000)
+                            await pagina.wait_for_timeout(5000)
+                            for _ in range(3):
+                                await pagina.mouse.wheel(0, 1500)
+                                await pagina.wait_for_timeout(1300)
+                            await oogst_videos(profiel_url, profiel_url)
+                        except Exception as fout:  # noqa: BLE001
+                            print(f"[Facebook-post] profiel faalde: {str(fout)[:70]}")
+                        time.sleep(1.5)
+                except Exception as fout:  # noqa: BLE001
+                    print(f"[Facebook-post] {term!r} faalde: {str(fout)[:90]}")
+                time.sleep(2.0)
+            await browser.close()
+        if post_videos:
+            doel = os.path.expanduser("~/actieplatform-analyse/facebook-post-videos.json")
+            bestaand = []
+            if os.path.exists(doel):
+                try:
+                    bestaand = json.load(open(doel))
+                except Exception:  # noqa: BLE001
+                    bestaand = []
+            bekend = {x["url"] for x in bestaand}
+            bestaand += [x for x in post_videos if x["url"] not in bekend]
+            json.dump(bestaand, open(doel, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+            print(f"[Facebook-post] {len(post_videos)} post-video's -> facebook-post-videos.json")
 
     asyncio.run(run())
     return kandidaten
@@ -586,6 +755,7 @@ def reacties_mijnen(kandidaten, maximaal=5):
     leads = []
 
     async def run():
+        post_videos = []
         async with async_playwright() as p:
             browser = await p.chromium.launch(
                 executable_path=CHROME, headless=True, args=["--no-sandbox"],
@@ -644,6 +814,8 @@ def main():
                         help="Instagram-profielen (standaard: 112_today)")
     parser.add_argument("--facebook-pagina", nargs="*", default=None,
                         help="Facebook-pagina-zoektermen (standaard: politiegeweld)")
+    parser.add_argument("--facebook-post", nargs="*", default=None,
+                        help="Facebook-postenzoek; bezoekt post + auteurprofiel (gewone mensen)")
     parser.add_argument("--reacties", action="store_true",
                         help="Facebook-videopagina's openen; tekst/links als leads bewaren")
     parser.add_argument("--alleen-tiktok", action="store_true")
@@ -672,6 +844,9 @@ def main():
     if args.facebook_pagina is not None:
         pagina_termen = args.facebook_pagina or FACEBOOK_STANDAARD
         kandidaten = facebook_pagina_zoek(pagina_termen, kandidaten=kandidaten)
+    if args.facebook_post is not None:
+        post_termen = args.facebook_post or FACEBOOK_STANDAARD
+        kandidaten = facebook_posts_zoek(post_termen, kandidaten=kandidaten)
     if args.reacties:
         reacties_mijnen(kandidaten)
 
