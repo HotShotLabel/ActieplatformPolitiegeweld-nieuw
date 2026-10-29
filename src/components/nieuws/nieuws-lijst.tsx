@@ -36,6 +36,19 @@ export function NieuwsLijst() {
   useEffect(() => {
     let actief = true;
     let eerste = true;
+    try {
+      const ruw = localStorage.getItem("nieuws-cache-v1");
+      if (ruw) {
+        const bewaard = JSON.parse(ruw) as { berichten?: Bericht[]; tijd?: string };
+        if (Array.isArray(bewaard.berichten) && bewaard.berichten.length) {
+          setBerichten(bewaard.berichten);
+          setBijgewerktOp(bewaard.tijd ?? "");
+          eerste = false;
+        }
+      }
+    } catch {
+      // localStorage mag falen; de fetch hieronder vult de lijst.
+    }
     const laad = async () => {
       try {
         const antwoord = await fetch("/api/nieuws");
@@ -44,12 +57,19 @@ export function NieuwsLijst() {
         setBerichten(data.berichten);
         setMislukt(false);
         eerste = false;
-        setBijgewerktOp(
-          new Date().toLocaleTimeString("nl-NL", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        );
+        const tijd = new Date().toLocaleTimeString("nl-NL", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        setBijgewerktOp(tijd);
+        try {
+          localStorage.setItem(
+            "nieuws-cache-v1",
+            JSON.stringify({ berichten: data.berichten, tijd })
+          );
+        } catch {
+          // opslag vol of geblokkeerd; geen probleem.
+        }
       } catch {
         if (actief && eerste) setMislukt(true);
       }

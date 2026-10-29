@@ -9,6 +9,18 @@ import { getAdminDb } from "@/lib/firebase-admin";
 
 export const maxDuration = 60;
 
+/* Laatste volledige antwoord in het servergeheugen. Een koude start of een
+   verlopen CDN-cache hoeft dan niet opnieuw 38 feeds + Exa te wachten. */
+let nieuwsCache: { tijd: number; body: unknown } | null = null;
+const NIEUWS_CACHE_MS = 10 * 60_000;
+
+function metTijdslimiet<T>(belofte: Promise<T>, ms: number, terug: T): Promise<T> {
+  return Promise.race([
+    belofte,
+    new Promise<T>((resolve) => setTimeout(() => resolve(terug), ms)),
+  ]);
+}
+
 const UA =
   "ActieplatformPolitiegeweld/1.0 (+https://actieplatform-politiegeweld-nieuw.vercel.app)";
 
@@ -185,6 +197,15 @@ function parseFeed(xml: string, bron: string): Bericht[] {
 }
 
 export async function GET() {
+  if (nieuwsCache && Date.now() - nieuwsCache.tijd < NIEUWS_CACHE_MS) {
+    return Response.json(nieuwsCache.body, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
+        "X-Nieuws-Cache": "geheugen",
+      },
+    });
+  }
+
   const [rssResultaten, zoekBerichten] = await Promise.all([
     Promise.all(
       FEEDS.map(async (feed) => {
@@ -194,7 +215,7 @@ export async function GET() {
               "User-Agent": UA,
               Accept: "application/rss+xml, application/xml, text/xml",
             },
-            signal: AbortSignal.timeout(15_000),
+            signal: AbortSignal.timeout(6_000),
             next: { revalidate: 1800 },
           });
           if (!antwoord.ok) return [];
@@ -204,7 +225,7 @@ export async function GET() {
         }
       })
     ),
-    haalZoekBerichten(),
+    metTijdslimiet(haalZoekBerichten(), 5_000, []),
   ]);
 
   // Doorlopende zoekvondsten opslaan zodat alles wat nieuw is bewaard blijft
@@ -361,15 +382,15 @@ export async function GET() {
     (b.datum || "").localeCompare(a.datum || "")
   );
 
-  return Response.json(
-    {
-      berichten: alles,
-      liveAantal: alles.filter((bericht) => bericht.live).length,
+  const body = {
+    berichten: alles,
+    liveAantal: alles.filter((bericht) => bericht.live).length,
+  };
+  nieuwsCache = { tijd: Date.now(), body };
+  return Response.json(body, {
+    headers: {
+      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
+      "X-Nieuws-Cache": "vers",
     },
-    {
-      headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
-      },
-    }
-  );
+  });
 }
