@@ -1098,7 +1098,12 @@ export function MeldingenKaart() {
             {bijgewerktOp ? `bijgewerkt om ${bijgewerktOp}` : "laden…"}
           </p>
         </div>
-        <ul className="mt-4 max-h-[70vh] space-y-3 overflow-y-auto pr-2">
+        <ul
+          data-lenis-prevent
+          data-lenis-prevent-touch
+          className="mt-4 max-h-[70vh] space-y-3 overflow-y-auto overscroll-contain pr-2"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
           {laatsteNieuws.map((bericht, index) => (
             <li
               key={bericht.url}
