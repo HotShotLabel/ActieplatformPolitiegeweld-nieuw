@@ -1,4 +1,5 @@
 import { UITSPRAKEN_BULK } from "./uitspraken-bulk";
+import { UITSPRAKEN_RECENT } from "./uitspraken-recent";
 
 export type UitspraakCategorie =
   | "agent-vervolgd"
@@ -387,7 +388,7 @@ const CURATED: Uitspraak[] = [
 /* Samengevoegd: curated (eigen samenvatting) + bulk (officiële
    inhoudsindicatie), zie scripts/uitspraken-oogst.py. Dubbelen op ECLI
    worden eruit gefilterd. */
-const samengevoegd: Uitspraak[] = [...CURATED, ...UITSPRAKEN_BULK];
+const samengevoegd: Uitspraak[] = [...CURATED, ...UITSPRAKEN_RECENT, ...UITSPRAKEN_BULK];
 export const UITSPRAKEN: Uitspraak[] = samengevoegd.filter(
   (uitspraak, index) =>
     samengevoegd.findIndex((andere) => andere.ecli === uitspraak.ecli) ===

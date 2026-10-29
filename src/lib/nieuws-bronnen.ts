@@ -10,6 +10,7 @@ export const BRON_PER_DOMEIN: Record<string, string> = {
   "trouw.nl": "Trouw",
   "nrc.nl": "NRC",
   "parool.nl": "Het Parool",
+  "tpo.nl": "TPO",
   "rtl.nl": "RTL Nieuws",
   "rtlnieuws.nl": "RTL Nieuws",
   "om.nl": "Openbaar Ministerie",

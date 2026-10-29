@@ -32,6 +32,7 @@ const FEEDS = [
   { bron: "Omroep Zeeland", url: "https://www.omroepzeeland.nl/rss/nieuws" },
   { bron: "L1", url: "https://www.l1.nl/rss/nieuws" },
   { bron: "Blik op Nieuws", url: "https://www.blikopnieuws.nl/feeds/1841/rss.xml" },
+  { bron: "TPO", url: "https://tpo.nl/feed/" },
   // DPG-regiokranten en AD (stedelijke berichtgeving)
   { bron: "AD", url: "https://www.ad.nl/nieuws/rss.xml" },
   { bron: "De Gelderlander", url: "https://www.gelderlander.nl/nieuws/rss.xml" },
