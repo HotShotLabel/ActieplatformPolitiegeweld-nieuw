@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 import { NIEUWS_ARCHIEF, type NieuwsSoort } from "@/lib/nieuws-archief";
 import { NIEUWS_GEOOGST } from "@/lib/nieuws-geoogst";
+import { NIEUWS_OFFICIEEL } from "@/lib/nieuws-officieel";
 import { isPolitiegeweldNieuws } from "@/lib/nieuws-filter";
 import { NL_PLAATSEN } from "@/lib/nl-plaatsen";
 import { haalZoekBerichten } from "@/lib/exa-zoek";
@@ -317,6 +318,20 @@ export async function GET() {
   );
   opgeslagen.forEach((bericht) =>
     voegLiveToe(metLiveVlag(metPlaatsBij(bericht), false))
+  );
+  /* Officiële bronnen zonder RSS: OM, Rechtspraak, Politie, Rijksoverheid
+     en Inspectie JenV. De lijst komt uit scripts/officiele-nieuws.py. */
+  NIEUWS_OFFICIEEL.forEach((bericht) =>
+    voegLiveToe(
+      metLiveVlag(
+        metPlaatsBij({
+          ...bericht,
+          live: false,
+          soort: soortVoorLive(bericht.titel),
+        }),
+        false
+      )
+    )
   );  zoekBerichten.forEach((bericht) =>
     voegLiveToe({
       titel: bericht.titel,
