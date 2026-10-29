@@ -808,7 +808,7 @@ export function MeldingenKaart() {
           setNieuwsGepind(markersNieuws.current.length);
         }
         setLaatsteNieuws(
-          data.berichten.slice(0, 6).map(({ titel, bron, url, datum, live }) => ({
+          data.berichten.map(({ titel, bron, url, datum, live }) => ({
             titel,
             bron,
             url,
@@ -1098,12 +1098,12 @@ export function MeldingenKaart() {
             {bijgewerktOp ? `bijgewerkt om ${bijgewerktOp}` : "laden…"}
           </p>
         </div>
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-4 max-h-[70vh] space-y-3 overflow-y-auto pr-2">
           {laatsteNieuws.map((bericht, index) => (
             <li
               key={bericht.url}
               className="feed-in flex flex-wrap items-baseline gap-x-3 gap-y-1"
-              style={{ animationDelay: `${index * 60}ms` }}
+              style={{ animationDelay: `${Math.min(index * 20, 600)}ms` }}
             >
               <span className="font-mono text-xs text-muted-2">
                 {bericht.datum
