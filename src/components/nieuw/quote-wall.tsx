@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { WordReveal } from "@/components/site/word-reveal";
 
 type SceneQuote = {
   tekst: string;
@@ -235,7 +236,7 @@ export function QuoteWall() {
           Uitspraken · 12 stemmen
         </p>
         <h2 className="mt-4 max-w-[16ch] font-display text-4xl font-semibold leading-[1.04] tracking-tight md:text-5xl">
-          Twaalf stemmen op één plein.
+          <WordReveal text="Twaalf stemmen op één plein." />
         </h2>
         <p className="mt-5 max-w-[62ch] leading-relaxed text-[#5c574e]">
           Mensen die naast elkaar lopen, achter één doek. Negen uitspraken uit de

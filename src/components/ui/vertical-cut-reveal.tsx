@@ -149,6 +149,7 @@ const VerticalCutReveal = forwardRef<VerticalCutRevealRef, TextProps>(
 
     return (
       <span
+        data-vertical-cut=""
         className={cn(
           containerClassName,
           "flex flex-wrap whitespace-pre-wrap",

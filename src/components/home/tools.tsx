@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Reveal } from "@/components/site/reveal";
+import { WordReveal } from "@/components/site/word-reveal";
 
 const ITEMS = [
   {
@@ -55,7 +56,7 @@ export function Tools() {
       <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-            Wat je hier kunt doen
+            <WordReveal text="Wat je hier kunt doen" />
           </h2>
           <p className="mt-5 max-w-[40ch] leading-relaxed text-muted">
             Van melden tot meedoen. Elk onderdeel brengt je verder in hetzelfde

@@ -60,6 +60,18 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable}`}
     >
       <body className="flex min-h-dvh flex-col bg-background font-sans text-foreground antialiased">
+        <noscript>
+          <style>{`
+            [data-word-reveal] [aria-hidden="true"] span,
+            [data-vertical-cut] [aria-hidden="true"] span {
+              transform: none !important;
+            }
+            [data-reveal] {
+              opacity: 1 !important;
+              transform: none !important;
+            }
+          `}</style>
+        </noscript>
         <SmoothScroll />
         <SiteNav />
         {children}

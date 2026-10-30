@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { WordReveal } from "@/components/site/word-reveal";
 
 type Persoon = {
   naam: string;
@@ -91,7 +92,7 @@ export function Gedenk() {
           </span>
         </div>
         <h2 className="mt-4 max-w-[18ch] font-display text-4xl font-semibold leading-[1.04] tracking-tight md:text-5xl">
-          Namen die niet mogen verdwijnen.
+          <WordReveal text="Namen die niet mogen verdwijnen." />
         </h2>
         <p className="mt-4 max-w-[62ch] leading-relaxed text-muted">
           Hier staan de namen die in onze dataset openbaar te koppelen zijn.

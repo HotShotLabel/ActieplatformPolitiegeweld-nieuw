@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Reveal } from "@/components/site/reveal";
+import { WordReveal } from "@/components/site/word-reveal";
 
 const ITEMS = [
   ["01", "Melding doen", "Anoniem kan, met beelden kan. Jij bepaalt wat je deelt.", "/melden"],
@@ -24,7 +26,7 @@ export function Aanbod() {
             Alles wat het platform doet
           </p>
           <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-semibold leading-[1.04] tracking-tight md:text-5xl">
-            Eén plek voor melden, bewijs en gevolg.
+            <WordReveal text="Eén plek voor melden, bewijs en gevolg." />
           </h2>
           <p className="mt-5 max-w-[44ch] leading-relaxed text-muted">
             Niet alleen een kaart of een nieuwslijst. Je kunt hier melden, lezen
@@ -32,12 +34,12 @@ export function Aanbod() {
           </p>
         </div>
         <div className="grid gap-x-8 sm:grid-cols-2">
-          {ITEMS.map(([nummer, titel, tekst, href]) => (
-            <Link
-              key={nummer}
-              href={href}
-              className="group grid grid-cols-[28px_1fr_14px] gap-3 border-b border-line py-4 transition-colors hover:border-line-strong"
-            >
+          {ITEMS.map(([nummer, titel, tekst, href], index) => (
+            <Reveal key={nummer} delay={Math.min(index * 0.04, 0.24)}>
+              <Link
+                href={href}
+                className="group grid grid-cols-[28px_1fr_14px] gap-3 border-b border-line py-4 transition-colors hover:border-line-strong"
+              >
               <span className="pt-0.5 font-mono text-[10px] text-brand-blue">{nummer}</span>
               <span>
                 <span className="block font-display text-lg font-semibold leading-tight tracking-tight transition-colors group-hover:text-accent">
@@ -45,8 +47,9 @@ export function Aanbod() {
                 </span>
                 <span className="mt-1 block text-xs leading-relaxed text-muted">{tekst}</span>
               </span>
-              <span className="pt-0.5 text-sm text-muted-2">→</span>
-            </Link>
+                <span className="pt-0.5 text-sm text-muted-2">→</span>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </div>

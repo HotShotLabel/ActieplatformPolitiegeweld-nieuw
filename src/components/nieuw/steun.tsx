@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { DonationCard } from "@/components/nieuw/donation-card";
 import { Poppetje } from "@/components/nieuw/poppetje";
+import { WordReveal } from "@/components/site/word-reveal";
 
 const MENSEN = [
   { rol: "Melder", accent: "#2f7fd1" },
@@ -26,7 +27,7 @@ export function Steun() {
             Steun het platform
           </p>
           <h2 className="mt-4 max-w-[15ch] font-display text-4xl font-semibold leading-[1.04] tracking-tight md:text-5xl">
-            Dit kost het om het draaiende te houden.
+            <WordReveal text="Dit kost het om het draaiende te houden." />
           </h2>
           <p className="mt-5 max-w-[54ch] leading-relaxed text-muted">
             Geen advertenties, geen geld van partijen. Wel live feeds, data,

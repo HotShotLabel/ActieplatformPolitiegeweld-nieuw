@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/site/reveal";
+import { WordReveal } from "@/components/site/word-reveal";
 
 const ITEMS = [
   {
@@ -32,7 +33,7 @@ export function Mission() {
       <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-            Wat wij doen
+            <WordReveal text="Wat wij doen" />
           </h2>
           <p className="mt-5 max-w-[40ch] leading-relaxed text-muted">
             Van één melding naar een dossier dat blijft staan. Zo bouwen we aan

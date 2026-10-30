@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useSpring } from "motion/react";
 import { Reveal } from "@/components/site/reveal";
+import { WordReveal } from "@/components/site/word-reveal";
 
 const STEPS = [
   {
@@ -32,7 +33,7 @@ export function HowItWorks() {
     <section className="border-t border-line bg-surface/30">
       <div className="mx-auto w-full max-w-[1200px] px-6 py-24 md:py-32 lg:px-10">
         <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-          Hoe het werkt
+          <WordReveal text="Hoe het werkt" />
         </h2>
 
         <div ref={ref} className="relative mt-16">

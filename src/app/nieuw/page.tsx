@@ -12,6 +12,8 @@ import { Aanbod } from "@/components/nieuw/aanbod";
 import { Gedenk } from "@/components/nieuw/gedenk";
 import { Steun } from "@/components/nieuw/steun";
 import { UITSPRAKEN } from "@/lib/uitspraken";
+import { Reveal } from "@/components/site/reveal";
+import { WordReveal } from "@/components/site/word-reveal";
 
 export const metadata: Metadata = {
   title: "Politiegeweld in Nederland",
@@ -86,21 +88,23 @@ export default function NieuwPage() {
 
       <section className="border-y border-line">
         <div className="mx-auto grid w-full max-w-[1200px] gap-8 px-6 py-20 md:grid-cols-[.9fr_1.1fr] md:items-center md:py-24 lg:px-10">
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-blue">
-              De kaart is het geheugen
-            </p>
-            <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-semibold leading-[1.04] tracking-tight md:text-5xl">
-              Elke stip is een plek. Geen plek is te klein.
-            </h2>
-            <p className="mt-5 max-w-[48ch] leading-relaxed text-muted">
-              De 3D-bol laat zien waar het gebeurt. Niet als decor, maar als
-              dossier: locaties met bron en context.
-            </p>
-            <Link href="/kaart" className="mt-6 inline-flex text-sm text-brand-blue underline underline-offset-4">
-              Bekijk de live kaart →
-            </Link>
-          </div>
+          <Reveal>
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-blue">
+                De kaart is het geheugen
+              </p>
+              <h2 className="mt-4 max-w-[12ch] font-display text-4xl font-semibold leading-[1.04] tracking-tight md:text-5xl">
+                <WordReveal text="Elke stip is een plek. Geen plek is te klein." />
+              </h2>
+              <p className="mt-5 max-w-[48ch] leading-relaxed text-muted">
+                De 3D-bol laat zien waar het gebeurt. Niet als decor, maar als
+                dossier: locaties met bron en context.
+              </p>
+              <Link href="/kaart" className="mt-6 inline-flex text-sm text-brand-blue underline underline-offset-4">
+                Bekijk de live kaart →
+              </Link>
+            </div>
+          </Reveal>
           <Globe />
         </div>
       </section>
@@ -113,7 +117,7 @@ export default function NieuwPage() {
             Beeld als bewijs
           </p>
           <h2 className="mt-4 max-w-[16ch] font-display text-4xl font-semibold leading-[1.04] tracking-tight md:text-5xl">
-            Dit is niet abstract.
+            <WordReveal text="Dit is niet abstract." />
           </h2>
           <p className="mt-4 max-w-[62ch] leading-relaxed text-muted">
             Politiegeweld is geen cijfer. Het is een moment, een straat, een
@@ -141,8 +145,9 @@ export default function NieuwPage() {
           </div>
 
           <div className="mt-8 grid grid-cols-2 gap-2 md:grid-cols-4">
-            {FOTOSTROOK.map((foto) => (
-              <figure key={foto.src} className="relative overflow-hidden border border-line bg-surface">
+            {FOTOSTROOK.map((foto, index) => (
+              <Reveal key={foto.src} delay={index * 0.05}>
+                <figure className="relative overflow-hidden border border-line bg-surface">
                 <img
                   src={foto.src}
                   alt={foto.titel}
@@ -152,8 +157,9 @@ export default function NieuwPage() {
                 <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-3 font-mono text-[8px] leading-relaxed text-white/80">
                   <b className="block font-sans text-[11px] font-semibold text-white">{foto.titel}</b>
                   {foto.caption}
-                </figcaption>
-              </figure>
+                  </figcaption>
+                </figure>
+              </Reveal>
             ))}
           </div>
         </div>
