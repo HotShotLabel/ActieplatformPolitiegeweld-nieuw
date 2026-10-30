@@ -22,6 +22,9 @@
   --color-accent: var(--accent);
   --color-accent-deep: var(--accent-deep);
   --color-accent-soft: var(--accent-soft);
+  --color-logo-red: var(--logo-red);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-deep: var(--brand-blue-deep);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -78,16 +81,19 @@
 
 :root {
   --background: #07090c;
-  --surface: #0c1016;
-  --surface-2: #11161e;
-  --foreground: #f4f5f6;
-  --muted: #9aa4b2;
-  --muted-2: #66707d;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --accent: #e5484d;
-  --accent-deep: #d23a3f;
-  --accent-soft: rgba(229, 72, 77, 0.12);
+  --surface: #0a1a33;
+  --surface-2: #0e2340;
+  --foreground: #f2f5fa;
+  --muted: #93a0b9;
+  --muted-2: #7d8ba0;
+  --line: rgba(47, 127, 209, 0.26);
+  --line-strong: rgba(47, 127, 209, 0.46);
+  --accent: #ef4b45;
+  --accent-deep: #c92a25;
+  --accent-soft: rgba(239, 75, 69, 0.14);
+  --logo-red: #d8302c;
+  --brand-blue: #2f7fd1;
+  --brand-blue-deep: #004c9d;
   --radius: 12px;
 }
 
@@ -103,12 +109,12 @@
   }
 
   ::selection {
-    background: var(--accent);
+    background: var(--brand-blue-deep);
     color: #fff;
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--brand-blue);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -127,9 +133,9 @@
 /* Kaartpopups: goed leesbaar op de donkere site. (Extra specifiek zodat de
    MapLibre-stylesheet ze niet overschrijft.) */
 .maplibregl-popup .maplibregl-popup-content {
-  background: #0c1016;
-  color: #f4f5f6;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #0a1a33;
+  color: #f2f5fa;
+  border: 1px solid rgba(47, 127, 209, 0.46);
   border-radius: 12px;
   padding: 12px 14px;
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
@@ -142,7 +148,7 @@
   line-height: 1.45;
 }
 .maplibregl-popup .maplibregl-popup-content .popup-meta {
-  color: #9aa4b2;
+  color: #93a0b9;
   font-size: 11.5px;
   margin-top: 5px;
 }
@@ -152,15 +158,15 @@
   text-underline-offset: 3px;
 }
 .maplibregl-popup .maplibregl-popup-close-button {
-  color: #9aa4b2;
+  color: #93a0b9;
   font-size: 18px;
   padding: 2px 8px;
 }
 .maplibregl-popup .maplibregl-popup-tip {
-  border-top-color: #0c1016 !important;
-  border-bottom-color: #0c1016 !important;
-  border-left-color: #0c1016 !important;
-  border-right-color: #0c1016 !important;
+  border-top-color: #0a1a33 !important;
+  border-bottom-color: #0a1a33 !important;
+  border-left-color: #0a1a33 !important;
+  border-right-color: #0a1a33 !important;
 }
 
 /* Beweging op de kaart: nieuwe punten komen binnen, live punten pulseren. */
@@ -304,3 +310,4 @@
 .maplibregl-ctrl-attrib a {
   color: inherit !important;
 }
+

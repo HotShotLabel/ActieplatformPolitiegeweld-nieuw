@@ -34,10 +34,8 @@ export function SiteNav() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        scrolled || open
-          ? "border-b border-line bg-background/80 backdrop-blur-xl"
-          : "border-b border-transparent"
+        "fixed inset-x-0 top-0 z-50 border-b border-line bg-[#07090c]/78 backdrop-blur-xl transition-colors duration-300",
+        (scrolled || open) && "bg-background/92"
       )}
     >
       <a
@@ -49,30 +47,28 @@ export function SiteNav() {
       <div className="mx-auto flex h-16 w-full max-w-[1200px] items-center justify-between px-6 lg:px-10">
         <Link
           href="/"
-          className="flex items-center gap-2.5"
+          className="flex min-w-0 shrink-0 items-center gap-2.5"
           aria-label="Actieplatform Politiegeweld, naar home"
         >
-          <span
-            aria-hidden
-            className="h-2.5 w-2.5 rounded-full bg-accent"
-          />
-          <span className="font-display text-[15px] font-semibold tracking-tight">
+          <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden="true">
+            <span className="absolute inline-flex h-full w-full animate-pulse-dot rounded-full bg-accent motion-reduce:animate-none" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
+          </span>
+          <span className="whitespace-nowrap font-display text-[15px] font-semibold tracking-tight">
             Actieplatform
-            <span className="ml-1.5 font-normal text-muted">
-              Politiegeweld
-            </span>
+            <span className="ml-1.5 font-normal text-muted">Politiegeweld</span>
           </span>
         </Link>
 
         <nav
           aria-label="Hoofdmenu"
-          className="hidden items-center gap-4 lg:flex"
+          className="hidden items-center gap-3 lg:flex xl:gap-4"
         >
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-muted transition-colors hover:text-foreground"
+              className="text-sm font-medium text-[#d5deea] transition-colors hover:text-accent focus-visible:text-accent"
             >
               {link.label}
             </Link>
@@ -130,7 +126,7 @@ export function SiteNav() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-3 text-base text-muted transition-colors hover:bg-white/5 hover:text-foreground"
+                  className="rounded-lg px-3 py-3 text-base font-medium text-[#d5deea] transition-colors hover:bg-white/5 hover:text-accent"
                 >
                   {link.label}
                 </Link>

@@ -476,7 +476,7 @@ export function MeldingenKaart() {
     // Laag: rechtspraak (openbare uitspraken, per plaats van het incident).
     markersRechtspraak.current = OPENBARE_ZAKEN.map((zaak) =>
       new Marker({
-        element: maakBadgeElement(ICOON_HAMER, "#f4f5f6", "#07090c", "#07090c"),
+        element: maakBadgeElement(ICOON_HAMER, "#f2f5fa", "#091320", "#091320"),
       })
         .setLngLat([zaak.lng, zaak.lat])
         .setPopup(
@@ -539,7 +539,7 @@ export function MeldingenKaart() {
       const hoek = index * 2.39996;
       const straal = (index % 4) * 0.0022;
       return new Marker({
-        element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28),
+        element: maakBadgeElement(ICOON_GRAF, "#f2f5fa", "#ef4b45", "#c93a3f", 28),
       })
         .setLngLat([
           zaak.lng - 0.009 + Math.cos(hoek) * straal,
@@ -563,7 +563,7 @@ export function MeldingenKaart() {
       const hoek = index * 2.39996;
       const straal = (index % 4) * 0.0022;
       return new Marker({
-        element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28),
+        element: maakBadgeElement(ICOON_GRAF, "#f2f5fa", "#ef4b45", "#c93a3f", 28),
       })
         .setLngLat([
           zaak.lng + 0.014 + Math.cos(hoek) * straal,
@@ -586,7 +586,7 @@ export function MeldingenKaart() {
       const hoek = index * 2.39996;
       const straal = (index % 5) * 0.0019;
       return new Marker({
-        element: maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#a16207", "#78350f", 26),
+        element: maakBadgeElement(ICOON_GRAF, "#f2f5fa", "#a16207", "#78350f", 26),
       })
         .setLngLat([
           zaak.lng + Math.cos(hoek) * straal,
@@ -631,7 +631,7 @@ export function MeldingenKaart() {
     const ditJaar = new Date().getFullYear();
     const gloeiJaren = [String(ditJaar - 1), String(ditJaar)];
     function maakOverledenMarker(zaak: OverledenZaak) {
-      const element = maakBadgeElement(ICOON_GRAF, "#f4f5f6", "#e5484d", "#c93a3f", 28);
+      const element = maakBadgeElement(ICOON_GRAF, "#f2f5fa", "#ef4b45", "#c93a3f", 28);
       element.classList.add("marker-in");
       if (gloeiJaren.includes(String(zaak.jaar))) element.classList.add("marker-brand");
       const marker = new Marker({ element })
@@ -717,7 +717,7 @@ export function MeldingenKaart() {
         markersMeldingen.current.forEach((marker) => marker.remove());
         markersMeldingen.current = nieuwePunten.map((punt) => {
           const marker = new Marker({
-            element: maakBadgeElement(ICOON_DRIEHOEK, "#d23a3f", "#07090c", "#ffffff", 28),
+            element: maakBadgeElement(ICOON_DRIEHOEK, "#d8302c", "#091320", "#ffffff", 28),
           })
             .setLngLat([punt.lng, punt.lat])
             .setPopup(
@@ -759,9 +759,9 @@ export function MeldingenKaart() {
           nieuwsUrls.current.add(bericht.url);
           const element = maakBadgeElement(
             ICOON_NIEUWS,
-            "#f4f5f6",
-            bericht.live ? "#e5484d" : "#07090c",
-            "#07090c"
+            "#f2f5fa",
+            bericht.live ? "#ef4b45" : "#091320",
+            "#091320"
           );
           element.classList.add("marker-in");
           // Alleen berichten uit dit jaar en vorig jaar gloeien.
@@ -991,11 +991,11 @@ export function MeldingenKaart() {
               : "border-line-strong text-muted-2 hover:text-muted"
           )}
         >
-          <IcoonChipBadge icoon={ICOON_DRIEHOEK} badgeKleur="#d23a3f" randKleur="#07090c" icoonKleur="#ffffff" />
+          <IcoonChipBadge icoon={ICOON_DRIEHOEK} badgeKleur="#d8302c" randKleur="#091320" icoonKleur="#ffffff" />
           Meldingen ({punten === null && !mislukt ? "…" : aantalMeldingen})
         </button>
         <button type="button" onClick={() => setToonRechtspraak((w) => !w)} aria-pressed={toonRechtspraak} className={chip(toonRechtspraak)}>
-          <IcoonChipBadge icoon={ICOON_HAMER} badgeKleur="#f4f5f6" randKleur="#07090c" icoonKleur="#07090c" />
+          <IcoonChipBadge icoon={ICOON_HAMER} badgeKleur="#f2f5fa" randKleur="#091320" icoonKleur="#091320" />
           Rechtspraak ({OPENBARE_ZAKEN.length})
         </button>
         <button type="button" onClick={() => setToonGeweld((w) => !w)} aria-pressed={toonGeweld} className={chip(toonGeweld)}>
@@ -1011,11 +1011,11 @@ export function MeldingenKaart() {
           Agent vervolgd ({vervolgdAantal ?? "…"})
         </button>
         <button type="button" onClick={() => setToonOverleden((w) => !w)} aria-pressed={toonOverleden} className={chip(toonOverleden)}>
-          <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f4f5f6" randKleur="#e5484d" icoonKleur="#c93a3f" />
+          <IcoonChipBadge icoon={ICOON_GRAF} badgeKleur="#f2f5fa" randKleur="#ef4b45" icoonKleur="#c93a3f" />
           Overleden ({overledenAantal === null ? "…" : overledenAantal + ARCHIEF_ZAKEN.length + OFFICER_DODEN.length + AANVULLINGEN_DODEN.length})
         </button>
         <button type="button" onClick={() => setToonNieuws((w) => !w)} aria-pressed={toonNieuws} className={chip(toonNieuws)}>
-          <IcoonChipBadge icoon={ICOON_NIEUWS} badgeKleur="#f4f5f6" randKleur="#07090c" icoonKleur="#07090c" />
+          <IcoonChipBadge icoon={ICOON_NIEUWS} badgeKleur="#f2f5fa" randKleur="#091320" icoonKleur="#091320" />
           Nieuws ({nieuwsGepind ?? "…"})
         </button>
         <button type="button" onClick={() => setToonPolitie((w) => !w)} aria-pressed={toonPolitie} className={chip(toonPolitie)}>

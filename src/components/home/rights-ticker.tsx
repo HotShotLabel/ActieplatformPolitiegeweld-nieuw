@@ -26,7 +26,7 @@ export function RightsTicker() {
             key={right}
             className="flex items-center gap-3 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2"
           >
-            <span aria-hidden className="h-1 w-1 rounded-full bg-accent" />
+            <span aria-hidden className="h-1 w-1 rounded-full bg-brand-blue" />
             {right}
           </span>
         ))}
