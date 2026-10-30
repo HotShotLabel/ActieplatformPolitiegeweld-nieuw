@@ -5,6 +5,7 @@ import { Logo } from "@/components/site/logo";
 import { RightsTicker } from "@/components/home/rights-ticker";
 import { Mission } from "@/components/home/mission";
 import { Tools } from "@/components/home/tools";
+import { HowItWorks } from "@/components/home/how-it-works";
 import { QuoteWall } from "@/components/nieuw/quote-wall";
 import { Globe } from "@/components/nieuw/globe";
 import { Aanbod } from "@/components/nieuw/aanbod";
@@ -69,6 +70,7 @@ export default function NieuwPage() {
 
       <Mission />
       <Tools />
+      <HowItWorks />
       <QuoteWall />
 
       <div className="border-y border-line bg-[#07090c]">

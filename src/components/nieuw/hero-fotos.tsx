@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { VerticalCutReveal } from "@/components/ui/vertical-cut-reveal";
 import { btnGhost, btnPrimary } from "@/lib/ui";
 
 const FOTOS = [
@@ -47,6 +49,7 @@ export function HeroFotos({
 }: {
   counts: { meldingen: number; uitspraken: number; beelden: number; om: number };
 }) {
+  const reduce = useReducedMotion();
   const [actief, setActief] = useState(0);
   const [liveCounts, setLiveCounts] = useState(counts);
 
@@ -113,11 +116,45 @@ export function HeroFotos({
         </div>
 
         <h1 className="mt-4 max-w-[22ch] font-display text-[clamp(2.4rem,6vw,5.4rem)] font-semibold leading-[.96] tracking-[-0.055em]">
-          Wij leggen het vast,{" "}
-          <span className="text-accent">zodat het geen nummer wordt.</span>
-          <span className="mt-3 block font-mono text-[11px] tracking-[0.16em] text-brand-blue md:text-[12px]">
-            Politiegeweld
+          <span className="block">
+            {reduce ? (
+              "Wij leggen het vast,"
+            ) : (
+              <VerticalCutReveal
+                splitBy="words"
+                staggerDuration={0.075}
+                transition={{ type: "spring", stiffness: 150, damping: 24 }}
+              >
+                Wij leggen het vast,
+              </VerticalCutReveal>
+            )}
           </span>
+          <span className="block text-accent">
+            {reduce ? (
+              "zodat het geen nummer wordt."
+            ) : (
+              <VerticalCutReveal
+                splitBy="words"
+                staggerDuration={0.06}
+                transition={{
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 24,
+                  delay: 0.12,
+                }}
+              >
+                zodat het geen nummer wordt.
+              </VerticalCutReveal>
+            )}
+          </span>
+          <motion.span
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-3 block font-mono text-[11px] tracking-[0.16em] text-brand-blue md:text-[12px]"
+          >
+            Politiegeweld
+          </motion.span>
         </h1>
         <p className="mt-5 max-w-[52ch] text-base leading-relaxed text-[#c9d4e5] md:text-lg">
           Van melding tot uitspraak. Voor wie het meemaakt, en voor iedereen die
